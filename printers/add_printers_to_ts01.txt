@@ -1,0 +1,11 @@
+
+* Ticket: iSystems#99917094
+* Problem reported by customer: Add printer to the terminal server. 
+* When the problem started: 
+* Reference: Old ticket iSystems#
+
+Requisites:
+- IP
+- Brand and model to download the drivers.
+- Names.
+

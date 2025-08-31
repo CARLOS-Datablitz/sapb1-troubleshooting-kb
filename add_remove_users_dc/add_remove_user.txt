@@ -1,0 +1,85 @@
+	Add & remove users process:
+ticket de referencia:
+iSystems#99157852
+iSystems#99164769
+iSystems#99128604
+Ch@ng4MeNow!
+
+DC ----> Tools/Users and Devices AD
+			----> Copy one user.
+* TS01 ---> 25 User per server
+
+Get-ADUser -Identity "Jonathan.Hart" -Properties Enabled | Select-Name, Enabled
+
+----------------------------------------------
+add_new_users:
+referenced ticket: 
+Minera Samanco:iSystems#99166571
+
+1. Ver numero de usuarios(activos y no activos) en el DC:
+		- Ver el archivo en esta carpeta llamado: dc_check_user.txt
+
+3. Check licences numbers:
+	Licenias:RDS(Windows Server), las licencias son por usuario.
+		- Tools/Remote Desktop Services/Administrador de Licencias
+			RDS01:Aquí vemos el numero Total de licencias: Disponible + Emitidas
+
+2. Ver recursos en servidor RDS:
+   1. Zabbix ---> Aquí vemos el USO del RDS, y de los demas servers, los recursos(CPU,Memory,HD) y lo comparamos con la tabla(Tabelle RDS).
+   	1.1 ---> los recursos tienen que ser suficientes para soportar los usuarios de cliente.
+   2. Administrador de tareas del RDS ---> Aquí vemos la cantidad de cpu cores y la ram.
+   3. PROXMOX ---> Aquí vemos el USO y la CAPACIDAD de los recursos de los servidores.
+
+
+
+----------------------------------------------
+Dear TacticaIT team,
+
+We have added a new user for the client Ecolimpio. The user credentials are as follows:
+
+Username: user14
+
+Password: <check the link>
+
+Please verify that the new user's access is functioning correctly and let us know if any adjustments are needed.
+
+
+
+This is to confirm that Raymond Ramos has been successfully removed from access to ALLSTARTS systems.
+
+Please let me know if you need anything further.
+
+
+Se han agregado dos nuevos usuarios, User9 y User10; encontrará la contraseña en el siguiente link:
+
+Por favor indicarnos el día y hora en la que podamos reiniciar el servidor RDS a fin de aumentar los recursos necesario.
+
+Quedamos pendientes a su confirmación.
+
+Saludos cordiales,
+
+Por favor, verifiquen que el acceso del nuevo usuario esté funcionando correctamente y hágannoslo saber si se necesita algún ajuste.
+
+
+
+
+
+
+----------------------------------------------
+===> Forward & Set to internal
+
+j.kamphof
+n.dammer
+
+Hi, Jessica, hi Nicole, we've added a new user for the client .
+
+
+Hi Jessica, hi Nicole,
+I’ve completed the removal of Raymond Ramos from the ALLPRO systems, per the customer’s request.
+
+----------------------------------------------
+https://rds01.farmak.privatcloud.biz:1238/rdweb/webclient/index.html
+
+
+
+

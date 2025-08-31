@@ -1,0 +1,75 @@
+iSystems#99170031
+Su apoyo generando una copia de la base y restaurarlo con el nombre SI_CONTAB
+# Ticket: 99170031
+  # Tasks:
+  # export the schema: SBO_BUYANDGO >> SI_CONTAB
+  # For RAMO - APC - / dctpamt090 - IP/10.3.90.2
+  # Date: 19/08/2025
+  # Tenant: E06
+
+
+Pre-requisite:
+dh -h
+
+=================================================
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+  # Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir APC dbapc1
+chmod -R 777 APC/ dbapc1/
+chown -R ndbadm:sapsys APC/ dbapc1/ && ls -lha
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+  # pass:C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+=================================================
+2. Variables de entorno:
+	-------------------   
+2.1 Sacar información de las variables:
+sld:~ # 
+cat Desktop/SAP_Configuration.txt
+2.2 Ingresar las variables en el sles:/tmp #
+ 	# Varibles HANASQL (B1SYSTEM)
+    # en donde confirmo la ruta o parametro de la siguiente línea.?
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E06"
+dbUser="B1SYSTEM"
+dbPass="1KA53e3ZhzMJ"
+-------------------   
+# ver las db o schemas: entrar al rds/Business One 64 bits
+
+# Testear la base de datos: NDB
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+   sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_APC'."*" as binary into '\'/tmp/dbapc1\'' with ignore existing threads 10;'
+
+# Check
+ls -lha /tmp/dbapc1/export
+# Done Export
+[ SBO_BUYANDGO] ---> 0 rows affected (overall time 49.231266 sec; server time 49.231005 sec)
+
+# import and rename the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbnvr\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SI_CONTAB";'
+
+  # Done import
+  [ SBO_DISTRIBUIDORA <=> ZZ_DISTRIBUIDORA ] --->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
+                          0 rows affected (overall time 32.759035 sec; server time 32.758837 sec)
+
+  # Testear la base de datos: NDB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'    #--> SBO_DRISTIBUIDORA + ZZ_DISTRIBUIDORA
+
+
+  =========================  FIN =================
+tar -czf archivo.tar.gz 20250818_192501_E06_COMPLETE_DATA_BACKUP_databackup_2_1 &
+watch -n 5 'ls -lh archivo.tar.gz'
+

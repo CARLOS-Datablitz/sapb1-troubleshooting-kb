@@ -1,0 +1,59 @@
+# Ticket:Systems#99167736
+client: releng
+multitenant: 10.3.92.2
+sld: 10.3.92.250
+pasos a seguir:
+    # 1- exportar la db "SBO_PROD_XH"
+    # 2- comprimir dd.
+    # 3- upload db to SFTP
+
+1.1 declarar variables:
+esto la sacas sld o del Bitwarden:
+
+#SQL Varibles (B1SYSTEM)
+  dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+  dbInstance="00"
+  dbHost="127.0.0.1"
+  dbTenant="E15"
+  dbUser="B1SYSTEM"
+  dbPass="42ece72HFfyDAbIN"
+
+1.2 test de acceso en el multitenat:
+ "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+1.3 crear carpeta donde se va a guardar la db para la exportación:
+# Begining in the hana
+  df -h      # ---> revisar si el directorio /tmp tiene espacio para la exportación, sino cambair de directorio a /backup
+  screen -dRR
+  cd /tmp && ls -lha
+  mkdir one PAS
+  chown -R ndbadm:sapsys one/ PAS/ && ls -lha
+********
+
+#Export the schema
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_PROD_XH'."*" as binary into '\'/tmp/one/\'' with ignore existing threads 10;'
+
+[Export ---> "SBO_PROD_XH"] = 0 rows affected (overall time 27.475218 sec; server time 27.474902 sec)
+ 
+#Tar and move to another folder
+
+ tar -C /tmp/one -czf /tmp/PAS/SBO_PROD_XH.tar.gz ./
+
+# Upload to the SFTP
+  #Correr el comando en el directorio donde se encuentra el archivo
+  sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+  pass: C4!qE0e]cVFy&$m
+
+  cd /xplora/releng/
+  mkdir backup_11-08-2025
+  cd backup_11-08-2025
+  put SBO_PROD_XH.tar.gz  ----> copiar ruta para compartir con cliente eg: /xplora/Releng/backup_11-08-2025/SBO_PROD_XH.tar.gz
+  bye
+
+# Delete and list the non necessary files in one line
+cd /tmp && ls -lha && rm -rf one/ PAS/ && ls -lha
+
+
+
+

@@ -1,0 +1,97 @@
+# Ticket de referencia: iSystems#99167268
+Idean- Hana-Carga de respaldo de base de datos
+
+# Tasks: Carga o importacion de db
+# Download files from the SFTP and extract the files:
+COMPLETE_DATA_BACKUP07082025_databackup_3_1.rar 
+
+# For PARTNER/WMP - COSTOMER/IDEAN - /SLES/HANA/HANAMT(solamente aquí corren las db) - IP/10.3.27.2
+puedes entrar a und ADM o RDS y hace ping desde cmd a la db, en este caso E07 hana.data
+# Si queremos ver cuantas db tiene un ambiente: entramos a RDS hdestudio, Systems, SYSTEMDB@NDB(SYSTEM)	
+# Date: 15/08/2025
+# Tenant: BO1  
+
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /backup) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /backup && ls -lhad
+mkdir IDEAN dbidean1 
+cd /backup && ls -lhad IDEAN dbidean1
+chmod -R 777 IDEAN/ dbidean1/
+chown -R ndbadm:sapsys IDEAN/ dbidean1/ && ls -lha && cd /backup/IDEAN
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+# pass:C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+# Ver el aproximado del archivo al ser descomprimido.
+tar -tvf archivo.tar | awk '{sum += $3} END {print sum " bytes"}'
+unrar lt archivo.rar | grep -E "Size:|Packed:"
+# Extraer los archivos en cada folder de destino.
+tar -C /backup/dbidean1 -xzf /backup/IDEAN/049SBOGSNMAQUINARIA25072025.tar.xz
+unrar x /backup/IDEAN/COMPLETE_DATA_BACKUP07082025_databackup_3_1.rar /backup/dbidean1/
+ls -lha
+/backup/IDEAN rm *.rar
+
+# Ver los nombres de los schemas a ver si coinciden con (049SBOGSNMAQUINARIA/080SBOMAQEMAG)
+ls -lha /backup/dbidean1/export    #BIRLOS
+
+# DE NOS SER EL CASO hay que mover las carpetas hacia la ruta y darle los permisos
+cd /tmp/dbwmp1/xxxx/xxxx/xxxx
+mv export/ index/ /tmp/dbwmp1/
+
+
+cd /backup && ls -lha
+chmod -R 777 dbidean1/
+chown -R ndbadm:sapsys dbidean1/  && ls -lha
+
+ls -lha /backup/dbidean1/export    #049SBOGSNMAQUINARIA
+
+2.  ----------------------------------------------------------------------------------------
+  # Varibles SQL (B1SYSTEM) en el SLD
+  sld:~ # cat Desktop/SAP_Configuration2.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="BO1"
+dbUser="B1SYSTEM"
+dbPass="AeXad6pu"
+
+  # Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+  # Realizar un import 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BIRLOS'."*" as binary from '\'/backup/dbidean1/birlos_20250815\'' with ignore existing threads 10;'
+  
+  # Tiempos y respuestas de los imports realizados
+  [ COMPLETE_DATA_BACKUP07082025_databackup_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
+
+  # Eliminar los archivos que ya no son necesarios
+  cd /backup && ls -lha && rm -rf IDEAN/ dbidean1/ && ls -lha
+
+================================================================
+RENAME, EXPORT
+  # Import the shchema and rename
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+
+  # Export the schema
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
+
+
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
+"IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/backup/dbidean1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
+
+Yes, absolutely. We can mount separate folders to different locations as required for your databases.
+
+However, it is important to clarify a key point regarding the storage configuration:
+
+While the mount points will be separate and independent, they will all share the same underlying disk capacity that is allocated to the /usr/sap volume.

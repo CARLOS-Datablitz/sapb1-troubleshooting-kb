@@ -1,0 +1,24 @@
+Ver solo tamaños de discos físicos:
+
+lsblk -d -o NAME,SIZE
+
+
+Last login: Thu Aug  7 22:18:26 2025 from 192.168.98.6
+root@partubuntu2:~# 	
+NAME    SIZE
+loop0  55.5M
+loop1  63.8M
+loop2  73.9M
+loop3  55.5M
+loop5  76.6M
+loop6  63.8M
+loop7  49.3M
+loop8  73.9M
+loop9  76.6M
+loop10 50.9M
+sr0    1024M
+vda     200G
+root@partubuntu2:~# date
+Thu 07 Aug 2025 11:04:37 PM CEST
+root@partubuntu2:~#
+

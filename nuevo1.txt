@@ -1,0 +1,17 @@
+Cosib - WW10113 - rds/dcduvpn
+Cosib - WW10113 - sld/dcduvpn
+Cosib - WW10113 - dc/dcduvpn
+Cosib - WW10113 - adm/dcduvpn
+
+ww10113\administrator
+
+iSystems#99170395
+* Ticket: iSystems#99170395
+* Problem reported by customer: Customer complaint that they have no access to \\lic\B1_SHF\Manual_Backup (This route was configured on iSystems#99134744)
+For manual backup they use the path: /backup/REP.
+* When the problem started: This week four day ago(18/08).
+* Reference: Old ticket iSystems#99134744
+
+:%s/palabra_antigua/palabra_nueva/gc
+
+americorp.nubeprivada.biz		

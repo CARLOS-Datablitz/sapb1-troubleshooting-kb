@@ -1,0 +1,70 @@
+
+Necesito una base de datos de prueba llamada SBOWWPL_TEST a partir de la base de datos SBOWWPL_PROD.
+
+# Ticket: iSystems#99171366
+  # Tasks:
+  # export/Import the schema: SSBOWWPL_PROD >> SBOWWPL_TEST 
+  # For  Cosib - WW10113 - / dcdu - mt090hanamt IP/10.2.90.2
+  # Date: 25/08/2025
+  # Tenant: E15
+
+=================================================
+hanamt:/tmp #
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+  # Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir ww10113_test 
+chmod -R 777 ww10113_test/
+chown -R ndbadm:sapsys ww10113_test/ && ls -lha
+
+=================================================
+2. Variables de entorno:
+-------------------   
+2.1 Sacar información de las variables:
+sld:~ # 
+cat Desktop/SAP_Configuration.txt
+2.2 Ingresar las variables en el sles:/tmp #
+# Varibles HANASQL (B1SYSTEM)
+# en donde confirmo la ruta o parametro de la siguiente línea.?
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E15"
+dbUser="B1SYSTEM"
+dbPass="p480wXK7VYKq"
+
+-------------------   
+# ver las db o schemas: entrar al rds/Business One 64 bits
+
+# Testear la base de datos: NDB
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema to ww10113_test/
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_PROD'."*" as binary into '\'/tmp/ww10113_test\'' with ignore existing threads 10;'
+
+# Check
+ls -lha /tmp/ww10113_test/export
+# Done Export
+[SBOWWPL_PROD] ---> 0 rows affected (overall time 52.252151 sec; server time 52.251793 sec) 
+
+
+# import and rename the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBOWWPL_PROD'."*" as binary from '\'/tmp/ww10113_test\'' with ignore existing threads 10 rename schema "SBOWWPL_PROD" to "SBOWWPL_TEST";'
+
+# Done import
+
+Warning: * 1: general warning: Type mismatch for table variable "_SYS_SS2_RETURN_VAR_": Target type "VARCHAR(20)" of attribute "PreCodInstruccion" not same as assigned type "NVARCHAR(5000)": line 37 col 1 (at pos 1033) SQLSTATE: 01000
+0 rows affected (overall time 1031.089335 sec; server time 1031.088780 sec)
+
+
+# Testear la base de datos: NDB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";' 
+
+# Remove ww10113_test/
+rm -R ww10113_test
+
+  =========================  FIN =================

@@ -1,0 +1,21 @@
+
+
+--- ver los logs en el SAPBusinessOne ---
+sles01: /var/log/SAPBusinessOne~ # cat SLDAgent/sldAgent.log
+versapaksld:~ # cat /var/log/SAPBusinessOne/SLDAgent/sldAgent.log
+
+Propósito:
+Diagnóstico del problema de conexión al SLD (System Landscape Directory)
+El archivo sldAgent.log contiene los registros detallados del servicio SLDAgent dentro de SAP Business One Server Tools.
+Revisar este log permite identificar:
+Si el SLD service se inició correctamente.
+Si hubo errores de conexión (puerto 40000 bloqueado, servicio caído, etc.).
+Si hay problemas de autenticación o licencias.
+Si el proceso SLDAgent se detuvo o reinició inesperadamente.
+
+sles01:~ # systemctl restart sapb1tools.service sapb1servertools-authentication.service
+
+--- SLD ---
+
+systemctl status sap*
+

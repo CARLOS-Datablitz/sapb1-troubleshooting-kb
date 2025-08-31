@@ -1,0 +1,42 @@
+Filtrar en PowerShell del AD:
+
+Esto te da una lista de usuarios habilitados que han iniciado sesión en los últimos 10 días:
+
+$cutoff = (Get-Date).AddDays(-60)
+
+Get-ADUser -Filter * -Properties LastLogonTimeStamp, Enabled | Where-Object {
+    $_.Enabled -eq $true -and
+    $_.LastLogonTimeStamp -ne $null -and
+    [DateTime]::FromFileTime($_.LastLogonTimeStamp) -gt $cutoff
+} | Select-Object Name, SamAccountName, @{Name="LastLogon";Expression={
+    [DateTime]::FromFileTime($_.LastLogonTimeStamp)
+}} | Sort-Object LastLogon -Descending
+
+Esto te da el número de usuarios habilitados en el AD:
+Get-ADUser -Filter {Enabled -eq $true} | Measure-Object
+
+******** Revisa usuarios sin logon en +90 días para limpiar cuentas obsoletas:
+
+Search-ADAccount -UsersOnly -AccountInactive -TimeSpan 90.00:00:00
+
+***** Script para listar y contar usuarios activos por logon reciente:
+
+$days = 30
+$cutoff = (Get-Date).AddDays(-$days)
+
+$users = Get-ADUser -Filter * -Properties LastLogonTimeStamp, Enabled | Where-Object {
+    $_.Enabled -eq $true -and `
+    ($_.LastLogonTimeStamp -ne $null) -and `
+    ([DateTime]::FromFileTime($_.LastLogonTimeStamp) -gt $cutoff)
+}
+
+$users.Count
+
+******** Para consultar el último logon:
+Get-ADUser -Identity "user11" -Properties LastLogonDate, LastLogon | 
+    Select-Object Name, SamAccountName, LastLogonDate, LastLogon
+*** Ver la fecha de creación:
+Get-ADUser -Identity "nombreUsuario" -Properties whenCreated | 
+    Select-Object Name, SamAccountName, whenCreated
+
+

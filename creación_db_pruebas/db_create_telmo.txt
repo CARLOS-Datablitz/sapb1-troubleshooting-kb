@@ -1,0 +1,46 @@
+# Ticket: xxxxxxxxxxxxxxxxxxx
+  # Tasks:
+    # export/Import the schema: SBO_DRISTIBUIDORA >> ZZ_DISTRIBUIDORA
+  # For RAMO - NAVARRETE - /SLES-onprem - IP/132.147.158.144
+  # Date: 12/08/2025
+  # Tenant NDB
+
+  # Empecemos.....
+  screen -dRR
+  cd /tmp && ls -lha
+  mkdir dbnvr
+  chmod -R 777 dbnvr/
+  chown -R ndbadm:sapsys dbnvr/ && ls -lha
+
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  # Varibles HANASQL (B1SYSTEM)
+  dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
+  dbInstance="00"
+  dbHost="127.0.0.1"
+  dbTenant="NDB"
+  dbUser="B1SYSTEM"
+  dbPass="Fq6p9FZtz4yCs"
+
+  # Testear la base de datos: NDB
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'    #-->SBO_DISTRIBUIDORA
+
+  # Realizar un export
+  # Export the schema
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_DISTRIBUIDORA'."*" as binary into '\'/tmp/dbnvr\'' with ignore existing threads 10;'
+
+  # verificar
+  ls -lha /tmp/dbnvr/export #---> SBO_DISTRIBUIDORA
+
+  # Done Export
+  [ SBO_DISTRIBUIDORA ] ---> 0 rows affected (overall time 49.231266 sec; server time 49.231005 sec)
+
+  # import and rename the schema
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_DISTRIBUIDORA'."*" as binary from '\'/tmp/dbnvr\'' with ignore existing threads 10 rename schema "SBO_DISTRIBUIDORA" to "ZZ_DISTRIBUIDORA";'
+
+  # Done import
+  [ SBO_DISTRIBUIDORA <=> ZZ_DISTRIBUIDORA ] --->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
+                          0 rows affected (overall time 32.759035 sec; server time 32.758837 sec)
+
+  # Testear la base de datos: NDB
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'    #--> SBO_DRISTIBUIDORA + ZZ_DISTRIBUIDORA

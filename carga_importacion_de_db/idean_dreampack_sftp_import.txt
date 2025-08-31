@@ -1,0 +1,61 @@
+# Ticket:iSystems#99172063 
+# Task:
+# 1- Download from the SFTP "Birlos_test.rar"
+# 2- Import to the DemoServer "NMX_LIVE" as "TEST_0101"
+# 3- Delete the test database "TEST_0101"
+
+# For Idean - Idean-HANA - hanamt - 10.3.27.2 / SLD 10.3.25.10
+# Date: 28/08/2025
+# Tenant NDB
+
+# Begining in the hana
+df -h      # ---> revisar si el directorio /tmp tiene espacio para la exportación, sino cambair de directorio a /backup
+screen -dRR
+cd /tmp && ls -lha
+mkdir DREAMPACKZIP dbdreampack1
+chown -R ndbadm:sapsys DREAMPACKZIP/ dbdreampack1/ && ls -lha
+
+#SQL Varibles (B1SYSTEMA)
+sles:~ # cat Desktop/SAP_Configuration.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="B1SYSTEM"
+dbPass="Ot5KbvH4tRH69ijY"
+
+
+#Test DB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+cd DREAMPACKZIP
+
+# Download from the SFTP
+#Correr el comando en el directorio donde queremos que se encuentre el archivo
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+pass: C4!qE0e]cVFy&$m
+cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 
+get NMX_LIVE.tar.gz
+bye
+
+#Untar and move to another folder
+# -xzf para le dice que descomprima con gzip y -xJf para .tar.xz
+tar -C /tmp/dbdreampack1 -xzf /tmp/DREAMPACKZIP/C11923_BIGVISION_MIGRATED_20250710_AB.tar.gz
+cd dbdreampack1/ && ls -lha
+
+Nota de cliente:
+Antes de realizar el IMPORT, eliminar el path, ambos archivos (.sql y .info) contienen solo código de creación del SYNONYM que tiene la dependencia externa, por lo que no es necesario, pueden eliminarlo con el siguiente comando
+sles:/tmp/dbdreampack1/C11923_BIGVISION_MIGRATED_20250710_AB # rm -r ./export/C11923_BIGVISION_MIGRATED/CA/CAULG/
+
+#Import the shchema
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'C11923_BIGVISION_MIGRATED'."*" as binary from '\'/tmp/dbdreampack1/C11923_BIGVISION_MIGRATED_20250710_AB/\'' with ignore existing threads 10;'
+
+[Import and Rename---> "NMX_LIVE" to "TEST_0101"] = Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
+													0 rows affected (overall time 57.591273 sec; server time 57.590876 sec)
+
+# Delete and list the non necessary files in one line
+ cd /tmp && ls -lha && rm -rf dbdreampack1/ DREAMPACKZIP/ && ls -lha
+
+ ================== FIN ==================
+ 

@@ -1,0 +1,37 @@
+# Importar el módulo Active Directory (asegúrate de tenerlo instalado)
+Import-Module ActiveDirectory
+
+# Obtener todos los nombres de host de equipos con SO tipo Windows Server
+$servers = Get-ADComputer -Filter {OperatingSystem -like "*Windows Server*"} -Property OperatingSystem |
+           Select-Object -ExpandProperty Name
+
+# Definir el bloque de código que se ejecutará remotamente en cada servidor
+$scriptBlock = {
+    Write-Output "Ejecutando en $env:COMPUTERNAME..."
+
+    # Buscar servicios cuyo nombre comience con GoogleUpdaterService o GoogleUpdaterInternalService
+    $targetServices = Get-Service | Where-Object {
+        $_.Name -like "GoogleUpdaterService*" -or $_.Name -like "GoogleUpdaterInternalService*"
+    }
+
+    foreach ($svc in $targetServices) {
+        try {
+            # Cambiar tipo de inicio a Manual
+            Set-Service -Name $svc.Name -StartupType Manual
+
+            # Opcional: detener el servicio si está corriendo
+            if ($svc.Status -eq 'Running') {
+                Stop-Service -Name $svc.Name -Force
+                Write-Output "Servicio '$($svc.Name)' detenido y configurado como Manual."
+            } else {
+                Write-Output "Servicio '$($svc.Name)' configurado como Manual."
+            }
+        } catch {
+            Write-Output "❌ Error con '$($svc.Name)': $_"
+        }
+    }
+}
+
+# Ejecutar el bloque remotamente en todos los servidores encontrados
+Invoke-Command -ComputerName $servers -ScriptBlock $scriptBlock -ErrorAction Stop
+

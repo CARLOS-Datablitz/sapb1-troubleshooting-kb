@@ -1,0 +1,51 @@
+
+
+
+══════════════════════════════════════════════════════════════
+CONFIGURACIÓN REGIONAL VÍA GPO – RESUMEN COMPLETO
+Dominio: apc.nubeprivada.biz
+Formato objetivo: decimal “.”  separador de miles “,”
+──────────────────────────────────────────────────────────────
+1. CREAR Y ENLAZAR LA GPO EN EL DC
+   gpmc.msc
+   └─ Dominio apc.nubeprivada.biz
+      ├─ Clic-dcho → “Crear una GPO en este dominio y enlace aquí”
+      └─ Nombre: GPO-Regional-Numerico-RDS
+
+2. EDITAR LA PREFERENCIA DE USUARIO
+   GPMC → Clic-dcho sobre GPO-Regional-Numerico-RDS → Editar
+   └─ Configuración del usuario
+      └─ Preferencias
+         └─ Panel de control
+            └─ Opciones regionales
+               ├─ Clic-dcho en panel vacío → Nuevo → Opciones regionales
+               ├─ Formato regional: Español (España)  (o el que corresponda)
+               ├─ Pestaña Números
+               │   ├─ Símbolo decimal:  .
+               │   └─ Separador de miles:  ,
+               └─ F5 → Aceptar
+
+3. APLICAR Y VERIFICAR EN RDS / CLIENTE
+   A) Actualizar políticas
+      PS>  gpupdate /force
+
+   B) Confirmar recepción
+      PS>  gpresult /r
+      Resultado esperado (extracto):
+         Objetos de directiva de grupo aplicados
+         ---------------------------------------
+            FolderRedirection
+            GPO-Regional-Numerico-RDS
+
+   C) Verificar valores
+      PS>  (Get-Culture).NumberFormat |
+           Select NumberDecimalSeparator,NumberGroupSeparator
+      NumberDecimalSeparator NumberGroupSeparator
+      ---------------------- --------------------
+      .                      ,
+
+4. PRUEBA FUNCIONAL RÁPIDA
+   - Abrir Excel → celda =1234567.89   →  1.234.567,89
+   - intl.cpl → Formato adicional → Números muestra “.” y “,”
+══════════════════════════════════════════════════════════════
+Resultado final: formato numérico unificado para todos los usuarios del dominio y sesiones RDS sin intervención manual.

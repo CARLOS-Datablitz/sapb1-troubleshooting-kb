@@ -1,0 +1,15 @@
+En Windows Server con Remote Desktop Services (RDS/Terminal Server), los cambios regionales que se hacen en el servidor no se aplican automáticamente a cada usuario.
+Cada usuario que se conecta hereda el formato regional configurado en su perfil la primera vez que inicia sesión.
+Después, aunque cambies la configuración global en el servidor, los usuarios mantienen la suya propia (a menos que se fuerce vía GPO o se elimine el perfil).
+
+
+Esto explica por qué tú hiciste el cambio en los servidores, pero los usuarios en SAP siguen viendo el formato anterior.
+
+✅ Soluciones recomendadas:
+
+1. Forzar el formato regional mediante GPO (Política de Grupo):
+
+👉 El formato regional no se gestiona desde el DC directamente, sino en cada perfil de usuario en los servidores donde inicia sesión.
+Por eso la solución correcta es aplicar la GPO a nivel de usuario, para que en cada inicio de sesión Windows reescriba esos valores en HKCU\Control Panel\International.
+
+

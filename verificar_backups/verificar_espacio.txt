@@ -1,0 +1,8 @@
+--- comandos linux para verificar espacio en disco ---
+sles09:~ # df -h ---> disk free human visible
+sles09:~ # du -h -d 1. ---> disk usage human deep 1
+#luego borrarmos los logs que se encuentran en backup/log.
+rm log*
+
+
+

@@ -1,0 +1,6 @@
+--ver en SLES si tienes cifs-utils----
+
+sles:~ # rpm -qa | grep cifs-utils
+cifs-utils-6.9-150100.5.18.1.x86_64
+
+
