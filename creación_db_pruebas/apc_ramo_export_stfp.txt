@@ -1,0 +1,82 @@
+iSystems#99170031
+Su apoyo generando una copia de la base y restaurarlo con el nombre SI_CONTAB
+# Ticket: 99170031
+  # Tasks:
+  # export the schema: SBO_APC >> SI_CONTAB
+  # For RAMO - APC - / dctpamt090 - IP/10.3.90.2
+  # Date: 19/08/2025
+  # Tenant: E06
+
+
+Pre-requisite:
+cd /
+df -h
+
+=================================================
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir APC_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+chmod -R 777 APC_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+chown -R ndbadm:sapsys APC_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4 && ls -lha
+
+2. Variables de entorno:
+-------------------   
+sld:~ # 
+cat Desktop/SAP_Configuration.txt
+2.2 Ingresar las variables en el sles:/tmp #
+# Varibles HANASQL (B1SYSTEM)
+# en donde confirmo la ruta o parametro de la siguiente línea.?
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E06"
+dbUser="B1SYSTEM"
+dbPass="1KA53e3ZhzMJ"
+
+-------------------   
+3. Exportar schemas:
+# ver las db o schemas: entrar al rds/Business One 64 bits
+
+# Testear la base de datos: NDB
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_APC'."*" as binary into '\'/tmp/dbAPC1\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SI_CONT'."*" as binary into '\'/tmp/dbAPC2\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TEST_SI'."*" as binary into '\'/tmp/dbAPC3\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TEST_FE'."*" as binary into '\'/tmp/dbAPC4\'' with ignore existing threads 10;'
+
+4. Comprimir db que se encuentran en dbAPC<#> y colocarlas en APC_ZIP:
+tar -czvf /tmp/APC_ZIP/SBO_APC.tar.gz dbAPC1/
+tar -czvf /tmp/APC_ZIP/SI_CONT.tar.gz dbAPC2/
+tar -czvf /tmp/APC_ZIP/TEST_SI.tar.gz dbAPC3/
+tar -czvf /tmp/APC_ZIP/TEST_FE.tar.gz dbAPC4/
+
+--- Cambiar de nombre la carpeta que se va a aparecer al descomprimir ---
+NOTA: Este paso se puede obviar si en crear las carpetas le colocamos los nombres con los que queremos que se descompriman
+tar -czvf /tmp/APC_ZIP/SBO_APC.tar.gz --transform 's/^dbAPC1/SBO_APC/' dbAPC1/
+tar -czvf /tmp/APC_ZIP/SI_CONT.tar.gz --transform 's/^dbAPC2/SI_CONT/' dbAPC2/
+tar -czvf /tmp/APC_ZIP/TEST_SI.tar.gz --transform 's/^dbAPC3/TEST_SI/' dbAPC3/
+tar -czvf /tmp/APC_ZIP/TEST_FE.tar.gz --transform 's/^dbAPC4/TEST_FE/' dbAPC4/
+
+5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+# pass:C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+rm -R APC_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+
+
+=========================  FIN =================
+

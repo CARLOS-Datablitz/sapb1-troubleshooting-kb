@@ -1,14 +1,14 @@
-CFBS - Mount attachments - Nichirin 10.0.1.184
-# Ticket: iSystems#99168619
-# Tasks:
-# Mount attachments: Nichirin 10.0.1.184 
-# For Clientfirest - Nichirin - /OnPremise: hana- IP/10.0.1.183
-|# Date: 26/08/2025
-# Tenant: NDB
 
-===================================================================
+El Attachments se configura generalmente en el SLD,  el attachments se monta donde esta la instalacion del SAP, si en un sles esta pues va en /usr/sap/....
+en el sld siempre encontrarars esa ruta /usr/sap.
 
-  1. Verificar en SLES si cifs-utils está instalado
+Nota! : No configurar dos folderes apuntando al mismo folder "Attachment", generará duplicidad y sobreescritura de datos.
+
+
+=====================================
+Ticket de referencia: iSystems#99168105
+iSystems#99160828  ---> Jack
+1. Verificar en SLES si cifs-utils está instalado
    rpm -qa | grep cifs-utils
    - Si no devuelve nada, instalar junto con samba-client:
      sudo zypper install cifs-utils samba-client
@@ -42,37 +42,41 @@ CFBS - Mount attachments - Nichirin 10.0.1.184
    df -h | grep Attachments
    - Si se ve el contenido esperado y df muestra //sles/B1_SHF, el montaje fue exitoso.
 
-===================================================================
-#1st Run - sles(In this case ADM):
+
+====================================
+
+
+
+
+
+# Attachment Example Rheinperchemie
+ordner
+# 10.2.89.106b1_shfSAP_B1Attachments
+sldb1_shfCASTELLAnexos
+
+# ssh root in sld
 screen -dRR
-cd /usr/sap/SAPBusinessOne/B1_SHF/ && ls -lha
-mkdir Nichirin/ && ls -lha
-cd Nichirin
-mkdir Word/ Excel/ Pictures/ Attachments/ Extensions/ XML/
-cd ..
-chmod -R 777 Nichirin/ && ls -lha
-chown -R b1service0:b1service0 Nichirin/ && ls -lha
+cd usrsapSAPBusinessOneB1_SHF
+mkdir -p CASTELLAnexos
+chmod -R 777 CASTELLAnexos
+chown -R b1service0b1service0 CASTELLAnexos
 
+cd mnt
+mkdir -p CASTELLAnexos
+chmod -R 777 CASTELLAnexos
+chown -R b1service0b1service0 CASTELLAnexos && ls -lha
 
-#2nd run
-cd /mnt
-mkdir Attachments/
-chmod -R 777 Attachments/
-chown -R b1service0:b1service0 Attachments/
-ls -lha && df -h
+echo 'sldB1_SHFCASTELLAnexos                   mntCASTELLAnexos        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'  etcfstab
 
-# \\ADM\sbo\Attachments
+cat etcfstab
+# vim etcfstab
 
-#this is the only one that you execute
-echo '//sld/B1_SHF/Nichirin/Attachments       /mnt/Attachments       cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
-
-#check the fstab file and modify it if necessary 
-cat /etc/fstab
-vim /etc/fstab
 mount -a -v
-df -h | grep Attachments
+
+df -h
+df -h  grep CASTELLAnexos
 
 
+=====================================
 
-===================================================================
 

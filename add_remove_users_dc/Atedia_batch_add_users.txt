@@ -1,0 +1,29 @@
+## win_ad_users
+
+```powershell:
+dreampack.nubeprivada.biz		
+
+
+=========================================
+
+$dcip		= "10.2.102.51"
+$rdd        = "atedia.privatcloud.biz"
+$rnb        = "atedia"
+$dcusr      = "administrator"
+$dcpw       = "4618URcZfoJwdOKe";$dcpass = ConvertTo-SecureString -AsPlainText $dcpw -Force;$domaincred = New-Object System.Management.Automation.PSCredential -ArgumentList $rnb\$dcusr,$dcpass
+Invoke-Command -ComputerName $dcip -Credential $domainCred -ScriptBlock {
+
+ $Username="user22"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="22"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user23"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="23"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user24"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="24"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user25"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="25"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user26"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="26"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user27"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="27"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user28"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="28"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user29"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="29"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ $Username="user30"  ;$Password="Ch@ngeMeNow!";$Firstname="User"   ;$Lastname="30"    ;$EmailAddress="$Username@$using:rdd";$EmailAddress="$EmailAddress";$OfficePhone="+123456789";New-ADUser -SamAccountName "$Username" -UserPrincipalName "$Username@$Using:rdd" -Name "$Firstname $Lastname" -GivenName "$Firstname" -Surname "$Lastname" -EmailAddress "$EmailAddress" -OfficePhone "$OfficePhone" -Enabled $True -ChangePasswordAtLogon $true -DisplayName "$Firstname $Lastname" -AccountPassword (convertto-securestring $Password -AsPlainText -Force) -PasswordNeverExpires $false
+ 
+}
+
+
+

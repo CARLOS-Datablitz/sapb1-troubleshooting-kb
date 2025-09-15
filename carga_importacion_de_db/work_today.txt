@@ -1,16 +1,4 @@
 # Ticket de referencia: iSystems#99167268
-Idean- Hana-Carga de respaldo de base de datos
-
-# Tasks: Carga o importacion de db
-# Download files from the SFTP and extract the files:
-COMPLETE_DATA_BACKUP07082025_databackup_3_1.rar 
-
-# For PARTNER/WMP - COSTOMER/IDEAN - /SLES/HANA/HANAMT(solamente aquí corren las db) - IP/10.3.27.2
-puedes entrar a und ADM o RDS y hace ping desde cmd a la db, en este caso E07 hana.data
-# Si queremos ver cuantas db tiene un ambiente: entramos a RDS hdestudio, Systems, SYSTEMDB@NDB(SYSTEM)	
-# Date: 15/08/2025
-# Tenant: BO1  
-
 0.--------------------------------------------------------------------------
 Confirmar espacio disponible(/tmp o /backup) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
 isystems-mt02:~ # cd /
@@ -56,8 +44,8 @@ chown -R ndbadm:sapsys dbidean1/  && ls -lha
 ls -lha /backup/dbidean1/export    #049SBOGSNMAQUINARIA
 
 2.  ----------------------------------------------------------------------------------------
-  # Varibles SQL (B1SYSTEM) en el SLD
-  sld:~ # cat Desktop/SAP_Configuration2.txt
+# Varibles SQL (B1SYSTEM) en el SLD
+sld:~ # cat Desktop/SAP_Configuration2.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
@@ -65,33 +53,49 @@ dbTenant="BO1"
 dbUser="B1SYSTEM"
 dbPass="AeXad6pu"
 
-  # Testear la base de datos:BO1 
+# Testear la base de datos:BO1 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
-  # Realizar un import 
+# Realizar un import 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BIRLOS'."*" as binary from '\'/backup/dbidean1/birlos_20250815\'' with ignore existing threads 10;'
-  
-  # Tiempos y respuestas de los imports realizados
-  [ COMPLETE_DATA_BACKUP07082025_databackup_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
 
-  # Eliminar los archivos que ya no son necesarios
-  cd /backup && ls -lha && rm -rf IDEAN/ dbidean1/ && ls -lha
+# Tiempos y respuestas de los imports realizados
+[ COMPLETE_DATA_BACKUP07082025_databackup_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
+
+# Eliminar los archivos que ya no son necesarios
+cd /backup && ls -lha && rm -rf IDEAN/ dbidean1/ && ls -lha
 
 ================================================================
 RENAME, EXPORT
-  # Import the shchema and rename
-  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
 
-  # Export the schema
-  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
-
-
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
 "IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/backup/dbidean1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
 
-Yes, absolutely. We can mount separate folders to different locations as required for your databases.
+tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
+dbdreampack1
 
-However, it is important to clarify a key point regarding the storage configuration:
+tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO /' dbdreampack1/
 
-While the mount points will be separate and independent, they will all share the same underlying disk capacity that is allocated to the /usr/sap volume.
+sftp -P 443 c.pecho@files.dctpa.privatcloud.biz
+
+Hello Nuno,
+
+The requested attachments have been mounted on the Linux server for the path \\sld\B1_SHF\LETRAMEIO\Attachments\ on the server.
+
+Please verify that everything is working as expected, and let us know if any adjustments are required.
+
+Best regards,
+
+
+The requested barcode font has been installed for all users on the terminal server (10.3.90.197) as requested.
+
+Please verify on your side and let us know if everything is working as expected, or if you have any observations or additional requirements.
+
+Best regards,
+
+Note: If any user was already logged in before this change, they might need to fully log off (not just disconnect) for the update to take effect.

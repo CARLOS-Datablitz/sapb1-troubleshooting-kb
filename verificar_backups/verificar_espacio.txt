@@ -4,5 +4,6 @@ sles09:~ # du -h -d 1. ---> disk usage human deep 1
 #luego borrarmos los logs que se encuentran en backup/log.
 rm log*
 
+https://bookstack.isystems-integration.com/books/linux/page/extend-hanalog
 
 

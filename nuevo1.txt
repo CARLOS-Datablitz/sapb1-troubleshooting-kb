@@ -15,3 +15,8 @@ For manual backup they use the path: /backup/REP.
 :%s/palabra_antigua/palabra_nueva/gc
 
 americorp.nubeprivada.biz		
+
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "091SBOVEKAMX" CASCADE'
+
+Por medio del presente, solicito su apoyo para generar un backup de la base productiva (QUIMESA_PRODUCCION) al cierre del día de hoy (05 de setiembre de 2025 a media noche), y proceder con su restauración bajo el nombre TEST_QUIMESA_050925.

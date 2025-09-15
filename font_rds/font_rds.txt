@@ -1,0 +1,67 @@
+✅ Opción 1: Instalar como Administrador para todos
+Conéctate al servidor RDS con tu usuario de administrador.
+
+Nota: para copiar solo se arrastra o copia y pega
+Copia el archivo libre-barcode-128-text-latin-400-normal.ttf (el que enviaste) a una carpeta temporal, por ejemplo C:\Temp.
+
+Botón derecho sobre el archivo de la fuente →
+Selecciona “Instalar para todos los usuarios” (Install for all users).
+
+⚠️ Importante: NO uses solo “Instalar” a secas, porque eso la instala solo en tu perfil.
+
+Esto copiará la fuente a: C:\Windows\Fonts
+y la registrará en: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts
+
+✅ Verifica de la forma correcta:
+
+(Get-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts").Property |
+Where-Object { $_ -match "Libre" } |
+ForEach-Object { "$_ : $((Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts').$_)" }
+
+Deberías ver algo como:
+Libre Barcode 128 Text (TrueType) : libre-barcode-128-text-latin-400-normal.ttf
+
+
+PASOS ADICIONALES SI NO SE REGISTRA CORRECTAMENTE:
+
+
+📌 1️⃣ Registrar la fuente en el sistema (HKLM)
+⚠️ Ejecutar como Administrador
+(suponiendo que el archivo ya esté en C:\Windows\Fonts)
+
+powershell:
+===========================
+New-ItemProperty `
+  -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" `
+  -Name "Libre Barcode 128 Text (TrueType)" `
+  -Value "libre-barcode-128-text-latin-400-normal.ttf" `
+  -PropertyType String
+  
+ ===========================
+-Name → Nombre que verán las aplicaciones (puede variar según la fuente).
+-Value → Nombre exacto del archivo en C:\Windows\Fonts.
+(Si la fuente tiene variantes como Regular, Bold, etc., puedes agregar más entradas cambiando el -Name según corresponda).
+
+📌 2️⃣ Verificar que la fuente esté registrada en HKLM
+(Get-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts").Property |
+Where-Object { $_ -match "Libre" } |
+ForEach-Object { "$_ : $((Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts').$_)" }
+
+🔎 Salida esperada (ejemplo):
+Libre Barcode 128 Text Regular (TrueType) : libre-barcode-128-text-latin-400-normal.ttf
+Libre Barcode 128 Text (TrueType)         : libre-barcode-128-text-latin-400-normal.ttf
+
+📌 3️⃣ (Opcional) Confirmar que el archivo físico está en la carpeta de fuentes
+Get-ChildItem "C:\Windows\Fonts" | Where-Object { $_.Name -match "libre" }
+
+
+
+
+The requested barcode font has been installed for all users on the terminal server  RDS (10.3.90.197) as requested.
+
+Note: If any user was already logged in before this change, they might need to fully log off (not just disconnect) for the update to take effect.
+
+Please verify on your side and let us know if everything is working as expected, or if you have any observations or additional requirements.
+
+
+

@@ -1,0 +1,33 @@
+iSystems#99174731
+Recomendación de TELMO
+
+Nota importante: Nosotros no borranos schemas así por así, esta tarea la debe hacer principalmente el cliente, ya que han habido reclamos.
+
+
+https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sql-reference-guide/drop-schema-statement-data-definition?locale=en-US
+
+Recomendación: antes de hacer el CASCADE, revisa si el esquema existe:
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" "SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE SCHEMA_NAME = 'RETAIL_CHRIS';"
+q # ---> para salir
+
+#Drop schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "RETAIL_CHRIS" CASCADE'
+
+#On the SQL console in Hana Studio:
+DROP SCHEMA SBO_INVERTEK_DEV5 CASCADE;
+
+NOTAS TELMO:
+iSystems#99173761
+
+Se realizo lo solicitado, solo que con una pequeña modificacion, no pude usar el nombre que propusiste ya que el schema con ese nombre exisita "TEST_SALDOS", entonces use el nombre "TEST_SALDOS2", porque ahora por política no podemos eliminar schemas de clientes, lo tiene que hacer el mismo customer/partner, por eso tiene el usuario "B1SYSTEM" y su contraseña la cual puedes entrar en Hana Studio y realizarlo, a nosotros ya no se nos esta permitido.
+
+En este enlace de SAP puedes encontrar la query de como realizar una eliminacion de un schema:
+https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sql-reference-guide/drop-schema-statement-data-definition?locale=en-US
+
+El backup del Hana se habia ejecutado a las 07:25PM EDT
+
+-T, --print-type      print file system type
+
+For security reasons, all SAP Business One components (server components and client components) must
+be installed with the internal network address. If you want to access SAP Business One directly via Internet
+with a public network address, we can only expose the related services. Alternatively, you can use Microsoft Remote Desktop Service for external access.

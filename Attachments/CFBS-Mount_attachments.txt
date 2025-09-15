@@ -1,7 +1,14 @@
-=====================================
-Ticket de referencia: iSystems#99168105
-iSystems#99160828  ---> Jack
-1. Verificar en SLES si cifs-utils está instalado
+CFBS - Mount attachments - Nichirin 10.0.1.184
+# Ticket: iSystems#
+# Tasks:
+# Mount attachments: Nichirin 10.0.1.184 
+# For Clientfirest - Nichirin - /OnPremise: hana- IP/10.0.1.183
+|# Date: 26/08/2025
+# Tenant: NDB
+
+===================================================================
+
+ 1. Verificar en SLES si cifs-utils está instalado
    rpm -qa | grep cifs-utils
    - Si no devuelve nada, instalar junto con samba-client:
      sudo zypper install cifs-utils samba-client
@@ -35,41 +42,37 @@ iSystems#99160828  ---> Jack
    df -h | grep Attachments
    - Si se ve el contenido esperado y df muestra //sles/B1_SHF, el montaje fue exitoso.
 
-
-====================================
-
-
-
-
-
-# Attachment Example Rheinperchemie
-ordner
-# 10.2.89.106b1_shfSAP_B1Attachments
-sldb1_shfCASTELLAnexos
-
-# ssh root in sld
+===================================================================
+#1st Run - sles(In this case ADM):
 screen -dRR
-cd usrsapSAPBusinessOneB1_SHF
-mkdir -p CASTELLAnexos
-chmod -R 777 CASTELLAnexos
-chown -R b1service0b1service0 CASTELLAnexos
+cd /usr/sap/SAPBusinessOne/B1_SHF/ && ls -lha
+mkdir Nichirin/ && ls -lha
+cd Nichirin
+mkdir Word/ Excel/ Pictures/ Attachments/ Extensions/ XML/
+cd ..
+chmod -R 777 Nichirin/ && ls -lha
+chown -R b1service0:b1service0 Nichirin/ && ls -lha
 
-cd mnt
-mkdir -p CASTELLAnexos
-chmod -R 777 CASTELLAnexos
-chown -R b1service0b1service0 CASTELLAnexos && ls -lha
 
-echo 'sldB1_SHFCASTELLAnexos                   mntCASTELLAnexos        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'  etcfstab
+#2nd run
+cd /mnt
+mkdir Attachments/
+chmod -R 777 Attachments/
+chown -R b1service0:b1service0 Attachments/
+ls -lha && df -h
 
-cat etcfstab
-# vim etcfstab
+# \\ADM\sbo\Attachments
 
+#this is the only one that you execute
+echo '//sld/B1_SHF/Nichirin/Attachments       /mnt/Attachments       cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
+
+#check the fstab file and modify it if necessary 
+cat /etc/fstab
+vim /etc/fstab
 mount -a -v
-
-df -h
-df -h  grep CASTELLAnexos
+df -h | grep Attachments
 
 
-=====================================
 
+===================================================================
 

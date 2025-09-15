@@ -40,3 +40,4 @@ Get-ADUser -Identity "nombreUsuario" -Properties whenCreated |
     Select-Object Name, SamAccountName, whenCreated
 
 
+Get-ADUser -Identity "lissa.nelson" -Properties LastLogonDate, LastLogon | Select-Object Name, SamAccountName, LastLogonDate, LastLogon

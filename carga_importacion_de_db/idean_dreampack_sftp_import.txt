@@ -13,7 +13,9 @@ df -h      # ---> revisar si el directorio /tmp tiene espacio para la exportaci�
 screen -dRR
 cd /tmp && ls -lha
 mkdir DREAMPACKZIP dbdreampack1
+chmod -R 777 DREAMPACKZIP/ dbdreampack1/ && ls -lha
 chown -R ndbadm:sapsys DREAMPACKZIP/ dbdreampack1/ && ls -lha
+
 
 #SQL Varibles (B1SYSTEMA)
 sles:~ # cat Desktop/SAP_Configuration.txt
@@ -27,6 +29,11 @@ dbPass="Ot5KbvH4tRH69ijY"
 
 #Test DB
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+
+#Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_FIGURETTI_PROD'."*" as binary into '\'/tmp/dbdreampack1/\'' with ignore existing threads 10;'
+
 
 cd DREAMPACKZIP
 
@@ -43,16 +50,13 @@ bye
 tar -C /tmp/dbdreampack1 -xzf /tmp/DREAMPACKZIP/C11923_BIGVISION_MIGRATED_20250710_AB.tar.gz
 cd dbdreampack1/ && ls -lha
 
-Nota de cliente:
-Antes de realizar el IMPORT, eliminar el path, ambos archivos (.sql y .info) contienen solo código de creación del SYNONYM que tiene la dependencia externa, por lo que no es necesario, pueden eliminarlo con el siguiente comando
-sles:/tmp/dbdreampack1/C11923_BIGVISION_MIGRATED_20250710_AB # rm -r ./export/C11923_BIGVISION_MIGRATED/CA/CAULG/
-
 #Import the shchema
 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'C11923_BIGVISION_MIGRATED'."*" as binary from '\'/tmp/dbdreampack1/C11923_BIGVISION_MIGRATED_20250710_AB/\'' with ignore existing threads 10;'
 
-[Import and Rename---> "NMX_LIVE" to "TEST_0101"] = Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
-													0 rows affected (overall time 57.591273 sec; server time 57.590876 sec)
+# Comprimir:
+tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO/' dbdreampack1/
+
 
 # Delete and list the non necessary files in one line
  cd /tmp && ls -lha && rm -rf dbdreampack1/ DREAMPACKZIP/ && ls -lha

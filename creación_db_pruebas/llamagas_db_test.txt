@@ -1,22 +1,15 @@
 
 Necesito una base de datos de prueba llamada ZZ_290925 a partir de la base de datos productiva SBO_LLAMAGAS.
 
-# Ticket: iSystems#99171366
-# Tasks:
-# export/Import the schema: SBO_LLAMAGAS >> ZZ_290925
-# For  Cosib - WW10113 - / dcdu - mt090hanamt IP/10.2.90.2
-# Date: 25/08/2025
-# Tenant: E15
-
-=================================================
+================================================
 hanamt:/tmp #
 1. Preparar el entorno en el sles, HANA, HANA-MT:
   # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir llamagas_test 
-chmod -R 777 llamagas_test/
-chown -R ndbadm:sapsys llamagas_test/ && ls -lha
+mkdir llamagas_test/ LLAMA_ZIP 
+chmod -R 777 llamagas_test/ LLAMA_ZIP
+chown -R ndbadm:sapsys llamagas_test/ LLAMA_ZIP && ls -lha
 
 =================================================
 2. Variables de entorno:
@@ -53,7 +46,7 @@ ls -lha /tmp/llamagas_test/export
 
 
 # Import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_LLAMAGAS'."*" as binary from '\'/tmp/llamagas_test\'' with ignore existing threads 10 rename schema "SBO_LLAMAGAS" to "ZZ_290925";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_LLAMAGAS'."*" as binary from '\'/tmp/llamagas_test\'' with ignore existing threads 10 rename schema "SBO_LLAMAGAS" to "TEST_INTEGRACION";'
 
 
 # Testear la base de datos: NDB
@@ -61,6 +54,21 @@ ls -lha /tmp/llamagas_test/export
 q # para salir de sql
 
 # Remove llamagas_test/
-rm -R llamagas_test
+rm -R llamagas_test/ LLAMA_ZIP/
 
-  =========================  FIN =================
+ =========================  FIN =================
+
+tar -czvf LLAMA_ZIP/SBO_LLAMAGAS_10_SEP.tar.gz --transform 's/^llamagas_test/SBO_LLAMAGAS/' llamagas_test/
+
+chmod -R 777 llamagas_test/ LLAMA_ZIP
+chown -R ndbadm:sapsys llamagas_test/ LLAMA_ZIP && ls -lha
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+
+

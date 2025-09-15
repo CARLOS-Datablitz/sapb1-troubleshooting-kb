@@ -1,0 +1,75 @@
+
+Necesito una base de datos de prueba llamada ZZ_290925 a partir de la base de datos productiva SBO_LLAMAGAS.
+
+# Ticket: iSystems#99171366
+# Tasks:
+# export/Import the schema: SBO_LLAMAGAS >> ZZ_290925
+# For  Cosib - WW10113 - / dcdu - mt090hanamt IP/10.2.90.2
+# Date: 25/08/2025
+# Tenant: E15
+
+=================================================
+hanamt:/tmp #
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir arc_mrsi_test 
+chmod -R 777 arc_mrsi_test/
+chown -R ndbadm:sapsys arc_mrsi_test/ && ls -lha
+
+=================================================
+2. Variables de entorno:
+-------------------   
+2.1 Sacar información de las variables:
+sld:~ # 
+cat Desktop/SAP_Configuration.txt
+2.2 Ingresar las variables en el sles:/tmp #
+# Varibles HANASQL (B1SYSTEM)
+# en donde confirmo la ruta o parametro de la siguiente línea.?
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E03"
+dbUser="B1SYSTEM"
+dbPass="KfdozfCMW887y0GM"
+
+-------------------   
+# ver las db o schemas: entrar al rds/Business One 64 bits
+
+# Testear la base de datos: NDB
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Ver si existe la db
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" "SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE SCHEMA_NAME = 'INFOVEGAS';"
+
+# Export the schema to arc_mrsi_test/
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'BARR_BLANCA'."*" as binary into '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10;'
+
+# Check
+ls -lha /tmp/arc_mrsi_test/export
+# Done Export
+[SBOWWPL_PROD] ---> 0 rows affected (overall time 52.252151 sec; server time 52.251793 sec) 
+
+
+# Import and rename the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BARR_BLANCA'."*" as binary from '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10 rename schema "BARR_BLANCA" to "INFOVEGAS";'
+
+
+# Testear la base de datos: NDB
+"$dbSql" -A -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" "select SCHEMA_NAME from SYS.SCHEMAS where SCHEMA_NAME = 'ZZ_290925';"
+q # para salir de sql
+
+# Remove arc_mrsi_test/
+rm -R arc_mrsi_test/ ACR_MRSI_ZIP/
+
+  =========================  FIN =================
+  Comprimir:
+tar -czf ACR_MRSI_ZIP/INFOVEGAS.tar.gz arc_mrsi_test
+
+#Drop schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "INFOVEGAS" CASCADE'
+

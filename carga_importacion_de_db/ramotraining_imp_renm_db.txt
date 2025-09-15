@@ -1,0 +1,77 @@
+# Ticket de referencia: iSystems#99167268
+
+# Tasks: Exportación ---> Importación ---> Backup.tar ---> SFTP
+
+# For PARTNER/WMP - COSTOMER/RAMOTRAING_ZIP - /SLES/HANA/HANAMT(solamente aquí corren las db) - IP/10.3.27.2
+puedes entrar a und ADM o RDS y hace ping desde cmd a la db, en este caso E07 hana.data
+# Si queremos ver cuantas db tiene un ambiente: entramos a RDS hdestudio, Systems, SYSTEMDB@NDB(SYSTEM)	
+# Date: 15/08/2025
+# Tenant: BO1  
+
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir RAMOTRAING_ZIP dbramo_training1 
+cd /tmp && ls -lhad RAMOTRAING_ZIP dbramo_training1
+chmod -R 777 RAMOTRAING_ZIP/ dbramo_training1/
+chown -R ndbadm:sapsys RAMOTRAING_ZIP/ dbramo_training1/ && ls -lha && cd /tmp/RAMOTRAING_ZIP
+# SFTP put and get:
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+# Ver el aproximado del archivo al ser descomprimido.
+tar -tvf archivo.tar | awk '{sum += $3} END {print sum " bytes"}'
+unrar lt archivo.rar | grep -E "Size:|Packed:"
+
+# Ver los nombres de los schemas a ver si coinciden con (049SBOGSNMAQUINARIA/080SBOMAQEMAG)
+ls -lha /tmp/dbramo_training1/export    #BIRLOS
+
+cd /tmp && ls -lha
+chmod -R 777 dbramo_training1/
+chown -R ndbadm:sapsys dbramo_training1/  && ls -lha
+
+ls -lha /tmp/dbramo_training1/export    #049SBOGSNMAQUINARIA
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+sld:~ # cat Desktop/SAP_Configuration2.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E06"
+dbUser="B1SYSTEM"
+dbPass="7Z4b1DJUka3j"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'BASE_PE_LC'."*" as binary into '\'/tmp/dbramo_training1\'' with ignore existing threads 10;'
+# Check permissions, if not give to them  
+chmod -R 777 RAMOTRAING_ZIP/ dbramo_training1/
+chown -R ndbadm:sapsys RAMOTRAING_ZIP/ dbramo_training1/ && ls -lha && cd /tmp/RAMOTRAING_ZIP
+
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BASE_PE_LC'."*" as binary from '\'/tmp/dbramo_training1/\'' with ignore existing threads 10 rename schema "BASE_PE_LC" to "BASE_PE_LC_TEST";'
+
+# Tiempos y respuestas de los imports realizados
+[ COMPLETE_DATA_BACKUP07082025_datatmp_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf RAMOTRAING_ZIP/ dbramo_training1/ && ls -lha
+
+================================  FIN ================================
+tar -cf RAMOTRAING_ZIP/BASE_PE_LC_5_SEPT.tar dbramo_training1
+tar -czvf /tmp/dbramo_training1/BASE_PE_LC.tar.gz --transform 's/^dbramo_training1/SBO_FIGURETTI_PROD/' dbramo_training1/
+# Al comprimir o descomprimir se tiene que reconfirmar los permisos
+chmod -R 777 RAMOTRAING_ZIP/ dbramo_training1/
