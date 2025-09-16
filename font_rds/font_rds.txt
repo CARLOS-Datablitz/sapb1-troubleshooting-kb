@@ -5,7 +5,7 @@ Nota: para copiar solo se arrastra o copia y pega
 Copia el archivo libre-barcode-128-text-latin-400-normal.ttf (el que enviaste) a una carpeta temporal, por ejemplo C:\Temp.
 
 Botón derecho sobre el archivo de la fuente →
-Selecciona “Instalar para todos los usuarios” (Install for all users).
+Selecciona “INSTALAR PARA TODOS LOS USUARIOS” (Install for all users).
 
 ⚠️ Importante: NO uses solo “Instalar” a secas, porque eso la instala solo en tu perfil.
 

@@ -1,0 +1,66 @@
+SAP// Servicios y Soporte//SAP B1 10.0 FOR SAP HANA//SAPCAR 7.53(SUPPORT PACKAGES AND PATCHES).
+INSTALACION DE SAP HANA Studio.
+
+===== ver el backup.conf ======
+# cat /hana/scripts/backup.conf
+
+backup.sh <====> backup.conf
+
+# crontab -l
+
+===============================
+# du -sh /backup/
+
+du - Es el comando principal que significa "disk usage" (uso del disco). Se utiliza para mostrar el espacio que ocupan archivos y directorios.
+
+-s - Opción "summarize". Muestra solo el total del directorio especificado, sin desglosar el contenido de subdirectorios. Sin esta opción, du mostraría el tamaño de cada subdirectorio por separado.
+
+-h - Opción "human-readable". Muestra los tamaños en formato legible para humanos usando unidades como K (kilobytes), M (megabytes), G (gigabytes), etc., en lugar de mostrar solo bytes.
+
+# ip addr
+# hostnamectl
+
+kmsles1:~ # cat /root/Desktop/SAP_Configuration.txt
+
+
+Notes: Desde el SAP Hana Studio, no se puede borrar todos los backups, debe de existir al menos un backup.
+
+===== Para hacer un backup manual desde el SAP HANA Studio =====
+Backup/Backup Tenant Database
+
+
+===== Sistemas de particiones Windows ====
+MBR y GPT no son sistemas de archivos, sino esquemas de particionado (partition schemes) que definen cómo se organiza y estructura el disco a nivel de particiones.
+
+MBR (Master Boot Record)
+
+Limitaciones: Máximo 4 particiones primarias, discos hasta 2TB
+Antiguo: Estándar desde los años 80
+Compatibilidad: Compatible con sistemas muy antiguos
+Estructura: Tabla de particiones de 64 bytes
+
+
+GPT (GUID Partition Table)
+
+Moderno: Parte del estándar UEFI
+Sin limitaciones prácticas: Hasta 128 particiones, discos de múltiples terabytes
+Redundancia: Mantiene copias de respaldo de la tabla de particiones
+Requerido: Para discos mayores a 2TB
+
+Cómo se relacionan
+Cuando configuras un disco nuevo, el proceso es:
+
+Primero eliges el esquema de particionado (MBR o GPT)
+Después creas las particiones
+Finalmente formateas cada partición con un sistema de archivos (NTFS, ReFS, etc.)
+
+Para un servidor Windows moderno, definitivamente usa GPT porque:
+
+Soporta discos grandes sin límite práctico
+Es más confiable y resistente a errores
+Es el estándar actual
+
+
+
+Leyenda: / --> Right click
+
