@@ -1,0 +1,37 @@
+Udemy: venus.cleme
+
+A partir de HANA 2.0 SPS 05+, SAP recomienda SAP Cockpit en lugar de SAP HANA Studio(deprecated).
+
+La velocidad de SAP HANA:
+Capacidad de almacenamiento en memoria(DRAM), y en columnas(reducir los indices), y también utiliza metodos de compresión de datos.
+Cada servidor SAP HANA cuenta con multiples sockets de CPU y núcleos de CPU.
+
+- La memoria DRAM es volátil, por lo que los datos se escriben periodicamente en disco o memoria persistente para garantizar su durabilidad.
+SAP HANA ofrece capacidades avanzadas de análisis de datos.
+- Cada transacción se registra en los redo logs para permitir la recuperación en línea del sistema.
+
+Que versión de SAP HANA tenemos:
+SAP HANA Platform Edition?
+
+SAP HANA Cloud es un producto/plataforma que ya esta administrado, tipo AWS, Azure.
+
+ABAP vs SAP NetWeaver
+
+SAP HANA o SAP S/4HANA
+
+====== Arquitectura SAP HANA ======
+1. La instancia de SAP HANA puede residir en un solo host o distribuirse en muchos hosts. Se indetifica a traves de un unico SID
+2. El servidor de aplicaciones SAP HANA XSA se encuentra en la parte superior de la instancia de SAP HANA y proporciona una plataforma para ejecutar aplicaciones en la web.
+3. La instancia consta de la db del sistema y una o varia base de datos tenant o aisladas.
+
+
+System Database: SYSTEMDB, se crea al momento de la instalación del sistema. Esta db no contien datos, solo se usa para tareas propias de la instancia.
+Las tareas a nivel instancia se realizan en la base de datos del sistema.
+
+Persistencia de Datos:
+SAP HANA persiste los datos en memoria en el almacenamiento y guarda los datos modificados en volumenes de disco, se realizan puntos de guardado cada cinco minutos.
+
+Copia de Seguridad y Recuperación:
+Dos tipos de copias de seguridad: Completa y Delta(diferencial o incremental).
+La completa guarda todo el contenido de la db, mientras de la Delta solo guarda datos modificados desde la última copia de seguridad completa.
+

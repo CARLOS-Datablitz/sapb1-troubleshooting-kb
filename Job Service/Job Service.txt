@@ -1,0 +1,25 @@
+servicio
+
+- entras a un windows (adm)
+- verificas el servicio que te pide - job service
+
+para instalarlo
+1. en promox (bsucas la maquina) lo apagas
+2. snpashot (nombre no debe tener espacios)
+
+3. ruta instalacion
+/usr/sap/SAPBusinessOne/B1_SHF > 10.0_SP2502HF0/Packages.Linux/ServerComponents > install
+
+4. Ruta de reconfiguracion
+/usr/sap/SAPBusinessOne > setup
+
+Para este caso de Acton - LivreCold Primero desinstalar > instalar
+
+5. ir a paso 4 - Desinstalar job service
+6. instalarlo desde la ruta de instalacion (abrir un terminal desde alli) ejecutar ./install
+7. instalar job service
+8. entrar al adm verificar en servicio que el job service aparezca
+
+
+
+
