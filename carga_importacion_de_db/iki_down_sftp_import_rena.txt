@@ -16,7 +16,6 @@ chown -R ndbadm:sapsys IKI/ dbiki/ && ls -lha && cd /tmp/
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
 sld:~ # cat Desktop/SAP_Configuration2.txt
-
 dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
@@ -41,12 +40,14 @@ chown -R ndbadm:sapsys IKI/ dbiki/ && ls -l dbiki/ IKI/
 rm -rf IKI/ dbiki/
 ls -l dbiki/ IKI/
 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "SBO_SANDBOX_IVC" CASCADE'
 
 ================================================================
 RENAME, EXPORT
 # Import the shchema and rename
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'T404070'."*" as binary from '\'/tmp/dbiki/\'' with ignore existing threads 10 rename schema "T404070" to "SBO_SANDBOX_IVC";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
 
 
 tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
@@ -69,4 +70,4 @@ tar -C /tmp/dbiki -xzf /tmp/IKI/049SBOGSNMAQUINARIA25072025.tar.xz
 unrar x /tmp/IKI/COMPLETE_DATA_BACKUP07082025_datatmp_3_1.rar /tmp/dbiki/
 ls -lha
 /tmp/IKI rm *.rar
-tar -xzf 404070_Updated.tar.gz -C /tmp/dbiki/
+

@@ -1,12 +1,3 @@
-iSystems#99170031
-Su apoyo generando una copia de la base y restaurarlo con el nombre SI_CONTAB
-# Ticket: 99170031
-  # Tasks:
-  # export the schema: SBO_APC >> SI_CONTAB
-  # For RAMO - APC - / dctpamt090 - IP/10.3.90.2
-  # Date: 19/08/2025
-  # Tenant: E06
-
 
 Pre-requisite:
 cd /
@@ -53,20 +44,10 @@ sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema
-sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_APC'."*" as binary into '\'/tmp/dbAPC1\'' with ignore existing threads 10;'
 
-
-# Check
-ls -lha /tmp/dbAPC1/export
-# Done Export
-[ SBO_APC] ---> 0 rows affected (overall time 98.392972 sec; server time 98.392449 sec)  
-
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbAPC1\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_08SET";'
-
-# Testear la base de datos: NDB
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'    #--> SBO_DRISTIBUIDORA + ZZ_DISTRIBUIDORA
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbAPC1\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_22SET";'
 
 rm -R dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
 

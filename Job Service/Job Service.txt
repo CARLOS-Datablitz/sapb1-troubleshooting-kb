@@ -1,17 +1,26 @@
-servicio
+Job Service:
 
-- entras a un windows (adm)
-- verificas el servicio que te pide - job service
+* SHUTDOWN SLD FROM PROXMOX
+**** Pre-requisites: Antes de instalar o desinstalar aplicaciones que van el SLD DEBEMOS tomar Snpashot (nombre no debe tener espacios eg. before_job_service_re-instalation, y la descripción podría ser: Before job service re-instalation).
 
-para instalarlo
-1. en promox (bsucas la maquina) lo apagas
-2. snpashot (nombre no debe tener espacios)
+* RESTART SLD SHUTDOWN SLD 
 
-3. ruta instalacion
-/usr/sap/SAPBusinessOne/B1_SHF > 10.0_SP2502HF0/Packages.Linux/ServerComponents > install
+- Entras a un windows (adm): En el navegador(eg. B1SiteUser/O9OInvx&n&znBUU9)
+- Verificas el servicio que te pide - | Services | Job Service
 
-4. Ruta de reconfiguracion
-/usr/sap/SAPBusinessOne > setup
+* Si esta instalado > lo reinicias, sino lo instalas.
+
+Para instalar
+1. En proxmox (buscas la maquina) lo apagas.
+2. Snpashot (nombre no debe tener espacios, y la descripción podría ser: before job service).
+
+3. Ruta de instalacion en el sld:
+/usr/sap/SAPBusinessOne/B1_SHF > 10.0_SP2502HF0/Packages.Linux/ServerComponents > install > ./install
+Luego para instalar ir al sld_gui y hacer la instalacion/ejecutar desde ahi.
+
+4. Ruta de reconfiguracion sld:
+/usr/sap/SAPBusinessOne > setup(.exe)
+Luego para re-instalar ir al sld_gui y hacer la instalacion/ejecutar desde ahi.
 
 Para este caso de Acton - LivreCold Primero desinstalar > instalar
 
@@ -20,6 +29,8 @@ Para este caso de Acton - LivreCold Primero desinstalar > instalar
 7. instalar job service
 8. entrar al adm verificar en servicio que el job service aparezca
 
+Nota: Nuestro trabajo no es configurarlo, solo instalarlo.
 
+=========== FIN ================
 
 

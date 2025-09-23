@@ -1,21 +1,8 @@
 # Ticket de referencia: iSystems#99167268
-Ramo - Trainning - Solicitud de backup y carga de base de datos BASE_PE_LC
-  # Tasks: Hacer el respaldo(backup) de la db BASE_PE_LC y que dicho archivo sea cargado en el SFTP correspondiente.
-
-  # For PARTNER/WMP - COSTOMER/IDEAN - /SLES/HANA/HANAMT(solamente aquí corren las db) - IP/10.3.27.2
-  	puedes entrar a und ADM o RDS y hace ping desde cmd a la db, en este caso E07 hana.data
-  # Si queremos ver cuantas db tiene un ambiente: entramos a RDS SAP Business One(64 bits)hdestudio, Systems, SYSTEMDB@NDB(SYSTEM)	
-  # Date: 18/08/2025
-  # Tenant: E06  
-
 0.--------------------------------------------------------------------------
-0.1
 Confirmar espacio disponible(/tmp o /backup) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
 isystems-mt02:~ # cd /
 isystems-mt02:/ # df -h
-0.2 Confirmar version de esquema y version de entorno
-
-
 
 1.------ Establecer la conexion y crear las carptetas de trabajo --------------------
 # Empecemos.....
@@ -27,7 +14,7 @@ chmod -R 777 dbramotra1/
 chown -R ndbadm:sapsys dbramotra1/ && ls -lha
 
 2.-----  Cargar las variables de entorno ------------
-  # Varibles SQL (B1SYSTEM) en el SLD
+# Varibles SQL (B1SYSTEM) en el SLD
 sld:~ # cat Desktop/SAP_Configuration.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"

@@ -31,3 +31,39 @@ El backup del Hana se habia ejecutado a las 07:25PM EDT
 For security reasons, all SAP Business One components (server components and client components) must
 be installed with the internal network address. If you want to access SAP Business One directly via Internet
 with a public network address, we can only expose the related services. Alternatively, you can use Microsoft Remote Desktop Service for external access.
+
+=============== CORREO A CLIENTE =====================
+
+Estimado cliente,
+
+Con relación a su solicitud, le informamos que, debido a políticas internas, no está permitido que nuestro equipo elimine schemas directamente en los ambientes de los clientes.
+
+Para proceder con el proceso de export/import (cuyos schemas ya se encuentran creados), le solicitamos realizar previamente la eliminación de los siguientes:
+
+-CHRISELPASTELERO
+-CAPACITACION / RETAIL_CHRIS / BASEBLANCA
+
+Una vez completado este paso, podremos continuar con la ejecución solicitada
+
+Por favor realice  los pasos del siguiente enlace SAP el cual le mostrara como realizar el proceso en HANA STUDIO:
+https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sql-reference-guide/drop-schema-statement-data-definition?locale=en-US
+
+Quedamos atentos.
+Saludos,
+
+========================================================
+Hola Alin,
+
+Debido a políticas internas, no está permitido que nuestro equipo elimine schemas directamente en los ambientes de los clientes.
+
+Para proceder con el proceso de export/import en el nuevo entorno (cuyos schemas ya se encuentran creados), le solicitamos realizar previamente la eliminación de los siguientes:
+SAMPOWER, NOVAGRAR y A1ANALYTIK
+Una vez completado este paso, podremos continuar con la ejecución solicitada
+
+Si le es de ayuda le compartimos un link de SAP el cual le mostrara como realizar el proceso en HANA STUDIO:
+https://help.sap.com/docs/hana-cloud-database/sap-hana-cloud-sap-hana-database-sql-reference-guide/drop-schema-statement-data-definition?locale=en-US
+
+Quedamos atentos.
+
+Saludos,
+

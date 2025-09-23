@@ -1,0 +1,66 @@
+# Ticket de referencia: iSystems#99167268
+
+EXPORT AND UPLOAD_SFTP
+
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir SAMP_ZIP dbsamp1 dbsamp2 dbsamp3 dbsamp4 
+cd /tmp && ls -lhad SAMP_ZIP dbsamp1 dbsamp2 dbsamp3 dbsamp4 
+chmod -R 777 SAMP_ZIP/ dbsamp1/ dbsamp2/ dbsamp3/ dbsamp4/
+chown -R ndbadm:sapsys SAMP_ZIP/ dbsamp1/ dbsamp2/ dbsamp3/ dbsamp4/ && ls -lha
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+sld:~ # cat Desktop/SAP_Configuration2.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E15"
+dbUser="B1SYSTEM"
+dbPass="TozJtq1P13JFzHc1"
+
+# Testear la base de datos:
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SAMPOWER'."*" as binary into '\'/tmp/dbsamp1\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'NOVAGRAR'."*" as binary into '\'/tmp/dbsamp2\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'A1ANALYTIK'."*" as binary into '\'/tmp/dbsamp3\'' with ignore existing threads 10;'
+
+
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbsamp1/\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_17SET";'
+
+# Tiempos y respuestas de los imports realizados
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf SAMP_ZIP/ dbsamp1/ dbsamp2/ dbsamp3/ dbsamp4/   && ls -lha
+
+======================== FIN ============================
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'CHRISELPASTELERO'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+
+# Export the schema
+tar -czvf /tmp/SAMP_ZIP/SAMPOWER.tar.gz --transform 's/^dbsamp1/SAMPOWER/' dbsamp1/
+tar -czvf /tmp/SAMP_ZIP/NOVAGRAR.tar.gz --transform 's/^dbsamp2/NOVAGRAR/' dbsamp2/
+tar -czvf /tmp/SAMP_ZIP/A1ANALYTIK.tar.gz --transform 's/^dbsamp3/A1ANALYTIK/' dbsamp3/
+
+chmod -R 777 SAMP_ZIP/
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+
