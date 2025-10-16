@@ -69,7 +69,7 @@ tar -czvf /tmp/APC_ZIP/TEST_FE.tar.gz --transform 's/^dbAPC4/TEST_FE/' dbAPC4/
 5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R5. Cambiar nuevamente los permisos de la carpeta APC_ZIP, de modo -R
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass:C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /ramo/APC
 ls -lha
 get 080SBOMAQEMAG25072025.tar.xz

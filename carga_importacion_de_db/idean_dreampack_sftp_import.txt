@@ -22,16 +22,16 @@ sles:~ # cat Desktop/SAP_Configuration.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="NDB"
+dbTenant="E12"
 dbUser="B1SYSTEM"
-dbPass="Ot5KbvH4tRH69ijY"
+dbPass="1m3f4GpL9fmACWOn"
 
 
 #Test DB
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 
-#Export the schema
+#Exportr the schema
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_FIGURETTI_PROD'."*" as binary into '\'/tmp/dbdreampack1/\'' with ignore existing threads 10;'
 
 
@@ -52,7 +52,7 @@ cd dbdreampack1/ && ls -lha
 
 #Import the shchema
 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'C11923_BIGVISION_MIGRATED'."*" as binary from '\'/tmp/dbdreampack1/C11923_BIGVISION_MIGRATED_20250710_AB/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TST_MP_MUNDOPET'."*" as binary from '\'/tmp/mundoPet/\'' with ignore existing threads 10;'
 
 # Comprimir:
 tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO/' dbdreampack1/

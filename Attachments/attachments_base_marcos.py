@@ -14,9 +14,6 @@ mkdir Attachments/
 chmod -R 777 Attachments/
 chown -R b1service0:b1service0 Attachments/
 ls -lha && df -h
-
-# echo '//sld/B1_BHF/ONEID/Attachments       /mnt/Attachments       cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
-
 #this is the only one that you execute
 echo '//sld/B1_SHF/LIVRECOLD/Attachments       /mnt/Attachments       cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
 

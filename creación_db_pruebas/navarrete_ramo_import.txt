@@ -1,0 +1,48 @@
+
+NAVARRETE TIENE SOLO ON-PREMISE
+NO TIENE SLD, LA INFO ESTA EN SLES
+NO TIENE RDS, PUEDES VER EN EL ADM
+=================================================
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir dbnavarrete NAVARRETE_ZIP
+chmod -R 777 dbnavarrete/ NAVARRETE_ZIP
+chown -R ndbadm:sapsys dbnavarrete/ NAVARRETE_ZIP/ && ls -lha
+
+=================================================
+2. Variables de entorno:
+-------------------   
+# cat /root/Desktop/SAP_Configuration.txt
+# Varibles HANASQL (B1SYSTEM)
+# en donde confirmo la ruta o parametro de la siguiente línea.?
+
+dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="B1SYSTEM"
+dbPass="Fq6p9FZtz4yCs"
+
+-------------------   
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_DISTRIBUIDORA'."*" as binary into '\'/tmp/dbnavarrete\'' with ignore existing threads 10;'
+
+# Import Import the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_DISTRIBUIDORA'."*" as binary from '\'/tmp/dbnavarrete\'' with ignore existing threads 10 rename schema "SBO_DISTRIBUIDORA" to "ZZ_SI_V1";'
+
+# Done import
+[ SBO_DISTRIBUIDORA <=> ZZ_DISTRIBUIDORA ] --->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
+					  0 rows affected (overall time 32.759035 sec; server time 32.758837 sec)
+
+# Testear la base de datos: NDB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+rm -R dbnavarrete NAVARRETE_ZIP
+
+
+  =========================  FIN =================

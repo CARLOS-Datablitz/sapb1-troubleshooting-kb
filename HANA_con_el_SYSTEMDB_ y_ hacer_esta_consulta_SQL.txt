@@ -1,0 +1,18 @@
+Entrar a HANA con el SYSTEMDB y hacer esta consulta SQL:
+
+1# Conseguir el passw del SYSTEM:
+isystems-mt02:~ # cat /root/Desktop/SAP_Configuration.txt
+Hostname:              isystems-mt02
+HANA Version:          SPS05rev56
+HANA SYSTEM User:      SYSTEM
+SYSTEM User Password:  Su6fap3N
+
+
+2# Muevetate hasta aqui y ejecuta:
+isystems-mt02:/usr/sap/NDB/HDB00/exe # ./hdbsql -i 00 -d SYSTEMDB -u SYSTEM -p '<contraseña(Su6fap3N)>'
+
+--select * from sys_databases.m_services;
+--select * from "SYS"."M_DATABASES";
+
+3# Para salir de SQL:
+hdbsql SYSTEMDB=> \q

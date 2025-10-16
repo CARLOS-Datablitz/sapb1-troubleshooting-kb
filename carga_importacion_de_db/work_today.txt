@@ -1,47 +1,38 @@
 # Ticket de referencia: iSystems#99167268
 0.--------------------------------------------------------------------------
-Confirmar espacio disponible(/tmp o /backup) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
 isystems-mt02:~ # cd /
 isystems-mt02:/ # df -h
 
 1.--------------------------------------------------------------------------
 # Empecemos.....
 screen -dRR
-cd /backup && ls -lhad
+cd /tmp && ls -lhad
 mkdir IDEAN dbidean1 
-cd /backup && ls -lhad IDEAN dbidean1
+cd /tmp && ls -lhad IDEAN dbidean1
 chmod -R 777 IDEAN/ dbidean1/
-chown -R ndbadm:sapsys IDEAN/ dbidean1/ && ls -lha && cd /backup/IDEAN
+chown -R ndbadm:sapsys IDEAN/ dbidean1/ && ls -lha && cd /tmp/IDEAN
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass:C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /ramo/APC
 ls -lha
 get 080SBOMAQEMAG25072025.tar.xz
 bye
 
-# Ver el aproximado del archivo al ser descomprimido.
-tar -tvf archivo.tar | awk '{sum += $3} END {print sum " bytes"}'
-unrar lt archivo.rar | grep -E "Size:|Packed:"
-# Extraer los archivos en cada folder de destino.
-tar -C /backup/dbidean1 -xzf /backup/IDEAN/049SBOGSNMAQUINARIA25072025.tar.xz
-unrar x /backup/IDEAN/COMPLETE_DATA_BACKUP07082025_databackup_3_1.rar /backup/dbidean1/
-ls -lha
-/backup/IDEAN rm *.rar
-
 # Ver los nombres de los schemas a ver si coinciden con (049SBOGSNMAQUINARIA/080SBOMAQEMAG)
-ls -lha /backup/dbidean1/export    #BIRLOS
+ls -lha /tmp/dbidean1/export    #BIRLOS
 
 # DE NOS SER EL CASO hay que mover las carpetas hacia la ruta y darle los permisos
 cd /tmp/dbwmp1/xxxx/xxxx/xxxx
 mv export/ index/ /tmp/dbwmp1/
 
 
-cd /backup && ls -lha
+cd /tmp && ls -lha
 chmod -R 777 dbidean1/
 chown -R ndbadm:sapsys dbidean1/  && ls -lha
 
-ls -lha /backup/dbidean1/export    #049SBOGSNMAQUINARIA
+ls -lha /tmp/dbidean1/export    #049SBOGSNMAQUINARIA
 
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
@@ -57,13 +48,13 @@ dbPass="AeXad6pu"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Realizar un import 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BIRLOS'."*" as binary from '\'/backup/dbidean1/birlos_20250815\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BIRLOS'."*" as binary from '\'/tmp/dbidean1/birlos_20250815\'' with ignore existing threads 10;'
 
 # Tiempos y respuestas de los imports realizados
-[ COMPLETE_DATA_BACKUP07082025_databackup_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
+[ COMPLETE_DATA_BACKUP07082025_datatmp_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
 
 # Eliminar los archivos que ya no son necesarios
-cd /backup && ls -lha && rm -rf IDEAN/ dbidean1/ && ls -lha
+cd /tmp && ls -lha && rm -rf IDEAN/ dbidean1/ && ls -lha
 
 ================================================================
 RENAME, EXPORT
@@ -74,7 +65,7 @@ RENAME, EXPORT
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
-"IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/backup/dbidean1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
+"IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/tmp/dbidean1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
 
 tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
 dbdreampack1
@@ -83,19 +74,10 @@ tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO
 
 sftp -P 443 c.pecho@files.dctpa.privatcloud.biz
 
-Hello Nuno,
+Recomendación:
+Si quieres mantener el archivo original y obtener buena compresión, usa:
+tar -czf 102SBOPRETTL_20250923.tar.gz 102SBOPRETTL_20250923
 
-The requested attachments have been mounted on the Linux server for the path \\sld\B1_SHF\LETRAMEIO\Attachments\ on the server.
+En .tar.xz:
+tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
 
-Please verify that everything is working as expected, and let us know if any adjustments are required.
-
-Best regards,
-
-
-The requested barcode font has been installed for all users on the terminal server (10.3.90.197) as requested.
-
-Please verify on your side and let us know if everything is working as expected, or if you have any observations or additional requirements.
-
-Best regards,
-
-Note: If any user was already logged in before this change, they might need to fully log off (not just disconnect) for the update to take effect.

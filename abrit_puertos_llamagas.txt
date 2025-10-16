@@ -1,0 +1,54 @@
+Abrir puetos llamagas:
+
+
+netsh advfirewall firewall add rule name=LLAMAGAS_APIS protocol=TCP dir=in localport=8080,8081 action=allow
+
+#Verificar que el servicio funciona en el caddy
+curl -v http://IP_interna:Puerto_que_piden
+
+#Deberia salir algo asi:
+05:37:51 root@caddy ~ → curl -v http://10.3.92.134:8081
+*   Trying 10.3.92.134:8081...
+* Connected to 10.3.92.134 (10.3.92.134) port 8081 (#0)
+> GET / HTTP/1.1
+> Host: 10.3.92.134:8081
+> User-Agent: curl/7.81.0
+> Accept: */*
+>
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Access-Control-Allow-Origin: *
+< Content-Type: text/html; charset=UTF-8
+< Date: Thu, 16 Oct 2025 17:37:54 GMT
+< Etag: W/"303-199ed6c2a32-1.0.0"
+< Vary: Accept-Encoding
+< Via: 1.1 Caddy
+< X-Powered-By: Express
+< Transfer-Encoding: chunked
+<
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Browse Orders</title>
+
+        <!-- Bootstrapping UI5 -->
+        <script id="sap-ui-bootstrap"
+                src="../../../../../../resources/sap-ui-core.js"
+                data-sap-ui-theme="sap_horizon"
+                data-sap-ui-resourceroots='{
+                        "sap.ui.demo.orderbrowser": "./"
+                }'
+                data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+                data-sap-ui-compatVersion="edge"
+                data-sap-ui-async="true"
+                data-sap-ui-frameOptions="trusted">
+        </script>
+</head>
+
+<!-- UI Content -->
+<body class="sapUiBody">
+        <div data-sap-ui-component data-name="sap.ui.demo.orderbrowser" data-id="container" data-settings='{"id" : "orderbrowser"}'></div>
+</body>
+* Connection #0 to host 10.3.92.134 left intact

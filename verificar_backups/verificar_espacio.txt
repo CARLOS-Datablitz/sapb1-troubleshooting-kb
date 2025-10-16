@@ -6,4 +6,24 @@ rm log*
 
 https://bookstack.isystems-integration.com/books/linux/page/extend-hanalog
 
+hanamt# crontab -l
+hanamt# timedatectl
+
+
+***************************** Cloud backup ****************************
+# Access to iSystems cloud
+
+hanamt# cat /hana/scripts/backup.conf
+
+--- Usamos el mt como servidor de salto para conectarnos a la nube ---
+hanamt# ssh -p 55667 isystems-tpa090@usbck.privatcloud.biz
+isystems-tpa90@dctpa-backup01: ~$ cd Hana-Backups/backups-fbck
+ls
+# recuperar el archivo backup son tu sftp:
+# si es un E01 habria que llevarlo al amdbiente de democlara y extrer el schema solicitado.
+
+***************************** FIN ****************************
+
+SI EL BACKUP SE HACE, PERO NO SE ENVIA EL CORREO:
+# verificar si ha habido un cambio en los archivos:
 

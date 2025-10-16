@@ -12,43 +12,41 @@ isystems-mt02:/ # df -h
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lhad
-mkdir ECOLIMPIOZIP dbecomlimpio1 
-cd /tmp && ls -lhad ECOLIMPIOZIP dbecomlimpio1
-chmod -R 777 ECOLIMPIOZIP/ dbecomlimpio1/
-chown -R ndbadm:sapsys ECOLIMPIOZIP/ dbecomlimpio1/ && ls -lha && cd /tmp/ECOLIMPIOZIP
+mkdir MUNDO_PET_ZIP mundoPet 
+cd /tmp && ls -lhad MUNDO_PET_ZIP mundoPet
+chmod -R 777 MUNDO_PET_ZIP/ mundoPet/
+chown -R ndbadm:sapsys MUNDO_PET_ZIP/ mundoPet/ && ls -lha && cd /tmp/MUNDO_PET_ZIP
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass:C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /ramo/APC
 ls -lha
 get SBO_TECOISA.tar.gz 
 bye
 
 # Comprimir una carpeta:
-tar -czf SBO_EENSA.tar.gz dbecomlimpio1/
+tar -czf SBO_EENSA.tar.gz mundoPet/
 # Ver el aproximado del archivo al ser descomprimido.
 tar -tvf archivo.tar | awk '{sum += $3} END {print sum " bytes"}'
 unrar lt archivo.rar | grep -E "Size:|Packed:"
 
+tar -xf TST_MP_MUNDOPET.tar -C /tmp/muntoPet
+
 # Extraer los archivos comprimidos en cada folder de destino
 # -xzf para le dice que descomprima con gzip y -xJf para .tar.xz
-tar -C /tmp/dbecomlimpio1 -xzf /tmp/ECOLIMPIOZIP/SBO_EENSA.tar.gz
+tar -C /tmp/mundoPet -xzf /tmp/MUNDO_PET_ZIP/SBO_EENSA.tar.gz
 # Ver los nombres de los schemas a ver si coinciden 
 hanamt:/tmp # find /tmp/dbwmp0{44,17,16,12,08,05} -maxdepth 1 -mindepth 1
 
 # Ver los nombres de los schemas a ver si coinciden
-ls -lha /tmp/dbecomlimpio1/export
-
-# DE NOS SER EL CASO hay que mover las carpetas hacia la ruta y darle los permisos
-cd /tmp/dbwmp1/xxxx/xxxx/xxxx
-mv export/ index/ /tmp/dbwmp1/
+ls -lha /tmp/mundoPet/export
 
 
 cd /tmp && ls -lha
-chmod -R 777 dbecomlimpio1/
-chown -R ndbadm:sapsys dbecomlimpio1/  && ls -lha
+chmod -R 777 mundoPet/
+chown -R ndbadm:sapsys mundoPet/  && ls -lha
 
-ls -lha /tmp/dbecomlimpio1/export
+ls -lha /tmp/mundoPet/export
 
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
@@ -64,16 +62,16 @@ dbPass="JQZXuneG436hcO8v"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_EENSA'."*" as binary into '\'/tmp/dbecomlimpio1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_EENSA'."*" as binary into '\'/tmp/mundoPet\'' with ignore existing threads 10;'
 
 # Import the shchema and rename
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_EENSA'."*" as binary from '\'/tmp/dbecomlimpio1/dbecomlimpio1/\'' with ignore existing threads 10 rename schema "SBO_EENSA" to "SBO_EENSA_2";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_EENSA'."*" as binary from '\'/tmp/mundoPet/mundoPet/\'' with ignore existing threads 10 rename schema "SBO_EENSA" to "SBO_EENSA_2";'
 
 # Tiempos y respuestas de los imports realizados
 [ COMPLETE_DATA_BACKUP07082025_datatmp_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
 
 # Eliminar los archivos que ya no son necesarios
-cd /tmp && ls -lha && rm -rf ECOLIMPIOZIP/ dbecomlimpio1/ && ls -lha
+cd /tmp && ls -lha && rm -rf MUNDO_PET_ZIP/ mundoPet/ && ls -lha
 
 ============================== FIN ==================================
 

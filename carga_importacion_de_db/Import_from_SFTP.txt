@@ -52,3 +52,5 @@
 
 # Delete and list the non necessary files in one line
   cd /tmp && ls -lha && rm -rf one/ PAS/ && ls -lha
+
+tar -cJvf 045SBOHOFFMANN_20251001.tar.xz 045SBOHOFFMANN_20251001

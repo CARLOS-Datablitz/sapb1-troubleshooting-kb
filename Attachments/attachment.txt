@@ -2,7 +2,9 @@
 El Attachments se configura generalmente en el SLD,  el attachments se monta donde esta la instalacion del SAP, si en un sles esta pues va en /usr/sap/....
 en el sld siempre encontrarars esa ruta /usr/sap.
 
+
 Nota! : No configurar dos folderes apuntando al mismo folder "Attachment", generará duplicidad y sobreescritura de datos.
+
 ==============REINICIO DE SLD ==================
 Al reiniciar SLD:
 volver a montar las carpetas:
@@ -15,8 +17,9 @@ sld:/tmp # cat /etc/fstab
 =====================================
 Ticket de referencia: iSystems#99168105
 iSystems#99160828  ---> Jack
-1. Verificar en SLES si cifs-utils está instalado
+1. Verificar en SLD/SLES si cifs-utils está instalado
    rpm -qa | grep cifs-utils
+   cifs-utils-6.9-150100.5.18.1.x86_64
    - Si no devuelve nada, instalar junto con samba-client:
      sudo zypper install cifs-utils samba-client
 

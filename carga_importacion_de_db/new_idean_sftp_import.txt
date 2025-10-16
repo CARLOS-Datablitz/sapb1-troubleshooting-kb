@@ -1,0 +1,77 @@
+# Ticket de referencia: iSystems#99172461 
+
+# Tasks: Carga o importacion de db
+# Download files from the SFTP and extract the files:
+
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir MUNDO_PET_ZIP mundoPet 
+cd /tmp && ls -lhad MUNDO_PET_ZIP mundoPet
+chmod -R 777 MUNDO_PET_ZIP/ mundoPet/
+chown -R ndbadm:sapsys MUNDO_PET_ZIP/ mundoPet/ && ls -lha && cd /tmp/MUNDO_PET_ZIP
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get SBO_TECOISA.tar.gz 
+bye
+
+
+tar -xf TST_MP_MUNDOPET.tar -C /tmp/mundoPet
+cd /tmp && ls -lha
+chmod -R 777 mundoPet/
+chown -R ndbadm:sapsys mundoPet/  && ls -lha
+
+ls -lha /tmp/mundoPet/export
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E12"
+dbUser="B1SYSTEM"
+dbPass="1m3f4GpL9fmACWOn"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+#Import the shchema
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
+"import \"TST_MP_MUNDOPET\".\"*\" as binary from '/tmp/mundoPet/hana/shared/NDB/HDB00/backup/data/TST_MP_MUNDOPET/';"
+
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf MUNDO_PET_ZIP/ mundoPet/ && ls -lha
+
+============================== FIN ==================================
+
+Recomendación: antes de hacer el CASCADE, revisa si el esquema existe:
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" "SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE SCHEMA_NAME = 'TST_MP_MUNDOPET';"
+
+---- REMOVE A SCHEMA; CASCADE ----
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "TST_MP_MUNDOPET" CASCADE'
+
+---- COMANDO PARA VER CUANDO SE CREO UN SCHEMA ----
+
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
+> "SELECT SCHEMA_NAME, CREATE_TIME FROM SYS.SCHEMAS WHERE SCHEMA_NAME = 'SBOCOMMON';"
+
+SCHEMA_NAME,CREATE_TIME
+"TST_MP_MUNDOPET","2025-10-06 18:17:10.925000000"
+~
+
+
+#Drop schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "TST_MP_MUNDOPET" CASCADE'

@@ -33,7 +33,7 @@ cd /tmp/WMPE01
 
 # Descargar lso archivos del servidor SFTP desde la ruta que indica cliente
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass: C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /wmp/21082028
 get 091SBOVEKAMX.tar.xz
 sftp> mget *.tar.xz # descarga varios archivos a la vez, usando comodines (*, ?, etc.). 

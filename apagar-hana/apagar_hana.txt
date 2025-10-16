@@ -1,0 +1,14 @@
+
+--- ver el usuario de HANA ----- ver el usuario de HANA ----
+sles: ~# cat /etc/passwd
+ndbadm:xxxx SAP HANA Database System Administrator
+sles: ~# su - ndbadm
+ndbadm@sles:/usr/sap/NDB/HDB00> ls -lha
+
+# Apagar la db HANA:
+ndbadm@sles:/usr/sap/NDB/HDB00> ./HDB stop
+# Apagar el servidor(sles) desde el PROXMOX, para tomar un snapshot
+# Luego reiniciar el servidor y ver que los servicios levantan
+-- Desde el PROXMOX una vez que la VM(sles) este apagado se debe tomar un snapshot ---
+# ver los servicis levantar:
+sles: ~# htop 

@@ -11,23 +11,16 @@ Necesito una base de datos de prueba llamada SBOWWPL_TEST a partir de la base de
 =================================================
 hanamt:/tmp #
 1. Preparar el entorno en el sles, HANA, HANA-MT:
-  # Empecemos.....
+
 screen -dRR
 cd /tmp && ls -lha
-mkdir ww10113_test 
-chmod -R 777 ww10113_test/
-chown -R ndbadm:sapsys ww10113_test/ && ls -lha
+mkdir dbcosib1 COSIB_ZIP 
+chmod -R 777 dbcosib1/ COSIB_ZIP/
+chown -R ndbadm:sapsys dbcosib1/ COSIB_ZIP/ && ls -lha
 
 =================================================
 2. Variables de entorno:
 -------------------   
-2.1 Sacar información de las variables:
-sld:~ # 
-cat Desktop/SAP_Configuration.txt
-2.2 Ingresar las variables en el sles:/tmp #
-# Varibles HANASQL (B1SYSTEM)
-# en donde confirmo la ruta o parametro de la siguiente línea.?
-
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
@@ -42,18 +35,18 @@ dbPass="p480wXK7VYKq"
 sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
-# Export the schema to ww10113_test/
+# Export the schema to dbcosib1/
 sles:/tmp #
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_PROD'."*" as binary into '\'/tmp/ww10113_test\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_PROD'."*" as binary into '\'/tmp/dbcosib1\'' with ignore existing threads 10;'
 
 # Check
-ls -lha /tmp/ww10113_test/export
+ls -lha /tmp/dbcosib1/export
 # Done Export
 [SBOWWPL_PROD] ---> 0 rows affected (overall time 52.252151 sec; server time 52.251793 sec) 
 
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBOWWPL_PROD'."*" as binary from '\'/tmp/ww10113_test\'' with ignore existing threads 10 rename schema "SBOWWPL_PROD" to "SBOWWPL_TEST";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBOWWPL_PROD'."*" as binary from '\'/tmp/dbcosib1\'' with ignore existing threads 10 rename schema "SBOWWPL_PROD" to "SBOWWPL_TEST";'
 
 # Done import
 
@@ -64,7 +57,7 @@ Warning: * 1: general warning: Type mismatch for table variable "_SYS_SS2_RETURN
 # Testear la base de datos: NDB
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";' 
 
-# Remove ww10113_test/
-rm -R ww10113_test
+# Remove dbcosib1/
+rm -R dbcosib1
 
   =========================  FIN =================

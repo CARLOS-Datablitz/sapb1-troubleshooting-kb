@@ -1,20 +1,4 @@
 # Ticket de referencia: iSystems#99171533 
-
-# Tasks: 
-- Download from sftp.
-- Import schema.
-- Upgrade schema.
-
-# Download files from the SFTP and extract the files: /Peru/carlosph_files
-# Import the schemas downloaded and change the names: 
-BKOLD.tar.gz
-# Upgrade the schemas recently imported
-# For PARTNER/Xplora - COSTOMER/Americorp - /SLES/HANA/HANAMT(solamente aquí corren las db) - dctpamt090 IP/10.3.90.2
-puedes entrar a und ADM o RDS y hace ping desde cmd a la db, en este caso E07 hanamt: ping hanamt
-# Si queremos ver cuantas db tiene un ambiente: entramos a RDS hdestudio, Systems, SYSTEMDB@NDB(SYSTEM)	
-# Date: 25/08/2025
-# Tenant E08
-
 # Prerequisites:
 hanamt:~ # cd /
 hanamt:/ # df -h
@@ -95,14 +79,6 @@ chown -R ndbadm:sapsys dbamer1/ dbwmp012/ dbwmp016/ dbwmp017/ dbwmp005/ dbwmp008
 
 # Eliminar los archivos que ya no son necesarios
 cd /tmp && ls -lha && rm -rf EXP-AMER dbamer1 dbwmp012 dbwmp016 dbwmp017 dbwmp005 dbwmp008 
-
-# Tiempos y respuestas de los imports realizados
-[044SBOKHSERVICIOS] ---> 0 rows affected (overall time 58.131378 sec; server time 58.131060 sec)
-[017SBOBENSELERMEX] ---> 0 rows affected (overall time 58.131378 sec; server time 58.131060 sec)
-[044SBOKHSERVICIOS] ---> 0 rows affected (overall time 58.131378 sec; server time 58.131060 sec)
-[044SBOKHSERVICIOS] ---> 0 rows affected (overall time 58.131378 sec; server time 58.131060 sec)
-[044SBOKHSERVICIOS] ---> 0 rows affected (overall time 58.131378 sec; server time 58.131060 sec)
-[044SBOKHSERVICIOS] ---> 0 rows affected (overall time 58.131378 sec; server time 58.131060 sec)
 
 # Upgrade en el rds01:
 \\lic\B1_SHF
