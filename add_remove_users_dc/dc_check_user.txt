@@ -40,4 +40,10 @@ Get-ADUser -Identity "nombreUsuario" -Properties whenCreated |
     Select-Object Name, SamAccountName, whenCreated
 
 
+----- BUSCAR LAST LOGON DE UN USUARIO EN PARTICULAR ------
+
 Get-ADUser -Identity "lissa.nelson" -Properties LastLogonDate, LastLogon | Select-Object Name, SamAccountName, LastLogonDate, LastLogon
+Get-ADUser -Identity "rolandoarmien" -Properties LastLogonDate, LastLogon | Select-Object Name, SamAccountName, LastLogonDate, LastLogon
+
+VER SI ESTA ENABLE:
+Get-ADUser -Identity "rolandoarmien" -Properties Enabled | Select-Object Name, Enabled

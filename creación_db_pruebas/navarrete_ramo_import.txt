@@ -14,7 +14,7 @@ chown -R ndbadm:sapsys dbnavarrete/ NAVARRETE_ZIP/ && ls -lha
 =================================================
 2. Variables de entorno:
 -------------------   
-# cat /root/Desktop/SAP_Configuration.txt
+cat /root/Desktop/SAP_Configuration.txt
 # Varibles HANASQL (B1SYSTEM)
 # en donde confirmo la ruta o parametro de la siguiente línea.?
 
@@ -30,10 +30,10 @@ dbPass="Fq6p9FZtz4yCs"
 
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_DISTRIBUIDORA'."*" as binary into '\'/tmp/dbnavarrete\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_DISTRIBUIDORA'."*" as binary into '\'/tmp/NAVARRETE_ZIP\'' with ignore existing threads 10;'
 
 # Import Import the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_DISTRIBUIDORA'."*" as binary from '\'/tmp/dbnavarrete\'' with ignore existing threads 10 rename schema "SBO_DISTRIBUIDORA" to "ZZ_SI_V1";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_DISTRIBUIDORA'."*" as binary from '\'/tmp/NAVARRETE_ZIP\'' with ignore existing threads 10 rename schema "SBO_DISTRIBUIDORA" to "ZZ_SI_V3";'
 
 # Done import
 [ SBO_DISTRIBUIDORA <=> ZZ_DISTRIBUIDORA ] --->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000

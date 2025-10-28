@@ -1,0 +1,19 @@
+iSystems#99180048
+iSystems#99182877
+
+in general, vertificates have to re-newed automatically, so the right person to ask for validity of ssl certificate validity is SAP. they should make it easier/automate certificate re-newal.
+
+todo:
+- take screenshot of sld services page
+- put new pfx on the sld
+- make sure you have install files in B1_SHF in case you need to re-install later on
+- verify sld services links (services must be running, should have old certificates)
+- backup (/usr/sap/SAPBusinessOne/ServiceLayer) as tar or however you like
+- backup (snapshot sld, up to you if you want to do)
+- re-configure using new pfx file
+- verify sld services links (services must be running, should have new certificate)
+- if ServiceLayer (or any other service) does not have new certificate, uninstall ServiceLayer, 'mv /usr/sap/SAPBusinessOne/ServiceLayer /usr/sap/SAPBusinessOne/ServiceLayer_20251010', install service layer
+- take screenshot of sld services page
+- log time / notes
+- reply to all in previous mail that task is completed and all checks that we could check / were given to us have been completed.
+

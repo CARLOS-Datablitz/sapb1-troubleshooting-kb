@@ -1,0 +1,24 @@
+ver expiración de certificados:
+
+Si vas a usar nombre en vez de ip debes modificar el archivo host ubicado en  C:\Windows\System32\drivers\etc
+
+https://rds.lslacke.privatcloud.biz:10114/rdweb/webclient/index.html
+
+
+https://sld15.lslacke.privatcloud.biz:40000/ControlCenter
+https://sld04:40000/ControlCenter
+
+https://10.2.91.58:40000/ControlCenter
+
+
+sld:
+hostnamectl  xxxxxxx
+
+https://xxxxxxx:40000/ControlCenter
+
+https://rds.lslacke.privatcloud.biz:21040/rdweb/webclient/index.html
+https://hanab1.hensel.int:40000/ControlCenter
+
+
+192.168.4.30  hanab1.hensel.int hanab1
+phsld

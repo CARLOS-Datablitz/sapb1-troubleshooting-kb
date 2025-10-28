@@ -1,0 +1,9 @@
+Install ssl certificates
+
+https://isystems-integration.com/video-tutorial/
+
+Abria que abrir "win+R" -> mmc -> "añadir Cerctificados" como usurairio local como local machine -> revisar en Root e intermediate que esten los certificados:
+
+- iSystems[CA]
+- iSystems[IN]
+

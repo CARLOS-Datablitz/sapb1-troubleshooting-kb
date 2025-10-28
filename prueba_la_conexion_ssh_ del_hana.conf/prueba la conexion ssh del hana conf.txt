@@ -1,0 +1,48 @@
+
+
+Telmo, [27/10/2025 16:21]
+cd /hana/scripts/backup.conf 
+
+abajo hay una conexion isysCLOUD
+
+Telmo, [27/10/2025 16:21]
+has un ssh con esas credenciales y dime que sale
+
+Telmo, [27/10/2025 16:22]
+ssh -p 55667 <user isysCLOUD>@<destino isysCLOUD>
+
+ejemplo:
+
+
+# Access to iSystems Cloud
+isysCLOUD="1"                        # use iSystems Cloud (0=no, 1=yes)
+isysLOCATION="debck.privatcloud.biz"
+isysUSER="pfandleihe53762"
+isysmaxAGE=9
+ndb:~ # ssh -p 55667 pfandleihe53762@debck.privatcloud.biz
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-205-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ * Ubuntu 20.04 LTS Focal Fossa has reached its end of standard support on 31 Ma
+
+   For more details see:
+   https://ubuntu.com/20-04
+
+Erweiterte Sicherheitswartung (ESM) für Infrastructure ist aktiviert.
+
+145 Aktualisierungen können sofort angewendet werden.
+70 dieser Updates sind ESM Infra Sicherheitsupdates
+54 dieser Aktualisierungen sind Standard-Sicherheitsaktualisierungen.
+Zum Anzeigen dieser zusätzlichen Aktualisierungen bitte »apt list --upgradable« ausführen
+
+New release '22.04.5 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+Last login: Fri Dec  3 15:35:06 2021 from 94.134.190.195
+pfandleihe53762@dcdus-backup01:~$ ^C
+pfandleihe53762@dcdus-backup01:~$
+

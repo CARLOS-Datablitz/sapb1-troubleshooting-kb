@@ -1,0 +1,21 @@
+
+Metodo para verificar vigencia de certificado en SLD and RDS:
+
+sld:
+hostnamectl  <hostname>
+
+https://<hostname>:40000/ControlCenter
+
+
+navegador:
+
+2# edit host file
+<sld ip> <hostname> sld
+
+https://sld.invicon.privatcloud.biz:40000/ControlCenter
+
+
+RDS:
+https://rds.Invicon.privatcloud.biz:21042/rdweb/webclient/index.html
+
+

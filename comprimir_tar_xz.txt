@@ -1,0 +1,6 @@
+Comprimir folde en .tar.xz
+
+tar -cJvf /tmp/045SBOHOFFMANN20251017.tar.xz 045SBOHOFFMANN20251017/
+
+WMP:
+\\lic\B1_SHF\Manual_Backup
