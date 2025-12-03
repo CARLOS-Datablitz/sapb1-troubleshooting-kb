@@ -1,0 +1,37 @@
+========================================================================================================================================================================================================================
+# Attachments usando una ruta en windows montandola en linux - windows to linux attachments
+# Ticket de referencia: https://support.isystems-integration.com/#ticket/zoom/12142  iSystems#99121088
+# Ruta a montar: \\sonic\SAP\Attachments -- \\ADM\sbo\Attachments // //ADM/sbo/Attachments
+# Primero - que nada necesitamos entrar a la ruta en windows y ver que permisos tiene.
+# Segundo - verificar los permismos se la carpeta SAP despues del servidor \\Sonic\SAP
+# Tercero - crear un usuario administrador diferente para que tenga acceso a esa ruta y usarlo para montar en linux
+# Cuarto - ingresar al servidor SLD o Hana y usar las credeniales para montarlo, pero agregar en el host el acceso a este servidor sonic.
+# Quinto - con todo esta informacion llego la hora de ahcer el montaje como se suele hacer siempre
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# 1- el servidor "Sonic" tiene la ip:192.168.254.20
+# 2- Verificar los permisos, en este caso tienen acceso los usuarios
+#    - Domain Admins
+#    - Domain Users
+# 3- usuario creado en su domain porque los accesos a esta carpeta lo tienen los domain users y los domains admins entonces este usuario debe ser "member of" de ellos
+#    - Credenciales: USER:sapshare / PASS:QK6+WF$#%EPt8@M //sapshare:WgUJY7rimNhT
+# 4- modificar el archivo: /etc/hosts y añadir
+    - 192.168.254.20 sonic.fairbury.local sonic
+    - 10.1.0.184 adm.nichirin.local adm
+# 5- ahora si a realizar el montaje
+
+# Ingresar al servidor
+#ssh root@192.168.254.6
+screen -dRR
+cd /usr/sap/SAPBusinessOne/B1_SHF/ && ls -lha
+mkdir Attachments2/ && ls -lha
+chmod -R 777 Attachments2/ && ls -lha
+chown -R b1service0:b1service0 Attachments2/ && ls -lha
+
+echo '//SONIC/SAP/Attachments  /usr/sap/SAPBusinessOne/B1_SHF/Attachments  cifs  username=sapshare,password=QK6+WF$#%EPt8@M,domain=fairbury.local,rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0  0' >> /etc/fstab
+
+echo '//ADM/sbo/Attachments   /usr/sap/SAPBusinessOne/B1_SHF/Attachments2  cifs  username=sapshare,password=WgUJY7rimNhT,domain=adm.nichirin.local,rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0  0' >> /etc/fstab
+
+cat /etc/fstab
+mount -a -v
+df -h

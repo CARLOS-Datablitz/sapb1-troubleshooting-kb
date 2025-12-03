@@ -1,0 +1,62 @@
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir IMPORT_TODAY importdb_today 
+cd /tmp && ls -lhad IMPORT_TODAY importdb_today
+chmod -R 777 IMPORT_TODAY/ importdb_today/
+chown -R ndbadm:sapsys IMPORT_TODAY/ importdb_today/ && ls -lha && cd /tmp/IMPORT_TODAY
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get SBO_TECOISA.tar.gz 
+bye
+
+chmod -R 777 importdb_today/ IMPORT_TODAY/
+chown -R ndbadm:sapsys importdb_today/ IMPORT_TODAY/ && ls -lha
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E02"
+dbUser="B1SYSTEM"
+dbPass="j4FKUPeMTTmX"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_SPA90'."*" as binary into '\'/tmp/importdb_today\'' with ignore existing threads 10;'
+# Comprimir el schema exportado
+tar -czf IMPORT_TODAY/S5_SPA90.tar.gz importdb_today/
+# Descomprimir
+tar -xzf IMPORT_TODAY/S5_SPA90.tar.gz -C /tmp/importdb_today
+
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_SPA90'."*" as binary from '\'/tmp/importdb_today/importdb_today/\'' with ignore existing threads 10 rename schema "SBO_EENSA" to "SBO_EENSA_2";'
+# Realizar un import 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_SPA90'."*" as binary from '\'/tmp/s5_spa90/\'' with ignore existing threads 10;'
+
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf IMPORT_TODAY/ importdb_today/ && ls -lha
+
+============================== FIN ==================================
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="B1SYSTEM"
+dbPass="gIKV7Muj65w1zdGV"
+

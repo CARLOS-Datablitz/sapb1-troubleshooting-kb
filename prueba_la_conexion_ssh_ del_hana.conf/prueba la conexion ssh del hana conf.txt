@@ -44,5 +44,17 @@ Run 'do-release-upgrade' to upgrade to it.
 
 Last login: Fri Dec  3 15:35:06 2021 from 94.134.190.195
 pfandleihe53762@dcdus-backup01:~$ ^C
+
+---- VER LOS FULL BACKUPS QUE SE CARGARON A LA NUVE DE iSystems Cloud
 pfandleihe53762@dcdus-backup01:~$
+
+-rw-r--r-- 1 isystems1111111 isystems1111111   472343458 Okt 27 19:47 20251027_19-SYSTEMDB-sles08.savannah.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111  5699002270 Okt 28 01:02 20251027_224501-DB_E01-dctpamt089hana.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111  6987274672 Okt 28 01:30 20251027_224501-DB_E02-dctpamt089hana.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111  6110547768 Okt 28 01:59 20251027_224501-DB_E05-dctpamt089hana.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111  7201362149 Okt 28 02:26 20251027_224501-DB_E09-dctpamt089hana.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111  3161194496 Okt 28 04:18 20251027_224501-DB_E10-dctpamt089hana.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111   559541641 Okt 28 00:09 20251027_224501-DB_NDB-dctpamt089hana.privatcloud.biz.tgz
+-rw-r--r-- 1 isystems1111111 isystems1111111   685304972 Okt 28 00:00 20251027_224501-SYSTEMDB-dctpamt089hana.privatcloud.biz.tgz
+isystems1111111@dctpa-backup01:~/Hana-Backups/backups_fbck$
 

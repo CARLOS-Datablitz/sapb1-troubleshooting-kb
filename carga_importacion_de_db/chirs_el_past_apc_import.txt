@@ -38,7 +38,8 @@ ls -lha /tmp/dbchris1/export    #049SBOGSNMAQUINARIA
 
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
-sld:~ # cat Desktop/SAP_Configuration2.txt
+
+
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
@@ -50,15 +51,15 @@ dbPass="g7ixoK1n3RxEW0UA"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'CHRISELPASTELERO'."*" as binary into '\'/tmp/dbchris1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'CHRISELPASTELERO'."*" as binary into '\'/tmp/dbchris1/\'' with ignore existing threads 10;'
 
 # Import the shchema and rename
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'CHRISELPASTELERO'."*" as binary from '\'/tmp/dbchris1/\'' with ignore existing threads 10 rename schema "CHRISELPASTELERO" to "RETAIL_CHRIS";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'CHRISELPASTELERO'."*" as binary from '\'/tmp/dbchris1/\'' with ignore existing threads 10 rename schema "CHRISELPASTELERO" to "BASEBLANCA";'
 
 # Tiempos y respuestas de los imports realizados
 
 # Eliminar los archivos que ya no son necesarios
-cd /tmp && ls -lha && rm -rf CHRIS_ZIP/ dbchris1/ dbchris2/ dbchris3/   && ls -lha
+rm -rf CHRIS_ZIP/ dbchris1/ dbchris2/ dbchris3/   && ls -lha
 
 ======================== FIN ============================
 # Import the shchema and rename

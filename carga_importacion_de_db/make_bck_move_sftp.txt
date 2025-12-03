@@ -35,7 +35,7 @@ dbPass="7Z4b1DJUka3j"
 hanamt:/tmp # tar -czvf BASE_PE_LC.tar.gz -C /tmp dbramotra1
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-  # pass:C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /idean/Birlos
 ls -lha
 put BASE_PE_LC.tar.gz
@@ -53,7 +53,7 @@ chmod -R 777 DICOMET/ dbdicomet1/
 chown -R ndbadm:sapsys DICOMET/ dbdicomet1/ && ls -lha && cd /tmp/DICOMET
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-  # pass:C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /ramo/training
 ls -lha
 get BASE_PE_LC.tar.gz

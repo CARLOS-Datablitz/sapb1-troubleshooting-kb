@@ -1,0 +1,2 @@
+RDS server to restart every Sunday at 10 PM
+

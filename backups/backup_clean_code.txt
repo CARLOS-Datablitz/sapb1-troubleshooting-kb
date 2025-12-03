@@ -1,0 +1,33 @@
+
+hana1:~ # cat /hana/scripts/backup.conf
+
+# Variables to control the tenants backup locally
+cleanup_tenant_db="1"                                # 1 apply the tenant cleanup / 0 dont do nothing
+Tenant_local_age_db="1440"                           # Days to keep this files "_COMPLETE_DATA_BACKUP_" locally
+Tenant_backup_dir_db="/backup/data/DB_NDB"           # Path where this files are stored
+Tenant_data_backup_db="*_COMPLETE_DATA_BACKUP_*"     # Filter to apply at the moment to run the cleanup backup at the end
+
+cleanup_tenant_bl="1"                                # 1 apply the tenant cleanup / 0 dont do nothing
+Tenant_local_age_dl="1440"                           # Days expressed on second to keep the logs locally 1440 = 1 day
+Tenant_backup_dl_dir="/backup/log/DB_NDB"            # Path where this files are stored
+Tenant_data_backup_dl="log_backup_*"                       # Filter to apply at the moment to run the cleanup backup at the end
+
+=================================================================================
+
+hana1:~ # cat /hana/scripts/backup.sh
+
+# Added the option to clean the folder /backup before to run de backup.sh
+# {{{ Cleanup Tenants Local Data Backup===============================================
+        if [ "$cleanup_tenant_db" -eq 1 ]; then
+     mins=$Tenant_local_age_db
+     path=$Tenant_backup_dir_db
+     filter=$Tenant_data_backup_db
+
+    find "$path" -name "$filter" -type f -mmin +$mins -exec rm -f {} \;
+
+    echo "cleanup $Tenant_backup_dir_db procedure starts" >>$jobcontrol
+                echo "cleanup Data Backup successfully deleted" >>$jobcontrol
+        fi
+# }}}
+
+

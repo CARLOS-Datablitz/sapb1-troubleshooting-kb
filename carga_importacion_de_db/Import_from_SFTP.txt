@@ -1,11 +1,11 @@
-# Ticket: iSystems#99167268
 #SQL Varibles (B1SYSTEM)
-  dbSql="/hana/shared/NDB/hdbclient/hdbsql"
-  dbInstance="00"
-  dbHost="127.0.0.1"
-  dbTenant="BO1"
-  dbUser="B1SYSTEM"
-  dbPass="AeXad6pu"
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="BO1"
+dbUser="B1SYSTEM"
+dbPass="AeXad6pu"
 
 # Begining in the hana
 df -h      # ---> revisar si el directorio /tmp tiene espacio para la exportación, sino cambair de directorio a /backup

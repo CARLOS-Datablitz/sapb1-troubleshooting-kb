@@ -1,0 +1,25 @@
+1. Revisar los servicios que esten funcionando
+2. 
+screen -dRR
+systemctl status sap*
+su - ndbadm
+   ./HDB stop
+exit
+top
+sles# systemctl stop sapinit 
+
+3. verificar que los serivicios esten apagados
+==== EN EL PROXMOX =====
+Verificar que este servidor este en PROXMOX
+4. sles# reboot 
+5. revisar sap y hana (conectarse a ambos y verificar su funcionamiento) tomar ss probando que se ha hecho el reinicio 
+
+
+==== EN EL PROXMOX =====
+Ir viendo si se apaga el hana
+
+==== EN EL ADM O RDS =====
+Ver que SAP vuelva a funcionamiento
+
+Nota: Tomar ss de SAP Business One Client en el RDS antes de realizar operación.
+

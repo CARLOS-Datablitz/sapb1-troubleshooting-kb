@@ -1,0 +1,22 @@
+cron:
+
+grep -i backup /var/log/messages | tail -20
+
+
+
+ # PRUEBA DE CONEXION Y ENVIO DE EMAIL:
+ 
+echo "Test email from manual check" | mailx -v -r "eu@isystems-mailing.de" -s "Test Backup Email - $(hostname)" -S smtp="isystems-mailing.de:587" -S smtp-use-starttls -S smtp-auth=login -S smtp-auth-user="eu@isystems-mailing.de" -S smtp-auth-password="eEu^6k95" -S ssl-verify=ignore backups@isystems-integration.com
+
+# Los parametros usados para el comando de arriba lo encuentras en backup.sh
+sles04:~ # cat /hana/scripts/backup.conf  ---> ver la parte de envio de email
+
+
+# Probar conexion con puerto asignado al email:
+
+sles04:~ # nc -v isystems-mailing.de 587
+Connection to isystems-mailing.de 587 port [tcp/submission] succeeded!
+220 plesk.isystems-mailing.de ESMTP
+
+
+

@@ -1,0 +1,50 @@
+#SQL Varibles (B1SYSTEM) from SLD:
+
+
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E01"
+dbUser="B1SYSTEM"
+dbPass="3AIrC4vmtM1qNn7C"
+
+# Begining in the hana
+df -h      # ---> revisar si el directorio /tmp tiene espacio para la exportación, sino cambair de directorio a /backup
+
+screen -dRR
+cd /tmp && ls -lha
+mkdir one ABIA_PUSTCH_ZIP
+chown -R ndbadm:sapsys one/ ABIA_PUSTCH_ZIP/ && ls -lha
+cd ABIA_PUSTCH_ZIP
+
+# Download from the SFTP
+
+#Correr el comando en el directorio donde queremos que se encuentre el archivo
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m
+cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 
+get NMX_LIVE.tar.gz
+bye
+
+#Untar and move to another folder
+tar -xzf NMX_LIVE.tar.gz -C /tmp/ABIA_PUSTCH_ZIP
+unzip filecompri.zip
+chmod -R 777 ABIA_PUSTCH_ZIP/
+chown -R ndbadm:sapsys ABIA_PUSTCH_ZIP/
+
+#Test DB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# DO NOT FORGET TO GIVE FULL PERMISSION TO THE FOLDER BEFORE IMPORT
+
+#Import the shchema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_PUTSCHSTORD'."*" as binary from '\'/tmp/ABIA_PUSTCH_ZIP/\'' with ignore existing threads 10;'	
+
+#Drop schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'drop schema TEST_0101 cascade;'
+
+
+# Delete and list the non necessary files in one line
+cd /tmp && ls -lha && rm -rf one/ ABIA_PUSTCH_ZIP/ && ls -lha
+

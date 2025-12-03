@@ -30,14 +30,13 @@ dbPass="Fq6p9FZtz4yCs"
 
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_DISTRIBUIDORA'."*" as binary into '\'/tmp/NAVARRETE_ZIP\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_DISTRIBUIDORA'."*" as binary into '\'/tmp/dbnavarrete\'' with ignore existing threads 10;'
 
 # Import Import the schema
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_DISTRIBUIDORA'."*" as binary from '\'/tmp/NAVARRETE_ZIP\'' with ignore existing threads 10 rename schema "SBO_DISTRIBUIDORA" to "ZZ_SI_V3";'
 
-# Done import
-[ SBO_DISTRIBUIDORA <=> ZZ_DISTRIBUIDORA ] --->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
-					  0 rows affected (overall time 32.759035 sec; server time 32.758837 sec)
+# Realizar un import 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_DISTRIBUIDORA'."*" as binary from '\'/tmp/dbnavarrete/\'' with ignore existing threads 10;'
 
 # Testear la base de datos: NDB
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
@@ -46,3 +45,15 @@ rm -R dbnavarrete NAVARRETE_ZIP
 
 
   =========================  FIN =================
+
+ Descomprimir:
+ sles:/tmp/NAVARRETE_ZIP # tar -xzf SBO_DISTRIBUIDORA.tar.gz -C /tmp/dbnavarrete
+ Comprimir:
+ tar -czf /tmp/NAVARRETE_ZIP/SBO_DISTRIBUIDORA_13_11_2025.tar.gz -C /tmp/dbnavarrete .
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /idean/Birlos
+ls -lha
+put BASE_PE_LC.tar.gz
+bye

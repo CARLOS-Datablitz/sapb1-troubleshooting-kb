@@ -14,7 +14,7 @@ Requisites:
 		--> Printer Servers/rds//Printers
 
 
-1. Ping or put put the ip to the browser.
+1. Ping or put the ip to the browser.
 2. Check the models: put the ip on the browser and enter.
 3. Get the drivers(Download Center: Select the model/select for Windows Server 2019(: Windows + R : winver)). C:\Users\administrator.FSI>wmic os get osarchitecture
 OSArchitecture

@@ -1,10 +1,10 @@
 Filtrar en PowerShell del AD:
+=========================================================================
+Esto te da una lista de usuarios habilitados que han iniciado sesión en los últimos 90 días:
 
-Esto te da una lista de usuarios habilitados que han iniciado sesión en los últimos 10 días:
+$cutoff = (Get-Date).AddDays(-90)
 
-$cutoff = (Get-Date).AddDays(-60)
-
-Get-ADUser -Filter * -Properties LastLogonTimeStamp, Enabled | Where-Object {
+$usuarios = Get-ADUser -Filter * -Properties LastLogonTimeStamp, Enabled | Where-Object {
     $_.Enabled -eq $true -and
     $_.LastLogonTimeStamp -ne $null -and
     [DateTime]::FromFileTime($_.LastLogonTimeStamp) -gt $cutoff
@@ -12,6 +12,13 @@ Get-ADUser -Filter * -Properties LastLogonTimeStamp, Enabled | Where-Object {
     [DateTime]::FromFileTime($_.LastLogonTimeStamp)
 }} | Sort-Object LastLogon -Descending
 
+# Muestra la lista de usuarios
+$usuarios
+
+# Muestra el total de usuarios al final
+Write-Host "Total de usuarios habilitados que iniciaron sesión en los últimos 60 días: $($usuarios.Count)" -ForegroundColor Cyan
+
+=========================================================================
 Esto te da el número de usuarios habilitados en el AD:
 Get-ADUser -Filter {Enabled -eq $true} | Measure-Object
 
@@ -46,4 +53,22 @@ Get-ADUser -Identity "lissa.nelson" -Properties LastLogonDate, LastLogon | Selec
 Get-ADUser -Identity "rolandoarmien" -Properties LastLogonDate, LastLogon | Select-Object Name, SamAccountName, LastLogonDate, LastLogon
 
 VER SI ESTA ENABLE:
-Get-ADUser -Identity "rolandoarmien" -Properties Enabled | Select-Object Name, Enabled
+Get-ADUser -Identity "leo.chavez" -Properties Enabled | Select-Object Name, Enabled
+
+----- ALLPRO muestra usuarios habilitados y deshabilitados en una OU------
+
+# OU específica
+$ou = "OU=Tampa,OU=Allpro OU,DC=Allpro,DC=local"
+
+# Obtener usuarios de la OU 'Tampa'
+$usuarios = Get-ADUser -SearchBase $ou -Filter * -Properties Enabled | Where-Object { $_.ObjectClass -eq 'user' }
+
+# Contar habilitados y deshabilitados
+$habilitados = ($usuarios | Where-Object { $_.Enabled -eq $true }).Count
+$deshabilitados = ($usuarios | Where-Object { $_.Enabled -eq $false }).Count
+
+# Mostrar resultados
+Write-Host "Usuarios habilitados en OU 'Tampa': $habilitados" -ForegroundColor Green
+Write-Host "Usuarios deshabilitados en OU 'Tampa': $deshabilitados" -ForegroundColor Red
+Write-Host "Total de usuarios en OU 'Tampa': $($habilitados + $deshabilitados)" -ForegroundColor Cyan
+

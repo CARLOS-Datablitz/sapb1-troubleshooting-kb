@@ -58,6 +58,7 @@ tar -czvf /tmp/APC_ZIP/PRUEBAS_APC_JULIO.tar.gz --transform 's/^dbapc4/PRUEBAS_A
 chmod -R 777 APC_ZIP/
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
 C4!qE0e]cVFy&$m 
 cd /ramo/APC
 ls -lha

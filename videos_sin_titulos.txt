@@ -1,0 +1,8 @@
+Notas de Videos sin titulo:
+
+- Pueerto con el se conecta el cliente para enviar el backup es el 55667
+- .xlsx new member roadmap  ---> roadmap para los nuevos integrantes de TI
+- Cuando un cliente renueva contrato ver si envía el backup ya que si pasaron varios días despues de la revnovación probablemente siga bloqueado.
+- Usar ls -lha para ver que fecha fue modificado un archivo(backup.conf)
+- verificar que los puertos en especial 55667 esten liberados/desbloqueados.
+- verificar si llegar al isysLOCATION="debck.privatcloud.biz" desde el sles.

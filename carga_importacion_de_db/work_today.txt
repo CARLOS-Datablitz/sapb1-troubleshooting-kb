@@ -1,4 +1,3 @@
-# Ticket de referencia: iSystems#99167268
 0.--------------------------------------------------------------------------
 Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
 isystems-mt02:~ # cd /
@@ -8,10 +7,10 @@ isystems-mt02:/ # df -h
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lhad
-mkdir IDEAN dbidean1 
-cd /tmp && ls -lhad IDEAN dbidean1
-chmod -R 777 IDEAN/ dbidean1/
-chown -R ndbadm:sapsys IDEAN/ dbidean1/ && ls -lha && cd /tmp/IDEAN
+mkdir ANDYEN andyen_db_1 andyen_db_2
+cd /tmp && ls -lhad ANDYEN andyen_db_1 andyen_db_2
+chmod -R 777 ANDYEN/ andyen_db_1/ andyen_db_2/
+chown -R ndbadm:sapsys ANDYEN/ andyen_db_1/ andyen_db_2/ && ls -lha && cd /tmp/ANDYEN
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m 
@@ -20,19 +19,14 @@ ls -lha
 get 080SBOMAQEMAG25072025.tar.xz
 bye
 
-# Ver los nombres de los schemas a ver si coinciden con (049SBOGSNMAQUINARIA/080SBOMAQEMAG)
-ls -lha /tmp/dbidean1/export    #BIRLOS
-
 # DE NOS SER EL CASO hay que mover las carpetas hacia la ruta y darle los permisos
 cd /tmp/dbwmp1/xxxx/xxxx/xxxx
 mv export/ index/ /tmp/dbwmp1/
 
 
 cd /tmp && ls -lha
-chmod -R 777 dbidean1/
-chown -R ndbadm:sapsys dbidean1/  && ls -lha
-
-ls -lha /tmp/dbidean1/export    #049SBOGSNMAQUINARIA
+chmod -R 777 andyen_db_1/
+chown -R ndbadm:sapsys andyen_db_1/  && ls -lha
 
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
@@ -40,21 +34,22 @@ sld:~ # cat Desktop/SAP_Configuration2.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="BO1"
+dbTenant="E10"
 dbUser="B1SYSTEM"
-dbPass="AeXad6pu"
+dbPass="2quMRMEP189uvvbY"
 
 # Testear la base de datos:BO1 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Realizar un import 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BIRLOS'."*" as binary from '\'/tmp/dbidean1/birlos_20250815\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_ANDYEN01'."*" as binary from '\'/tmp/andyen_db_1/andyen_db_1\'' with ignore existing threads 10;'
 
-# Tiempos y respuestas de los imports realizados
-[ COMPLETE_DATA_BACKUP07082025_datatmp_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
+# Realizar un export
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_ANDYEN'."*" as binary into '\'/tmp/andyen_db_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_ANDYEN_TEST'."*" as binary into '\'/tmp/andyen_db_2\'' with ignore existing threads 10;'
 
 # Eliminar los archivos que ya no son necesarios
-cd /tmp && ls -lha && rm -rf IDEAN/ dbidean1/ && ls -lha
+cd /tmp && ls -lha && rm -rf ANDYEN/ andyen_db_1/ andyen_db_2/ && ls -lha
 
 ================================================================
 RENAME, EXPORT
@@ -62,10 +57,10 @@ RENAME, EXPORT
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_ANDYEN01'."*" as binary into '\'/tmp/andyen_db_1\'' with ignore existing threads 10;'
 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
-"IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/tmp/dbidean1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
+"IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/tmp/andyen_db_1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
 
 tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
 dbdreampack1
@@ -81,3 +76,10 @@ tar -czf 102SBOPRETTL_20250923.tar.gz 102SBOPRETTL_20250923
 En .tar.xz:
 tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
 
+# Comprimir CARPETETA/NOMBRE_COMPRIMIDO.tar.gz nombre_archivo_a_comprimir
+tar -czf ANDYEN/SBO_ANDYEN.tar.gz andyen_db_1/
+tar -czf ANDYEN/SBO_ANDYEN_TEST.tar.gz andyen_db_2/
+chown -R ndbadm:sapsys ANDYEN/ andyen_db_1/ andyen_db_2/
+chmod -R 777 ANDYEN/ andyen_db_1/ andyen_db_2/
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz

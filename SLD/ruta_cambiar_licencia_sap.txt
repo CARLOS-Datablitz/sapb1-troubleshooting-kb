@@ -1,0 +1,17 @@
+# Servidor SLD de APC
+# Ruta para cambiar la licencia de SAP
+cd /usr/sap/SAPBusinessOne/ServerTools/License/webapps/lib/
+
+# Renombrar Archivo no borrar B1Upf.xml
+mv B1Upf.xml B1Upf.xml.bck
+mv B1Upf.xml B1Upf.xml.old
+
+# Entrar al SLD URL: https://sld.apc.nubeprivada.biz:40000/LicenseControlCenter/
+# Ir a Servicios --> License manager https://sld.apc.nubeprivada.biz:40000/LicenseControlCenter
+# Subir la licencia
+
+
+find "/usr/sap/SAPBusinessOne" -type f -name "B1U*"
+
+
+systemctl status sap*

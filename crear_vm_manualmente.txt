@@ -1,0 +1,28 @@
+Lo primero aqui es:
+
+- entrar al entorno, realizar un scan de red con el ipscanner, ver que ip's tienen disponibles, usar la libre despues de la ultima es decir, si la ultima es el RDS la ip que le sigue al RDS
+- colocar una linea mas en el server questions con esa nueva maquina que se llamara b1i.customer.privatcloud.biz lo que sea...
+- como ya entraste al servidor a escanear la red ya sabes que windows usan, buscar la plantilla y moverla (migrate) donde estan las demas vm's (de tener espacio en su pve)
+- crear la vm, osea clonarla con la ip como vmid con la que colocaste enn la ultima linea del excel que añadiste
+- cuando termine en la parte de la RED colocarle la vlan que coresponde a ese entorno (no seas como ALGUIEN que se olvido de hacerlo), dejalo en 40GB o 60GB la plantilla del disco HDD de windows luego lo modificamos.
+
+Cuando llegues hasta ahi te guio para que lo termines
+
+
+===============================================
+
+PASOS 1: buscar ip´s disponibles
+
+Desde SL or SLD:
+Alternativa básica sin instalar nada(eg. ipscanner): ping sweep
+for ip in 10.2.90.{1..254}; do ping -c1 -W1 $ip >/dev/null && echo "$ip ACTIVO" || echo "$ip libre"; done
+
+Resultado: 10.2.90.125 libre
+
+PASOS 2: buscar la plantilla y moverla (migrate) donde estan las demas vm's (de tener espacio en su pve).
+PROXMOX:
+busca por la plantilla 2k19 ---> full clone ---> 
+
+
+
+

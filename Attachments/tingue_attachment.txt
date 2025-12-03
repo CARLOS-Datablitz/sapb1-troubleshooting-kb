@@ -1,0 +1,49 @@
+
+
+EN EL SLD:
+
+#1st Run
+screen -dRR
+cd /usr/sap/SAPBusinessOne/B1_SHF/ && ls -lha
+mkdir Attachments/ Attachments_Canada/ Attachments_US_Sandbox/ Attachments_Canada_Sandbox/ && ls -lha
+cd Attachments/
+mkdir attachments_TINGUEBROWN_PROD/
+cd attachments_TINGUEBROWN_PROD/
+mkdir TINGUEBROWN_PROD/
+
+cd /tmp
+chmod -R 777 Attachments/ Attachments_Canada/ Attachments_US_Sandbox/ Attachments_Canada_Sandbox/ && ls -lha
+chown -R b1service0:b1service0 Attachments/ Attachments_Canada/ Attachments_US_Sandbox/ Attachments_Canada_Sandbox/ && ls -lha
+
+
+#2nd run
+cd /mnt
+mkdir Attachments/ Attachments_Canada/ Attachments_US_Sandbox/ Attachments_Canada_Sandbox/
+chmod -R 777 Attachments/ Attachments_Canada/ Attachments_US_Sandbox/ Attachments_Canada_Sandbox/
+chown -R b1service0:b1service0 Attachments/ Attachments_Canada/ Attachments_US_Sandbox/ Attachments_Canada_Sandbox/
+cd Attachments/ && mkdir attachments_TINGUEBROWN_PROD/
+cd attachments_TINGUEBROWN_PROD/ && mkdir TINGUEBROWN_PROD
+
+ls -lha && df -h
+
+#this is the only one that you execute
+echo '//sld/B1_SHF/Attachments       /mnt/Attachments       cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
+
+\\file01\SAPB1Common\Attachments\attachments_TINGUEBROWN_PROD\TINGUEBROWN_PROD
+\\file01\SAPB1Common\Attachments_Canada
+\\file01\SAPB1Common\Attachments_US_Sandbox
+\\file01\SAPB1Common\Attachments_Canada_Sandbox
+
+
+
+#check the fstab file and modify it if necessary 
+cat /etc/fstab
+#vim /etc/fstab
+mount -a -v
+#succesfull succesfully mounted
+df -h | grep Attach*
+
+    
+NOTAS: Porque el nombre "Attachments" en el #1st Run, es porque es el nombre que cliente quiere que se coloque eg: \\sld.raceworks.privatcloud.biz\B1_SHF\Attachments\
+iSystems#99187637
+NOTA IMPORTANTE: Asegurarte que la carpeta tenga los permisos.

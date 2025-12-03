@@ -1,0 +1,72 @@
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir HOKONA_ZIP hokona_db_1 hokona_db_2
+cd /tmp && ls -lhad HOKONA_ZIP hokona_db_1 hokona_db_2
+chmod -R 777 HOKONA_ZIP/ hokona_db_1/ hokona_db_2/
+chown -R ndbadm:sapsys HOKONA_ZIP/ hokona_db_1/ hokona_db_2/ && ls -lha
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+# DE NOS SER EL CASO hay que mover las carpetas hacia la ruta y darle los permisos
+cd /tmp/dbwmp1/xxxx/xxxx/xxxx
+mv export/ index/ /tmp/dbwmp1/
+
+
+cd /tmp && ls -lha
+chmod -R 777 hokona_db_1/
+chown -R ndbadm:sapsys hokona_db_1/  && ls -lha
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+sld:~ # cat Desktop/SAP_Configuration2.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E01"
+dbUser="B1SYSTEM"
+dbPass="1bTaL3ATugi6CmI1"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Realizar un export
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'HOKONA'."*" as binary into '\'/tmp/hokona_db_1\'' with ignore existing threads 10;'
+
+
+================================================================
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'HOKONA'."*" as binary from '\'/tmp/hokona_db_1/\'' with ignore existing threads 10 rename schema "HOKONA" to "HOKONA_TEST";'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_HOKONA_ZIP01'."*" as binary into '\'/tmp/hokona_db_1\'' with ignore existing threads 10;'
+
+Recomendación:
+Si quieres mantener el archivo original y obtener buena compresión, usa:
+tar -czf 102SBOPRETTL_20250923.tar.gz 102SBOPRETTL_20250923
+
+En .tar.xz:
+tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
+
+# Comprimir CARPETETA/NOMBRE_COMPRIMIDO.tar.gz nombre_archivo_a_comprimir
+tar -czf HOKONA_ZIP/SBO_HOKONA_ZIP.tar.gz hokona_db_1/
+tar -czf HOKONA_ZIP/SBO_HOKONA_ZIP_TEST.tar.gz hokona_db_2/
+chown -R ndbadm:sapsys HOKONA_ZIP/ hokona_db_1/ hokona_db_2/
+chmod -R 777 HOKONA_ZIP/ hokona_db_1/ hokona_db_2/
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf HOKONA_ZIP/ hokona_db_1/ hokona_db_2/ && ls -lha

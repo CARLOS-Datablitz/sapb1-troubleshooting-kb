@@ -5,7 +5,7 @@ Ch@ng4MeNow!
 IMPORTANTE:
 !! todos los tickets donde dice que se crea usuario o se agregan recursos son Billable_WT
 
-
+(Ejemplo: Allpro OU/Tampa/Users)
 DC ----> Tools/Users and Devices AD
 			----> Copy one user.
 * TS01 ---> 25 User per server
