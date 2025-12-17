@@ -1,0 +1,12 @@
+iSystems#99187956
+
+Necesidad: Cliente solicita Conexión a SAP Business One mediante consola remota en el entorno Cloud, usando equipo Mac (Apple).
+
+Si tenemos opción para conectarse desde una Mac. Podríamos agendar una reunión para guiar al usuario.
+Para comenzar necesita instalar los certificados. Las instrucciones las puede encontrar en el siguiente link, debe seleccionar Readme y seguir los pasos para MacOS
+https://ssl.privatcloud.biz/
+Luego descargar desde la AppStore la aplicación Microsoft.
+
+Igual si desean los podemos acompañar en todo el proceso. Danos 3 fechas posibles para la reunión y agendamos
+
+

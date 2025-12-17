@@ -1,0 +1,8 @@
+Conectar HANA Studio
+
+Referencia ticket iSystems#99175207 (Aquí hay imagenes de como conectarse al HANA Studio)
+
+Hana Studio trabaja con las bases de datos, las cuales estan corriendo en los multitenant (hanamt), en el caso de MRSI la IP del multitenant asignado seria 10.3.93.2
+
+# Para ver las db's, para visualizarlas debemos hacerlo mediante el usuario B1SYSTEM.
+

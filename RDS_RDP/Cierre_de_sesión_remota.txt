@@ -1,0 +1,11 @@
+Cierre de sesión remota
+
+Referencia ticket iSystems#99188574
+
+Nosotros tenemos la configuración en 2 horas de inactividad.
+
+ANSWER:
+La manera correcta de cerrar sesión sería:
+1) hacer click en el menú de inicio de Windows
+2) hacer click en el ícono de usuario y luego en cerrar sesión.
+

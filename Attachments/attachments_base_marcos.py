@@ -1,13 +1,13 @@
 
-
 EN EL SLD:
     
 #1st Run
 screen -dRR
 cd /usr/sap/SAPBusinessOne/B1_SHF/ && ls -lha
 mkdir Attachments / && ls -lha
-chmod -R 777 Attachments/ && ls -lha
 chown -R b1service0:b1service0 Attachments/ && ls -lha
+chmod -R 777 Attachments/ && ls -lha
+
 
 
 #2nd run
@@ -28,4 +28,6 @@ mount -a -v
 df -h && df -h | grep Attach*
 
 
+NOTA: Referencia iSystems#99185181. Mas detalles importante: iSystems#99188371
 
+sld:~ # cat /etc/samba/smb.conf [B1_SHF] path = /usr/sap/SAPBusinessOne/B1_SHF guest ok = yes writeable = yes force user = b1service0 force group = b1service0 create mask = 0755 directory mask = 0775

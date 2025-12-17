@@ -1,0 +1,8 @@
+Expired HANA Licence
+
+Referencia ticket iSystems#99155528
+
+- We Hana's license is expired. This is the reason why the daily backups are not being done.
+
+SK: As it is not a customer hosted system, we cannot extend it. They would need to provide that but as I said, they have it for 5 months and we should not extend that infinitely.
+

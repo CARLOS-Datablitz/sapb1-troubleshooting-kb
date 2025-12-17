@@ -1,0 +1,23 @@
+Reinicio de servidor SLD
+
+1# Preguntar a cliente:
+¿Deseas el reincio de los Servicios SAP o del servidor completo?
+
+
+
+Reinicio servicios SAP:
+# En el SLD
+2. 
+screen -dRR
+systemctl status sap*
+su - ndbadm
+   ./HDB stop
+exit
+top
+sles# systemctl stop sapinit sapb1servertools
+
+3. verificar que los serivicios esten apagados
+==== EN EL PROXMOX =====
+Verificar que este servidor este en PROXMOX
+4. sld# reboot o sudo reboot
+5. revisar sap y hana (conectarse a ambos y verificar su funcionamiento) tomar screenshot probando que se ha hecho el reinicio 

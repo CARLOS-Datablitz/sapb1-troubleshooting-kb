@@ -1,0 +1,11 @@
+Catalina.out writes folder full
+
+NOTA: Revisar el tamaño de este archivo cuando el espacion del /usr/sap esta lleno o alto.
+
+https://bookstack.isystems-integration.com/books/linux/page/catalinaout-writes-folder-full
+
+sld:/usr/sap # find "/usr/sap/SAPBusinessOne" -type f -name "catalina*"
+sld:/usr/sap # ls -lha /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.out
+-rw-r--r-- 1 b1service0 b1service0 1.2G Dec 10 11:01 /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.out
+sld:/usr/sap #
+

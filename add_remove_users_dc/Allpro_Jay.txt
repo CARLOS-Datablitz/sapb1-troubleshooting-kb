@@ -1,0 +1,20 @@
+Allpro:
+
+ 
+ Telmo, [5/12/2025 11:40]
+si no, si esta en su casa en otra red que no es la de allpro seria:
+- que active la VPN
+- con la VPN añadir el DC de allpro por ip al archivo host
+- nuevamente cmd: gpupdate /force 
+- cerrar sesion volver a entrar y ya deveria estar el drive y si no esta el drive aun asi, agregar el nombre:  <ip>  4003-FILE01.allpro.local en el archivo host — nuevamente gpuptate /force 
+ con eso quedaria...
+
+Telmo, [5/12/2025 11:41]
+no le aparece el drive porque no llega al:
+- dc
+- 4003-FILE01
+
+hay que mapearlo... como el hvn para cambiando de maquina
+
+Telmo, [5/12/2025 11:41]
+eso es lo que ANEETE la administardora y IT especialist no puede solucionar

@@ -1,0 +1,8 @@
+Problemas para ingresar a SAP
+
+Ticket de referencia: iSystems#99187372
+
+1# Verificar en DC que elusuario 05 de winners se encuentra activo y sin ninguna restriccion de acceso.
+2# Verificar en el KUMA hubo o exisitio un caida del enlace cloud, link : https://uptimekuma.tsprivatum.xyz/dashboard/
+3# Verificar el visor de eventos(Win + R para abrir el cuadro Ejecutar: eventvwr.msc)
+	Registros de Windows/Aplicacion/

@@ -1,0 +1,16 @@
+Hernon - Unable to access RDS
+Reference ticket iSystems#99184554
+
+
+
+1# Check credentials and access: is he/she member of "Domain Users" and Domain users( they are allowed to enter to the RDS server).
+	eg. https://rds.hernon.com:8443/rdweb/webclient/index.html
+2# Opcional, pero SOLO con persmiso de cliente reiniciar el servidor RDS.
+3# Check connection from ADM machine to the RDS WEB is reachable.
+	Check your ip by cmd/ipconfig /all
+	If you do a ping to the RDS by the name or PINg is reachable?
+		And you change this part "rds.hernon.com" by "rds.hernon.local" or the "IP" is reachable?
+		
+ANSWER: Customer said: I tried from another browser and I was able to access the server. 
+		Telmo: maybe the problem was the web browser, maybe you can delete the cache memory of that browser.
+

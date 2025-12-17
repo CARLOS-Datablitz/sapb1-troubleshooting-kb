@@ -1,7 +1,7 @@
 
 PKI Cert:
 sapB1iP 
-Once created find/put it here: C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Pki
+!!!! IMPORTANT STEP FIRST: Once created find/put it here: C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Pki
 then copy to ISCDE folder and edit the name(remove []).
 
 

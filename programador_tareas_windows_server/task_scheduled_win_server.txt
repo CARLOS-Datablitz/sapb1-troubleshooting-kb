@@ -1,0 +1,56 @@
+PowerShell:
+
+
+$action = New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /t 60 /f"
+$trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 22:00
+Register-ScheduledTask -TaskName "Weekly Server Restart TS2" -Action $action -Trigger $trigger -RunLevel Highest -User "SYSTEM"
+
+
+============================ VERIFICAR CONFIGURACION ===============================
+1. Ver en GUI:
+Abrir el Programador de tareas
+Presiona Win + R
+Escribe: taskschd.msc
+Enter
+
+============================ VERIFICAR EN DEMOCLARA SI FUNCIONA ===============================
+
+$action = New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /t 60 /f"
+$trigger = New-ScheduledTaskTrigger -Once -At ((Get-Date).AddMinutes(10))
+Register-ScheduledTask -TaskName "Test Restart in 10 Minutes" -Action $action -Trigger $trigger -RunLevel Highest -User "SYSTEM"
+
+============================ VERIFICAR el UPTIME ULTIMO REINICIO ===============================
+(Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+(Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+
+
+============================ ELIMINAR TASK DE PRUEBA ===============================
+Unregister-ScheduledTask -TaskName "Test Restart in 10 Minutes" -Confirm:$false
+
+
+=========================== SQL SERVER ===============================
+Script para SQL Server – One-Time Reboot mañana 9:15 PM CST
+# Fecha y hora del reinicio (mañana a las 9:15 PM CST)
+$tomorrow = (Get-Date).AddDays(1).ToString("MM/dd/yyyy")
+$time = "21:15"  # 9:15 PM (CST)
+
+$action = New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /t 60 /f"
+$trigger = New-ScheduledTaskTrigger -Once -At "$tomorrow $time"
+Register-ScheduledTask -TaskName "OneTime Restart SQL Server" -Action $action -Trigger $trigger -RunLevel Highest -User "SYSTEM"
+
+
+
+========================== TS01 y TS02 ================================
+# Fecha y hora del reinicio (mañana a las 9:15 PM CST)
+$tomorrow = (Get-Date).AddDays(1).ToString("MM/dd/yyyy")
+$time = "21:15"  # 9:15 PM (CST)
+
+$action = New-ScheduledTaskAction -Execute "shutdown.exe" -Argument "/r /t 60 /f"
+$trigger = New-ScheduledTaskTrigger -Once -At "$tomorrow $time"
+Register-ScheduledTask -TaskName "OneTime Restart TS02" -Action $action -Trigger $trigger -RunLevel Highest -User "SYSTEM"
+
+==========================================================================
+
+VERIFICAR:
+
+Get-ScheduledTask | Where-Object TaskName -like "OneTime Restart*"

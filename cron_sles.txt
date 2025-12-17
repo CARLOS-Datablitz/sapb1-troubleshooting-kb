@@ -1,5 +1,7 @@
 cron:
 
+hanamt:~ # crontab -l
+
 grep -i backup /var/log/messages | tail -20
 
 

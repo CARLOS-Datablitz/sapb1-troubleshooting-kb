@@ -56,21 +56,22 @@ Please verify that the new user's access is functioning correctly and let us kno
 
 
 This is to confirm that Raymond Ramos has been successfully removed from access to ALLSTARTS systems.
-
 Please let me know if you need anything further.
 
-
 Se han agregado dos nuevos usuarios, User9 y User10; encontrará la contraseña en el siguiente link:
-
 Por favor indicarnos el día y hora en la que podamos reiniciar el servidor RDS a fin de aumentar los recursos necesario.
-
 Quedamos pendientes a su confirmación.
 
 Saludos cordiales,
 
-
-Se han agregado nueve nuevos usuarios, User9 y User10; encontrará la contraseña en el siguiente link:
+----------------------------------------------
+Se han agregado un nuevo usuario, user13; encontrará la contraseña en el link de abajo, cambiar la contraseña luego del primer acceso.
 Por favor, verifiquen que el acceso del nuevo usuario esté funcionando correctamente y hágannoslo saber si se necesita algún ajuste.
+
+
+A new user, user13, has been added. You will find the password in the link below; please change the password after the first login.
+Please verify that the new user’s access is working correctly and let us know if any adjustments are needed.
+Additionally, we would like to inform you that it is necessary to increase the resources of the RDS server. Please let us know the date and time when we can perform this task.
 
 ----------------------------------------------
 ===> Forward & Set to internal
@@ -106,3 +107,10 @@ Alan Kmiecik has been added to ALLPRO Systems.
 IMPORTANTE:
 !! todos los tickets donde dice que se crea usuario o se agregan recursos son Billable_WT
 
+
+------ PROBAR NUEVO USUARIO CREADO --------
+RdsHtml5:
+https://rds.mcbauchemie.privatcloud.biz:10106/rdweb/webclient/index.html
+
+Cuenta de usuario recien creardo:
+user13@mcbauchemie.privatcloud.biz
