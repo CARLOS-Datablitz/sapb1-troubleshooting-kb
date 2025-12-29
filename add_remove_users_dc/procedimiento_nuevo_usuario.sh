@@ -113,4 +113,12 @@ RdsHtml5:
 https://rds.mcbauchemie.privatcloud.biz:10106/rdweb/webclient/index.html
 
 Cuenta de usuario recien creardo:
+
+!!!!! IMPORTANTE EN ALGUNOS CASOS EN EL CAMPO USER SOLO SE COLOCA : user13 (Sin la parte del dominio o correo)
 user13@mcbauchemie.privatcloud.biz
+
+
+https://rds.ecolimpio.privatcloud.biz:10039/rdweb/webclient/index.html
+
+user18@ecolimpio.privatcloud.biz
+Ch@ng4MeNow!

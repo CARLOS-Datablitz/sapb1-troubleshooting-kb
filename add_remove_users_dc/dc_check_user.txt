@@ -19,7 +19,7 @@ $usuarios
 Write-Host "Total de usuarios habilitados que iniciaron sesión en los últimos 60 días: $($usuarios.Count)" -ForegroundColor Cyan
 
 =========================================================================
-Esto te da el número de usuarios habilitados en el AD:
+Esto te da el número(solo cantidad) de usuarios habilitados en el AD:
 Get-ADUser -Filter {Enabled -eq $true} | Measure-Object
 
 ******** Revisa usuarios sin logon en +90 días para limpiar cuentas obsoletas:
@@ -71,4 +71,20 @@ $deshabilitados = ($usuarios | Where-Object { $_.Enabled -eq $false }).Count
 Write-Host "Usuarios habilitados en OU 'Tampa': $habilitados" -ForegroundColor Green
 Write-Host "Usuarios deshabilitados en OU 'Tampa': $deshabilitados" -ForegroundColor Red
 Write-Host "Total de usuarios en OU 'Tampa': $($habilitados + $deshabilitados)" -ForegroundColor Cyan
+
+==============  Lista los usuarios habilitados y deshabilitados ===============
+
+
+Get-ADUser -Filter * -Properties Enabled |
+Select-Object `
+    Name,
+    SamAccountName,
+    @{Name="Estado"; Expression={
+        if ($_.Enabled) { "Habilitado" } else { "Deshabilitado" }
+    }} |
+Sort-Object Name
+
+
+============================================================
+
 

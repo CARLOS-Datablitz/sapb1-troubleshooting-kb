@@ -19,3 +19,6 @@ sles01:~ # systemctl restart sapb1tools.service sapb1servertools-authentication.
 
 systemctl status sap*
 
+
+Windows Server:
+shutdown /s /f /t 0

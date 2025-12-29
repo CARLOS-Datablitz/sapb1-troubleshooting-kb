@@ -27,3 +27,9 @@ Hay respaldos que se hacen a las maquinas virtuales, todos los dias a las 9:00PM
 - ¿Por cuanto tiempo guardan esos respaldos?
 Para el del multitenant donde esta alojado "tacticademo" que es por lo cual veo que estas preguntando, el perido de retencion que tiene configurado actualmente es de: 9 dias en lo que es base de datos y maquinas virtuales 3-4 dias atras.
 
+===============================
+iSystems#99192414
+
+En el caso de LATAM la operación se centra en Tampa, Florida. Y el respaldo directo de este Data Center es Houston. Sin embargo hay respaldos en diferentes grados (locales y globales) que se orquestan de acuerdo a las políticas de seguridad que manejamos. Dentro del mismo Data Center tenemos zonas aisladas de la operación en donde se hace el primer respaldo y así se va llevando a otras ubicaciones. Esta área de seguridad está en un espacio diferente, con recursos diferentes, aislada de la operación para evitar que si sucediera algo en el área de operación el respaldo principal sufriera el desastre. De ahí se va escalando el respaldo en diferentes tiempos para sacarlo a otros Data Centers, en diferentes grados y diferentes tiempos se van sacando respaldos incluso fuera del continente.
+
+===============================

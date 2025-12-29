@@ -1,0 +1,47 @@
+  # Ticket: iSystems#99197238
+  # Task:
+  #  Exportar el schema: "TDA" e importarlo con el nombre: "TDA_FAE_TEST"
+  # Desde el sles on hanamt - 10.3.93.2 - E14
+  # Date: 19/12/2025 - 3:38PM
+  
+  #Begining in the hana
+  screen -dRR
+  cd /tmp && ls -lha
+  mkdir dbtda && ls -lha
+  chmod -R 777 dbtda/
+  chown -R ndbadm:sapsys dbtda/ && ls -lha
+  
+  #SQL Varibles (B1SYSTEM)
+  dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
+  dbInstance="00"
+  dbHost="127.0.0.1"
+  dbTenant="E14"
+  dbUser="B1SYSTEM"
+  dbPass="h27TcqsRED3xx0SH"
+
+  #Test DB
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";' | grep TDA
+  
+  # Export the schema
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TDA'."*" as binary into '\'/tmp/dbtda\'' with ignore existing threads 10;'
+  
+  #Ver que si esta el schema en la carpeta
+  ls -lha /tmp/dbtda/export  #TDA
+  
+  # Import with a different name
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TDA'."*" as binary from '\'/tmp/dbtda\'' with ignore existing threads 10 rename schema "TDA" to "TDA_FAE_TEST";'
+
+  #Test DB
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+  "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";' | grep TDA
+  
+  # Done Export
+  [ TDA ] --> 0 rows affected (overall time 37.202846 sec; server time 37.202569 sec)
+
+  # Done Import
+  [ TDA <=> TDA_FAE_TEST ] -->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
+                  0 rows affected (overall time 113.753646 sec; server time 113.752686 sec)
+
+  # Delete the non necessary files
+  cd /tmp && ls -lha && rm -rf dbtda/ && ls -lha

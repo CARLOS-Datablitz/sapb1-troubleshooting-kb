@@ -1,0 +1,74 @@
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir MIN_SAMANCO samanco_db_1 samanco_db_2
+cd /tmp && ls -lhad MIN_SAMANCO samanco_db_1 samanco_db_2
+chmod -R 777 MIN_SAMANCO/ samanco_db_1/ samanco_db_2/
+chown -R ndbadm:sapsys MIN_SAMANCO/ samanco_db_1/ samanco_db_2/ && ls -lha 
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="B1SYSTEM"
+dbPass="9PwF4hANfby4"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Realizar un import 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_MIN_SAMANCO01'."*" as binary from '\'/tmp/samanco_db_1/samanco_db_1\'' with ignore existing threads 10;'
+
+# Realizar un export
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_PROD_XH'."*" as binary into '\'/tmp/samanco_db_1\'' with ignore existing threads 10;'
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf MIN_SAMANCO/ samanco_db_1/ samanco_db_2/ && ls -lha
+
+================================================================
+RENAME, EXPORT
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_MIN_SAMANCO01'."*" as binary into '\'/tmp/samanco_db_1\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" \
+"IMPORT \"BIRLOS\".\"*\" AS BINARY FROM '/tmp/samanco_db_1/birlos_20250815' WITH IGNORE EXISTING THREADS 10 WITH IGNORE ERRORS;"
+
+tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
+dbdreampack1
+
+tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO /' dbdreampack1/
+
+sftp -P 443 c.pecho@files.dctpa.privatcloud.biz
+
+Recomendación:
+Si quieres mantener el archivo original y obtener buena compresión, usa:
+tar -czf /tmp/MIN_SAMANCO/SBO_PROD_XH.tar.gz  samanco_db_1
+
+En .tar.xz:
+tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
+
+# Comprimir CARPETETA/NOMBRE_COMPRIMIDO.tar.gz nombre_archivo_a_comprimir
+tar -czf MIN_SAMANCO/SBO_MIN_SAMANCO.tar.gz samanco_db_1/
+tar -czf MIN_SAMANCO/SBO_MIN_SAMANCO_TEST.tar.gz samanco_db_2/
+chown -R ndbadm:sapsys MIN_SAMANCO/ samanco_db_1/ samanco_db_2/
+chmod -R 777 MIN_SAMANCO/ samanco_db_1/ samanco_db_2/
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz

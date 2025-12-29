@@ -12,3 +12,12 @@ ndbadm@sles:/usr/sap/NDB/HDB00> ./HDB stop
 -- Desde el PROXMOX una vez que la VM(sles) este apagado se debe tomar un snapshot ---
 # ver los servicis levantar:
 sles: ~# htop 
+
+--- SLD ---
+
+systemctl status sap*
+sldwcms:~ # systemctl status sap*
+sldwcms:~ # systemctl stop sapb1servertools.service
+
+apagar linux:
+systemctl poweroff

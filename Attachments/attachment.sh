@@ -56,10 +56,6 @@ iSystems#99160828  ---> Jack
 
 ====================================
 
-
-
-
-
 # Attachment Example Rheinperchemie
 ordener
 # 10.2.89.106b1_shfSAP_B1Attachments ruta en Windows donde esta el B1:
