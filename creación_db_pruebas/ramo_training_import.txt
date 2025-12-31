@@ -3,9 +3,9 @@
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir db_buyandgo_1
-chmod -R 777 db_buyandgo_1/
-chown -R ndbadm:sapsys db_buyandgo_1/ && ls -lha
+mkdir db_buyandgo_1/ BUYANDGO_ZIP/
+chmod -R 777 db_buyandgo_1/ BUYANDGO_ZIP/
+chown -R ndbadm:sapsys db_buyandgo_1/ BUYANDGO_ZIP/ && ls -lha
 
 =================================================
 2. Variables de entorno:
@@ -18,11 +18,12 @@ cat Desktop/SAP_Configuration.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E01"
+dbTenant="E06"
 dbUser="B1SYSTEM"
-dbPass="q6xS3JFP51Mb"
+dbPass="7Z4b1DJUka3j"
 
 -------------------   
+
 
 # Testear la base de datos: NDB
 sles:/tmp #
@@ -33,17 +34,21 @@ sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BUYANDGO'."*" as binary into '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_BYG_13122025";'
-
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_COMERCIALIZADORA_DEMO";'
+# import
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
 # clean the hana:
-cd /tmp && rm -R SBO_BUYANDGO_30_DIC.tar.gz db_buyandgo_1/ && ls -lha | grep *buy*
+cd /tmp && rm -R SBO_BUYANDGO_30_DIC.tar.gz db_buyandgo_1/ && ls | grep *buy*
 
 =========================  FIN =================
 
-tar -czvf SBO_BUYANDGO_30_DIC.tar.gz -C /tmp/db_buyandgo_1 .
+tar -czvf /tmp/BUYANDGO_ZIP/BASE_PE_LC.tar.gz -C /tmp/db_buyandgo_1 .
+tar -xzvf /tmp/BUYANDGO_ZIP/SBO_BUYANDGO_30_DIC.tar.gz -C /tmp/db_buyandgo_1/
 
-chmod -R 777 SBO_BUYANDGO_30_DIC.tar.gz
-chown -R ndbadm:sapsys SBO_BUYANDGO_30_DIC.tar.gz && ls -lha
+chmod -R 777 BUYANDGO_ZIP/
+chown -R ndbadm:sapsys BUYANDGO_ZIP/ && ls -lha
+
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m

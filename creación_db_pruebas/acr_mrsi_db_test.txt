@@ -45,9 +45,11 @@ sles:/tmp #
 # Ver si existe la db
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" "SELECT SCHEMA_NAME FROM SYS.SCHEMAS WHERE SCHEMA_NAME = 'INFOVEGAS';"
 
-# Export the schema to arc_mrsi_test/
+# Export the schema 
 sles:/tmp #
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'BARR_BLANCA'."*" as binary into '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'INFOVEGAS'."*" as binary into '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10;'
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'BARRHER'."*" as binary into '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10;'
 
 # Check
 ls -lha /tmp/arc_mrsi_test/export
@@ -56,7 +58,7 @@ ls -lha /tmp/arc_mrsi_test/export
 
 
 # Import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BARR_BLANCA'."*" as binary from '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10 rename schema "BARR_BLANCA" to "INFOVEGAS";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BARRHER'."*" as binary from '\'/tmp/arc_mrsi_test\'' with ignore existing threads 10 rename schema "BARRHER" to "TEST_BARHER";'
 
 
 # Testear la base de datos: NDB

@@ -29,9 +29,9 @@ cat Desktop/SAP_Configuration.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E06"
+dbTenant="E01"
 dbUser="B1SYSTEM"
-dbPass="1KA53e3ZhzMJ"
+dbPass="Gwe2xspf7u25"
 
 -------------------   
 # ver las db o schemas: entrar al rds/Business One 64 bits
