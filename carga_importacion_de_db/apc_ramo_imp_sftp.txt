@@ -29,15 +29,9 @@ dbPass="1KA53e3ZhzMJ"
 # Export the schema
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_APC'."*" as binary into '\'/tmp/dbapc1\'' with ignore existing threads 10;'
 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TEST_03'."*" as binary into '\'/tmp/dbapc2\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TEST_11'."*" as binary into '\'/tmp/dbapc3\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'PRUEBAS_APC_JULIO'."*" as binary into '\'/tmp/dbapc4\'' with ignore existing threads 10;'
-
 
 # Import the shchema and rename
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbapc1/\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_17SET";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbapc1/\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_02ENERO";'
 
 # Tiempos y respuestas de los imports realizados
 
@@ -50,10 +44,7 @@ cd /tmp && ls -lha && rm -rf APC_ZIP/ dbapc1/ dbapc2/ dbapc3/ dbapc4/   && ls -l
 
 # Export the schema
 
-tar -czvf /tmp/APC_ZIP/TEST_08SET.tar.gz --transform 's/^dbapc1/TEST_08SET/' dbapc1/
-tar -czvf /tmp/APC_ZIP/TEST_03.tar.gz --transform 's/^dbapc2/TEST_03/' dbapc2/
-tar -czvf /tmp/APC_ZIP/TEST_11.tar.gz --transform 's/^dbapc3/TEST_11/' dbapc3/
-tar -czvf /tmp/APC_ZIP/PRUEBAS_APC_JULIO.tar.gz --transform 's/^dbapc4/PRUEBAS_APC_JULIO/' dbapc4/
+tar -czvf /tmp/APC_ZIP/SBO_APC_02_ENE.tar.gz -C /tmp/dbapc1 .
 
 chmod -R 777 APC_ZIP/
 

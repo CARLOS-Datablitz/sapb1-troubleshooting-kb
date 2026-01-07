@@ -38,3 +38,6 @@ last reboot | head
 timedatectl status
 WINDOWS:
 (gcim Win32_OperatingSystem).LastBootUpTime
+
+apagar linux:
+systemctl poweroff

@@ -1,21 +1,11 @@
-iSystems#99168619
-Creación de una base de pruebas a partir de la base productiva con corte al 13/08/2025, ya que el cliente necesita realizar pruebas de flujos internos antes de ejecutarlas en el entorno productivo.
-
-# Ticket: iSystems#99168619
-  # Tasks:
-  # export/Import the schema: SBO_BUYANDGO >> BK_BYG_130825 
-  # For RAMO - BUY&GO - / dctpamt090 - IP/10.3.90.2
-  # Date: 14/08/2025
-  # Tenant: E01
-
 =================================================
 1. Preparar el entorno en el sles, HANA, HANA-MT:
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir dbapc
-chmod -R 777 dbapc/
-chown -R ndbadm:sapsys dbapc/ && ls -lha
+mkdir db_fakt_1 FAKT_ZIP/
+chmod -R 777 db_fakt_1/ FAKT_ZIP
+chown -R ndbadm:sapsys db_fakt_1/ FAKT_ZIP/ && ls -lha
 
 =================================================
 2. Variables de entorno:
@@ -29,9 +19,9 @@ cat Desktop/SAP_Configuration.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E01"
+dbTenant="BO6"
 dbUser="B1SYSTEM"
-dbPass="Gwe2xspf7u25"
+dbPass="RQ5dp8qS"
 
 -------------------   
 # ver las db o schemas: entrar al rds/Business One 64 bits
@@ -42,24 +32,25 @@ sles:/tmp #
 
 # Export the schema
 sles:/tmp #
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_APC'."*" as binary into '\'/tmp/dbapc\'' with ignore existing threads 10;'
-
-# Check
-ls -lha /tmp/dbnvr/export
-# Done Export
-[ SBO_APC] ---> 0 rows affected (overall time 107.612269 sec; server time 107.611759 sec) 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TEST_FAKTSOLUTION'."*" as binary into '\'/tmp/db_fakt_1\'' with ignore existing threads 10;'
 
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbapc\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_SI";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/db_fakt_1\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST_SI";'
 
-# Done import
-[ SBO_DISTRIBUIDORA <=> ZZ_DISTRIBUIDORA ] --->   Warning: * 1347: Not recommended feature: Using SELECT INTO in Scalar UDF SQLSTATE: HY000
-					  0 rows affected (overall time 32.759035 sec; server time 32.758837 sec)
-
-# Testear la base de datos: NDB
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'    #--> SBO_DRISTIBUIDORA + ZZ_DISTRIBUIDORA
-
-rm -R dbapc
+rm -R db_fakt_1/ FAKT_ZIP/
 
   =========================  FIN =================
+tar -czvf /tmp/FAKT_ZIP/TEST_FAKTSOLUTION.tar.gz -C /tmp/db_fakt_1 .
+
+rm -rf /tmp/db_fakt_1/* /tmp/db_fakt_1/.*
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+

@@ -1,14 +1,14 @@
 
-RAMO BUYANDGO.txt
+Synesis - Tingue
 
 =================================================
 1. Preparar el entorno en el sles, HANA, HANA-MT:
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir BUY_AND_GO_ZIP/ db_buyandgo_1/
-chmod -R 777 BUY_AND_GO_ZIP/ db_buyandgo_1/
-chown -R ndbadm:sapsys BUY_AND_GO_ZIP/ db_buyandgo_1/ && ls -lha
+mkdir TINGUE_ZIP/ db_tingue_1/
+chmod -R 777 TINGUE_ZIP/ db_tingue_1/
+chown -R ndbadm:sapsys TINGUE_ZIP/ db_tingue_1/ && ls -lha
 
 =================================================
 2. Variables de entorno:
@@ -21,9 +21,9 @@ cat Desktop/SAP_Configuration.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E01"
+dbTenant="E05"
 dbUser="B1SYSTEM"
-dbPass="q6xS3JFP51Mb"
+dbPass="E6jk9AhOEyJKwh37"
 
 -------------------   
 
@@ -33,21 +33,21 @@ sles:/tmp #
 
 # Export the schema
 sles:/tmp #
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BUYANDGO'."*" as binary into '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TINGUEBROWNUS_PROD'."*" as binary into '\'/tmp/db_tingue_1\'' with ignore existing threads 10;'
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_BYG_13122025";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TINGUEBROWNUS_PROD'."*" as binary from '\'/tmp/db_tingue_1\'' with ignore existing threads 10 rename schema "TINGUEBROWNUS_PROD" to "XX_TINGUEUS010626";'
 
 # clean the hana:
-cd /tmp && rm -R  BUY_AND_GO_ZIP/ db_buyandgo_1/ && ls -lha | grep *buy*
+cd /tmp && rm -R  TINGUE_ZIP/ db_tingue_1/ && ls -lha 
 
 =========================  FIN =================
 
-tar -czvf /tmp/BUY_AND_GO_ZIP/SBO_BUYANDGO_06_DIC.tar.gz -C /tmp/db_buyandgo_1 .
+tar -czvf /tmp/TINGUE_ZIP/SBO_BUYANDGO_06_DIC.tar.gz -C /tmp/db_tingue_1 .
 ---Comando para comprimir:
-tar -czvf /tmp/BUY_AND_GO_ZIP/SBO_BUYANDGO_06_DIC_NO_DEPEN.tar.gz -C /tmp/db_buyandgo_1 .
+tar -czvf /tmp/TINGUE_ZIP/SBO_BUYANDGO_05_DIC.tar.gz -C /tmp/db_tingue_1 .
 --- Comando para descomprimir:
-tar -xpzvf SBO_BUYANDGO_04_DIC.tar.gz -C /tmp/db_buyandgo_1
+tar -xpzvf SBO_BUYANDGO_04_DIC.tar.gz -C /tmp/db_tingue_1
 
 
 chmod -R 777 SBO_BUYANDGO_04_DIC.tar.gz

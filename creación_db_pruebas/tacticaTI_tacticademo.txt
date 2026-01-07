@@ -1,0 +1,47 @@
+
+Pre-requisite:
+cd /
+df -h
+
+=================================================
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir dbtacticademmo_1/ dbtacticademmo_2/ dbtacticademmo_3/ dbtacticademmo_4
+chmod -R 777 dbtacticademmo_1/ dbtacticademmo_2/ dbtacticademmo_3/ dbtacticademmo_4
+chown -R ndbadm:sapsys dbtacticademmo_1/ dbtacticademmo_2/ dbtacticademmo_3/ dbtacticademmo_4 && ls -lha
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+=================================================
+2. Variables de entorno:
+-------------------   
+2.1 Sacar información de las variables:
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E15"
+dbUser="B1SYSTEM"
+dbPass="N8Q7f6Th4afA"
+
+-------------------   
+# Testear la base de datos: NDB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_MSAA'."*" as binary into '\'/tmp/dbtacticademmo_2\'' with ignore existing threads 10;'
+
+# import and rename the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_MSAA'."*" as binary from '\'/usr/sap/NDB/HDB00/work\'' with ignore existing threads 10 rename schema "SBO_MSAA" to "TACTICA_DEMO_1";'
+
+rm -R dbtacticademmo_1/ dbtacticademmo_2/ dbtacticademmo_3/ dbtacticademmo_4
+
+  =========================  FIN =================
+tar -czvf /tmp/dbtacticademmo_3/SBO_MSAA_02_ENER.tar.gz -C /tmp/dbtacticademmo_2 .
