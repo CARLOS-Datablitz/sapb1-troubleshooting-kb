@@ -1,0 +1,42 @@
+
+https://www.trustedtechteam.com/blogs/office/office-deployment-tool-guide?srsltid=AfmBOorGBE1KgPn2IcM9UCvoldz09iys1uun7zSLMMJ8tTYOEcgxTs74
+
+
+
+
+Descargar https://www.microsoft.com/en-in/download/details.aspx?id=49117
+y luego ejecutar, esto descomprimirá en una carpeta,le das la ubicación en C:/ llamada odt(la creas) 
+-----------------------------------------
+--- Como ver en Windows Server 2019 la arquitectura de CPU ---
+cmd
+echo %PROCESSOR_ARCHITECTURE%
+
+64 bits
+Aplicaciones de Microsoft 365 para negocios
+Seleccionar aplicaciones que pide cliente(Excel, Word, etc)
+Seleccionar el idioma principal(que usara el cliente, si esta en Alemania será el aleman).
+- Licencias y activación
+	- Aceptar terminos de licencia
+	Basado en usuarios
+	General: Colocar el nombre de la compañia <NO PARTNER>
+Exportar
+	- Mantener configuración actual
+
+Mover el archivo generado a al misma carpeta donde se encuentra los otros dos archivos:
+odt/
+configuration-Office365-x64.xml
+setup.exe
+configuration_<customer name>.xml
+-----------------------------------------
+Abrir CMD como Administrator:
+
+cd C:\odt
+
+setup.exe /configure <customer name>.xml
+
+# al ejecutar lo de arriba se inicia el proceso de instalación
+
+-----------------------------------------
+Tomar screeshot de los programs instaldos y enviar a cliente.
+
+

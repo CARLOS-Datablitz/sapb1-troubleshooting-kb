@@ -11,7 +11,7 @@ Recomendación: antes de hacer el CASCADE, revisa si el esquema existe:
 q # ---> para salir
 
 #Drop schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "SBO_COMERCIALIZADORA_DEMO" CASCADE'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'DROP SCHEMA "SBO_BUYANDGO" CASCADE'
 
 #On the SQL console in Hana Studio:
 DROP SCHEMA SBO_INVERTEK_DEV5 CASCADE;

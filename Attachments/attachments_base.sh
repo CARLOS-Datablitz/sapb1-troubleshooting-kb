@@ -101,3 +101,4 @@ mount -a -v
 df -h
 df -h | grep Attachments
 
+Get-ADUser -Identity "tim.jeffries" -Properties Enabled | Select-Object Name, Enabled

@@ -45,7 +45,7 @@ cd /tmp && rm -R BUYANDGO_ZIP/ db_buyandgo_1/ && ls *buy*
 
 =========================  FIN =================
 
-tar -czvf /tmp/BUYANDGO_ZIP/BASE_PE_LC.tar.gz -C /tmp/db_buyandgo_1 .
+tar -czvf /tmp/BUYANDGO_ZIP/SBO_BUYANDGO_UPGRADED_1000290_testv10.tar.gz -C /tmp/db_buyandgo_1 .
 tar -xzvf /tmp/BUYANDGO_ZIP/SBO_BUYANDGO_06_DIC.tar.gz -C /tmp/db_buyandgo_1/
 
 chmod -R 777 BUYANDGO_ZIP/
