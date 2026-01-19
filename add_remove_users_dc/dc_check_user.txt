@@ -85,6 +85,16 @@ Select-Object `
 Sort-Object Name
 
 
-============================================================
+======================= DURACION DE PASSWORDS=====================================
+PS C:\Windows\system32> Get-ADDefaultDomainPasswordPolicy
 
 
+================================================
+AD/DC:
+- 12 usuarios activos(user01 al user12, aunque los usuarios user11 y user12, nunca han iniciado sesión).
+- Usuario quiere 03 usuarios más, con esto serian 15 en total.
+
+RDS: 
+- Licencias disponibles 03
+- Recursos: RAM 22GB(uso 75%, para 15 usuarios se necesita 36, 38 GB), CPU: 12(para 15 usuarios se necesita 16 cores), HD: 100GB
+================================================

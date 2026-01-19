@@ -1,0 +1,13 @@
+Cuando un cliente se olvida sus credenciales SFTP, nosotros no podemos darselas, pero si podemos resetearla, esto solo Marcos o Telmo, Ellos tienen permiso para resetear contraseñas y crear usuario.
+
+Your SFTP credentials are the same ones you were given when you accessed the test environment
+If you have forgotten your password, please let us know and we will reset it.
+
+you can find all of its corresponding info in our SFTP (https://files.dcdus.privatcloud.biz/web/client/login)
+https://files.dctpa.privatcloud.biz/web/client/login
+
+99182354
+
+For security reasons, we do not have access to your current SFTP password. However, we can reset it and provide you with a new one.
+
+Please let us know if you would like us to proceed with the password reset

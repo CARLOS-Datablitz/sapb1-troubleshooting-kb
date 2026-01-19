@@ -1,0 +1,42 @@
+hostname=sld.montedamina.privatcloud.biz;
+zabbixserver=192.168.191.250;
+cd /tmp;wget https://repo.zabbix.com/zabbix/7.0/sles/15/x86_64/zabbix-release-7.0-1.sles15.noarch.rpm;rpm -ivh zabbix-release-7.0-1.sles15.noarch.rpm;zypper --gpg-auto-import-keys refresh 'Zabbix Official Repository';zypper install -y zabbix-agent;sleep 10;rm /etc/zabbix/zabbix_agentd.conf;
+option='$1'
+cat << EOF > /etc/zabbix/zabbix_agentd.conf
+PidFile=/run/zabbix/zabbix_agentd.pid
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=0
+Server=$zabbixserver
+ServerActive=$zabbixserver
+Hostname=$hostname
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
+User=root
+AllowRoot=1
+AllowKey=system.run[*]
+Timeout=30
+UserParameter=hana[*],/hana/scripts/hana.sh $option
+UserParameter=sapb1servertools,/hana/scripts/checksapb1servertools.sh
+EOF
+cd /hana/scripts/
+wget https://files.jezz.systems/etc/zabbix/SLD/checksapb1servertools.sh
+wget https://files.jezz.systems/etc/zabbix/HANA/hana.sh
+wget https://files.jezz.systems/etc/zabbix/HANA/hana.conf
+chmod +x /hana/scripts/checksapb1servertools.sh
+chmod 777 /hana/scripts/checksapb1servertools.sh
+chmod +x /hana/scripts/hana.sh
+chmod 777 /hana/scripts/hana.sh
+chmod 777 /hana/scripts/hana.conf
+systemctl stop zabbix-agent
+
+cd 
+cd /usr/lib/systemd/system
+cat zabbix-agent.service
+vim zabbix-agent.service
+
+[Service]
+User=root
+Group=root
+
+systemctl daemon-reload
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent

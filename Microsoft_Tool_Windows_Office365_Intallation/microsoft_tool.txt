@@ -11,8 +11,10 @@ y luego ejecutar, esto descomprimirá en una carpeta,le das la ubicación en C:/
 cmd
 echo %PROCESSOR_ARCHITECTURE%
 
+https://config.office.com/deploymentsettings
+
 64 bits
-Aplicaciones de Microsoft 365 para negocios
+Aplicaciones de Microsoft 365 para negocios(tercero en la lista)
 Seleccionar aplicaciones que pide cliente(Excel, Word, etc)
 Seleccionar el idioma principal(que usara el cliente, si esta en Alemania será el aleman).
 - Licencias y activación

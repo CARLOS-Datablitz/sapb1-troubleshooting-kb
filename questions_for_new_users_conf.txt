@@ -1,0 +1,6 @@
+--> CAD / WSCAD servidores 
+--> Configurar usarios Denis y WSCAD en servidor WSCAD --> Eso seran de dominio o locales?
+--> Crear grupo RZ\CAD y asiganarlos a CAD y WSCAD para carpetas de unidad E: ///, alguna carpeta en particular o toda la unidad? Que tipo de permisos debe tener ese grupo? lectura, escritura, control total cual?
+--> Crear cuentas active directory para Denis y Eplan /// Que tipo de cuenta, domain admin, Domain user?
+
+

@@ -1,0 +1,31 @@
+
+
+1. Revisar en el Fenrus/Crystal Reports Matrix
+	- Tener cuenta SAP para ver la version de SAP Business One eg. 10.0_SP 2505 // 10.0_SP2405HF1
+	
+	
+	
+2. Una vez que tenemos el .zip con el instalador de Crystal Report lo colocamos en Downloads del servidor en la ruta:
+		\\sld\B1_SHF
+				--> Creamos una carpeta <CR2020_SP4_P10>(version del CR)
+				mueves el .zip desde Downloads hasta aqui y la descomprimes.
+					---> Crear un .txt de nombre VERSION.txt
+					
+3. En el SLD(Linux):
+sld:~ # cd /usr/sap/SAPBusinessOne/B1_SHF/
+		-- ~ # chmod -R 777 <CR2020_SP4_P10>
+		-- ~ # chown -R b1service0:b1service0 <CR2020_SP4_P10>
+		## Verificar que la carpeta <CR2020_SP4_P10> este en VERDE
+
+4. Desde servidor Windows (rds, adm, app, etc):
+   \\sld\B1_SHF\ <CR2020_SP4_P10> ejecutamos como administrador setup.exe
+   
+5. \\sld\B1_SHF\CR_Integretion:
+		---> SAP Business One Crystal Report Integration.exe ## tenemos que instalarlo
+
+6. Crear acceso directo al escritorio:
+	Buscar la aplicacion SAP Crystal Report for SAP Business ---> Abrirla para que carguen por primera vez
+	Run/Ejecutar: %Public%\Desktop
+	Copiar el icono de la aplicacion y arrastralo a una carpeta temporal(Descargas/Downloads), y luego desde ahí recien pegarlo en la carpeta %Public%\Desktop
+	Borrar el icono que se encuentra en Descargas/Downloads.
+	

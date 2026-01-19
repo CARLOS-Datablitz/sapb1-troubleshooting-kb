@@ -52,6 +52,7 @@ chmod -R 777 BUYANDGO_ZIP/
 chown -R ndbadm:sapsys BUYANDGO_ZIP/ && ls -lha
 
 
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m
 cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 

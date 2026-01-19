@@ -15,7 +15,7 @@ $ locate new.txt
 ------------------------------------
 #pwd como variable:
 $ cat $(pwd)/*
-
+$ cat $(find . -name -file07)
 ------------------------------------
 #ver archivos ocultos: los recursos que empiezan por un . no se ven ka menos que uses:
 $ ls -a inhere/

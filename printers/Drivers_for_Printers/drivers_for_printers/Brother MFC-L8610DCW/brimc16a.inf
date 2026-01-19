@@ -1,0 +1,1424 @@
+;=======================================================================
+; Brother Scanner Setup File
+; Copyright (c) 2016 Brother Industries, Ltd.
+; FileName : brimc16a.inf
+; Function : Scanner(Image)
+; I/F      : USB / LAN
+; OS       : Vista / 7 / 8 / 10 / Server 2003 / 2008 / 2012
+; Model    : DCP-L8410CDW series
+;          : MFC-L8610CDW series
+;          : MFC-L8690CDW series
+;          : MFC-L8900CDW series
+;          : MFC-L9570CDW series
+;=======================================================================
+
+[Version]
+Signature   = "$Windows NT$"
+Class       = Image
+ClassGUID   = {6bdd1fc6-810f-11d0-bec7-08002be2092f}
+Provider    = Brother
+DriverPackageType        = PlugAndPlay
+DriverPackageDisplayName = "DCP-L8410CDW series, MFC-L8610CDW series, MFC-L8690CDW series, MFC-L8900CDW series, MFC-L9570CDW series"
+DriverVer   = 06/25/2024, 1.0.27.1
+CatalogFile = brimc16a.cat
+
+[Manufacturer]
+Brother = MODEL,NTx86.5.1,NTx86.5.2,NTamd64.5.2,NTx86.6,NTamd64.6
+
+[MODEL]
+
+[MODEL.NTx86.5.1]
+"Brother DCP-L8410CDW" = DCP-L8410CDW.USB.SCN.WXP32,USB\VID_04F9&PID_03F7&MI_01
+"Brother MFC-L8610CDW" = MFC-L8610CDW.USB.SCN.WXP32,USB\VID_04F9&PID_03F6&MI_01
+"Brother MFC-L8690CDW" = MFC-L8690CDW.USB.SCN.WXP32,USB\VID_04F9&PID_03F5&MI_01
+"Brother MFC-L8900CDW" = MFC-L8900CDW.USB.SCN.WXP32,USB\VID_04F9&PID_03F4&MI_01
+"Brother MFC-L9570CDW" = MFC-L9570CDW.USB.SCN.WXP32,USB\VID_04F9&PID_03F3&MI_01
+"Brother DCP-L8410CDW LAN" = DCP-L8410CDW.NET.SCN.WXP,VID_04F9&PID_03F7&NETSCN
+"Brother MFC-L8610CDW LAN" = MFC-L8610CDW.NET.SCN.WXP,VID_04F9&PID_03F6&NETSCN
+"Brother MFC-L8690CDW LAN" = MFC-L8690CDW.NET.SCN.WXP,VID_04F9&PID_03F5&NETSCN
+"Brother MFC-L8900CDW LAN" = MFC-L8900CDW.NET.SCN.WXP,VID_04F9&PID_03F4&NETSCN
+"Brother MFC-L9570CDW LAN" = MFC-L9570CDW.NET.SCN.WXP,VID_04F9&PID_03F3&NETSCN
+
+[MODEL.NTx86.5.2]
+"Brother DCP-L8410CDW" = DCP-L8410CDW.USB.SCN.WSERV32,USB\VID_04F9&PID_03F7&MI_01
+"Brother MFC-L8610CDW" = MFC-L8610CDW.USB.SCN.WSERV32,USB\VID_04F9&PID_03F6&MI_01
+"Brother MFC-L8690CDW" = MFC-L8690CDW.USB.SCN.WSERV32,USB\VID_04F9&PID_03F5&MI_01
+"Brother MFC-L8900CDW" = MFC-L8900CDW.USB.SCN.WSERV32,USB\VID_04F9&PID_03F4&MI_01
+"Brother MFC-L9570CDW" = MFC-L9570CDW.USB.SCN.WSERV32,USB\VID_04F9&PID_03F3&MI_01
+"Brother DCP-L8410CDW LAN" = DCP-L8410CDW.NET.SCN.WXP,VID_04F9&PID_03F7&NETSCN
+"Brother MFC-L8610CDW LAN" = MFC-L8610CDW.NET.SCN.WXP,VID_04F9&PID_03F6&NETSCN
+"Brother MFC-L8690CDW LAN" = MFC-L8690CDW.NET.SCN.WXP,VID_04F9&PID_03F5&NETSCN
+"Brother MFC-L8900CDW LAN" = MFC-L8900CDW.NET.SCN.WXP,VID_04F9&PID_03F4&NETSCN
+"Brother MFC-L9570CDW LAN" = MFC-L9570CDW.NET.SCN.WXP,VID_04F9&PID_03F3&NETSCN
+
+[MODEL.NTamd64.5.2]
+"Brother DCP-L8410CDW" = DCP-L8410CDW.USB.SCN.WXP64,USB\VID_04F9&PID_03F7&MI_01
+"Brother MFC-L8610CDW" = MFC-L8610CDW.USB.SCN.WXP64,USB\VID_04F9&PID_03F6&MI_01
+"Brother MFC-L8690CDW" = MFC-L8690CDW.USB.SCN.WXP64,USB\VID_04F9&PID_03F5&MI_01
+"Brother MFC-L8900CDW" = MFC-L8900CDW.USB.SCN.WXP64,USB\VID_04F9&PID_03F4&MI_01
+"Brother MFC-L9570CDW" = MFC-L9570CDW.USB.SCN.WXP64,USB\VID_04F9&PID_03F3&MI_01
+"Brother DCP-L8410CDW LAN" = DCP-L8410CDW.NET.SCN.WXP,VID_04F9&PID_03F7&NETSCN
+"Brother MFC-L8610CDW LAN" = MFC-L8610CDW.NET.SCN.WXP,VID_04F9&PID_03F6&NETSCN
+"Brother MFC-L8690CDW LAN" = MFC-L8690CDW.NET.SCN.WXP,VID_04F9&PID_03F5&NETSCN
+"Brother MFC-L8900CDW LAN" = MFC-L8900CDW.NET.SCN.WXP,VID_04F9&PID_03F4&NETSCN
+"Brother MFC-L9570CDW LAN" = MFC-L9570CDW.NET.SCN.WXP,VID_04F9&PID_03F3&NETSCN
+
+[MODEL.NTx86.6]
+"Brother DCP-L8410CDW" = DCP-L8410CDW.USB.SCN,USB\VID_04F9&PID_03F7&MI_01
+"Brother MFC-L8610CDW" = MFC-L8610CDW.USB.SCN,USB\VID_04F9&PID_03F6&MI_01
+"Brother MFC-L8690CDW" = MFC-L8690CDW.USB.SCN,USB\VID_04F9&PID_03F5&MI_01
+"Brother MFC-L8900CDW" = MFC-L8900CDW.USB.SCN,USB\VID_04F9&PID_03F4&MI_01
+"Brother MFC-L9570CDW" = MFC-L9570CDW.USB.SCN,USB\VID_04F9&PID_03F3&MI_01
+"Brother DCP-L8410CDW LAN" = DCP-L8410CDW.NET.SCN,VID_04F9&PID_03F7&NETSCN
+"Brother MFC-L8610CDW LAN" = MFC-L8610CDW.NET.SCN,VID_04F9&PID_03F6&NETSCN
+"Brother MFC-L8690CDW LAN" = MFC-L8690CDW.NET.SCN,VID_04F9&PID_03F5&NETSCN
+"Brother MFC-L8900CDW LAN" = MFC-L8900CDW.NET.SCN,VID_04F9&PID_03F4&NETSCN
+"Brother MFC-L9570CDW LAN" = MFC-L9570CDW.NET.SCN,VID_04F9&PID_03F3&NETSCN
+
+[MODEL.NTamd64.6]
+"Brother DCP-L8410CDW" = DCP-L8410CDW.USB.SCN,USB\VID_04F9&PID_03F7&MI_01
+"Brother MFC-L8610CDW" = MFC-L8610CDW.USB.SCN,USB\VID_04F9&PID_03F6&MI_01
+"Brother MFC-L8690CDW" = MFC-L8690CDW.USB.SCN,USB\VID_04F9&PID_03F5&MI_01
+"Brother MFC-L8900CDW" = MFC-L8900CDW.USB.SCN,USB\VID_04F9&PID_03F4&MI_01
+"Brother MFC-L9570CDW" = MFC-L9570CDW.USB.SCN,USB\VID_04F9&PID_03F3&MI_01
+"Brother DCP-L8410CDW LAN" = DCP-L8410CDW.NET.SCN,VID_04F9&PID_03F7&NETSCN
+"Brother MFC-L8610CDW LAN" = MFC-L8610CDW.NET.SCN,VID_04F9&PID_03F6&NETSCN
+"Brother MFC-L8690CDW LAN" = MFC-L8690CDW.NET.SCN,VID_04F9&PID_03F5&NETSCN
+"Brother MFC-L8900CDW LAN" = MFC-L8900CDW.NET.SCN,VID_04F9&PID_03F4&NETSCN
+"Brother MFC-L9570CDW LAN" = MFC-L9570CDW.NET.SCN,VID_04F9&PID_03F3&NETSCN
+
+[ControlFlags]
+ 
+
+;----------------------------------------
+;----------------------------------------
+; DCP-L8410CDW series
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; USB: XP (32bit)
+;----------------------------------------
+[DCP-L8410CDW.USB.SCN.WXP32.NT]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = DCP-L8410CDW.USB.SCN.WXP32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrScnUsb.CopyFiles,BrTwdsFeUSB.DCP-L8410CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[DCP-L8410CDW.USB.SCN.WXP32.NT.Services]
+AddService    = BrScnUsb, 0x00000002, BrScnUsb.AddService
+
+[DCP-L8410CDW.USB.SCN.WXP32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother DCP-L8410CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "DCP-L8410CDW series"
+
+;----------------------------------------
+; USB: Server 2003 (32bit)
+;----------------------------------------
+[DCP-L8410CDW.USB.SCN.WSERV32.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = DCP-L8410CDW.USB.SCN.WSERV32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeUSB.DCP-L8410CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[DCP-L8410CDW.USB.SCN.WSERV32.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[DCP-L8410CDW.USB.SCN.WSERV32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother DCP-L8410CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "DCP-L8410CDW series"
+
+;----------------------------------------
+; USB: XP, Server 2003 (64bit)
+;----------------------------------------
+[DCP-L8410CDW.USB.SCN.WXP64.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = DCP-L8410CDW.USB.SCN.WXP64.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeUSB.DCP-L8410CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[DCP-L8410CDW.USB.SCN.WXP64.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[DCP-L8410CDW.USB.SCN.WXP64.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother DCP-L8410CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "DCP-L8410CDW series"
+
+;----------------------------------------
+; USB: Vist or later (32/64bit)
+;----------------------------------------
+[DCP-L8410CDW.USB.SCN.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = DCP-L8410CDW.USB.SCN.DeviceData
+AddReg        = BrWia20USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeUSB.DCP-L8410CDW.CopyFiles,BrWia20USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[DCP-L8410CDW.USB.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[DCP-L8410CDW.USB.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother DCP-L8410CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "DCP-L8410CDW series"
+
+;----------------------------------------
+; NET: XP / Server2003 (32/64bit)
+;----------------------------------------
+[DCP-L8410CDW.NET.SCN.WXP.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = DCP-L8410CDW.NET.SCN.WXP.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia10Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeNet.DCP-L8410CDW.CopyFiles,BrWia10Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[DCP-L8410CDW.NET.SCN.WXP.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[DCP-L8410CDW.NET.SCN.WXP.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother DCP-L8410CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "DCP-L8410CDW series"
+
+;----------------------------------------
+; NET: Vista or later (32/64bit)
+;----------------------------------------
+[DCP-L8410CDW.NET.SCN.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = DCP-L8410CDW.NET.SCN.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia20Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeNet.DCP-L8410CDW.CopyFiles,BrWia20Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[DCP-L8410CDW.NET.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[DCP-L8410CDW.NET.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother DCP-L8410CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "DCP-L8410CDW series"
+
+;----------------------------------------
+;----------------------------------------
+; MFC-L8610CDW series
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; USB: XP (32bit)
+;----------------------------------------
+[MFC-L8610CDW.USB.SCN.WXP32.NT]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8610CDW.USB.SCN.WXP32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrScnUsb.CopyFiles,BrTwdsFeUSB.MFC-L8610CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8610CDW.USB.SCN.WXP32.NT.Services]
+AddService    = BrScnUsb, 0x00000002, BrScnUsb.AddService
+
+[MFC-L8610CDW.USB.SCN.WXP32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8610CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8610CDW series"
+
+;----------------------------------------
+; USB: Server 2003 (32bit)
+;----------------------------------------
+[MFC-L8610CDW.USB.SCN.WSERV32.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8610CDW.USB.SCN.WSERV32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8610CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8610CDW.USB.SCN.WSERV32.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8610CDW.USB.SCN.WSERV32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8610CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8610CDW series"
+
+;----------------------------------------
+; USB: XP, Server 2003 (64bit)
+;----------------------------------------
+[MFC-L8610CDW.USB.SCN.WXP64.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8610CDW.USB.SCN.WXP64.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8610CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8610CDW.USB.SCN.WXP64.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8610CDW.USB.SCN.WXP64.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8610CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8610CDW series"
+
+;----------------------------------------
+; USB: Vist or later (32/64bit)
+;----------------------------------------
+[MFC-L8610CDW.USB.SCN.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8610CDW.USB.SCN.DeviceData
+AddReg        = BrWia20USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8610CDW.CopyFiles,BrWia20USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8610CDW.USB.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8610CDW.USB.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8610CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8610CDW series"
+
+;----------------------------------------
+; NET: XP / Server2003 (32/64bit)
+;----------------------------------------
+[MFC-L8610CDW.NET.SCN.WXP.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8610CDW.NET.SCN.WXP.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia10Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L8610CDW.CopyFiles,BrWia10Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8610CDW.NET.SCN.WXP.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L8610CDW.NET.SCN.WXP.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L8610CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L8610CDW series"
+
+;----------------------------------------
+; NET: Vista or later (32/64bit)
+;----------------------------------------
+[MFC-L8610CDW.NET.SCN.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8610CDW.NET.SCN.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia20Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.SX50.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L8610CDW.CopyFiles,BrWia20Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8610CDW.NET.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L8610CDW.NET.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L8610CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L8610CDW series"
+
+;----------------------------------------
+;----------------------------------------
+; MFC-L8690CDW series
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; USB: XP (32bit)
+;----------------------------------------
+[MFC-L8690CDW.USB.SCN.WXP32.NT]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8690CDW.USB.SCN.WXP32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX50.AddReg
+CopyFiles     = BrScnUsb.CopyFiles,BrTwdsFeUSB.MFC-L8690CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8690CDW.USB.SCN.WXP32.NT.Services]
+AddService    = BrScnUsb, 0x00000002, BrScnUsb.AddService
+
+[MFC-L8690CDW.USB.SCN.WXP32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8690CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8690CDW series"
+
+;----------------------------------------
+; USB: Server 2003 (32bit)
+;----------------------------------------
+[MFC-L8690CDW.USB.SCN.WSERV32.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8690CDW.USB.SCN.WSERV32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX50.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8690CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8690CDW.USB.SCN.WSERV32.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8690CDW.USB.SCN.WSERV32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8690CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8690CDW series"
+
+;----------------------------------------
+; USB: XP, Server 2003 (64bit)
+;----------------------------------------
+[MFC-L8690CDW.USB.SCN.WXP64.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8690CDW.USB.SCN.WXP64.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX50.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8690CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8690CDW.USB.SCN.WXP64.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8690CDW.USB.SCN.WXP64.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8690CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8690CDW series"
+
+;----------------------------------------
+; USB: Vist or later (32/64bit)
+;----------------------------------------
+[MFC-L8690CDW.USB.SCN.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8690CDW.USB.SCN.DeviceData
+AddReg        = BrWia20USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX50.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8690CDW.CopyFiles,BrWia20USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8690CDW.USB.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8690CDW.USB.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8690CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8690CDW series"
+
+;----------------------------------------
+; NET: XP / Server2003 (32/64bit)
+;----------------------------------------
+[MFC-L8690CDW.NET.SCN.WXP.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8690CDW.NET.SCN.WXP.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia10Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX50.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L8690CDW.CopyFiles,BrWia10Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8690CDW.NET.SCN.WXP.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L8690CDW.NET.SCN.WXP.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L8690CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L8690CDW series"
+
+;----------------------------------------
+; NET: Vista or later (32/64bit)
+;----------------------------------------
+[MFC-L8690CDW.NET.SCN.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8690CDW.NET.SCN.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia20Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX50.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L8690CDW.CopyFiles,BrWia20Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8690CDW.NET.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L8690CDW.NET.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L8690CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L8690CDW series"
+
+;----------------------------------------
+;----------------------------------------
+; MFC-L8900CDW series
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; USB: XP (32bit)
+;----------------------------------------
+[MFC-L8900CDW.USB.SCN.WXP32.NT]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8900CDW.USB.SCN.WXP32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX70.AddReg
+CopyFiles     = BrScnUsb.CopyFiles,BrTwdsFeUSB.MFC-L8900CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8900CDW.USB.SCN.WXP32.NT.Services]
+AddService    = BrScnUsb, 0x00000002, BrScnUsb.AddService
+
+[MFC-L8900CDW.USB.SCN.WXP32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8900CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8900CDW series"
+
+;----------------------------------------
+; USB: Server 2003 (32bit)
+;----------------------------------------
+[MFC-L8900CDW.USB.SCN.WSERV32.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8900CDW.USB.SCN.WSERV32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX70.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8900CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8900CDW.USB.SCN.WSERV32.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8900CDW.USB.SCN.WSERV32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8900CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8900CDW series"
+
+;----------------------------------------
+; USB: XP, Server 2003 (64bit)
+;----------------------------------------
+[MFC-L8900CDW.USB.SCN.WXP64.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8900CDW.USB.SCN.WXP64.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX70.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8900CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8900CDW.USB.SCN.WXP64.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8900CDW.USB.SCN.WXP64.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8900CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8900CDW series"
+
+;----------------------------------------
+; USB: Vist or later (32/64bit)
+;----------------------------------------
+[MFC-L8900CDW.USB.SCN.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8900CDW.USB.SCN.DeviceData
+AddReg        = BrWia20USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX70.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L8900CDW.CopyFiles,BrWia20USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8900CDW.USB.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L8900CDW.USB.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L8900CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L8900CDW series"
+
+;----------------------------------------
+; NET: XP / Server2003 (32/64bit)
+;----------------------------------------
+[MFC-L8900CDW.NET.SCN.WXP.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8900CDW.NET.SCN.WXP.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia10Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX70.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L8900CDW.CopyFiles,BrWia10Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8900CDW.NET.SCN.WXP.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L8900CDW.NET.SCN.WXP.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L8900CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L8900CDW series"
+
+;----------------------------------------
+; NET: Vista or later (32/64bit)
+;----------------------------------------
+[MFC-L8900CDW.NET.SCN.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L8900CDW.NET.SCN.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia20Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX70.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L8900CDW.CopyFiles,BrWia20Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L8900CDW.NET.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L8900CDW.NET.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L8900CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L8900CDW series"
+
+;----------------------------------------
+;----------------------------------------
+; MFC-L9570CDW series
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; USB: XP (32bit)
+;----------------------------------------
+[MFC-L9570CDW.USB.SCN.WXP32.NT]
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L9570CDW.USB.SCN.WXP32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX80.AddReg
+CopyFiles     = BrScnUsb.CopyFiles,BrTwdsFeUSB.MFC-L9570CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L9570CDW.USB.SCN.WXP32.NT.Services]
+AddService    = BrScnUsb, 0x00000002, BrScnUsb.AddService
+
+[MFC-L9570CDW.USB.SCN.WXP32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L9570CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L9570CDW series"
+
+;----------------------------------------
+; USB: Server 2003 (32bit)
+;----------------------------------------
+[MFC-L9570CDW.USB.SCN.WSERV32.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L9570CDW.USB.SCN.WSERV32.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX80.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L9570CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L9570CDW.USB.SCN.WSERV32.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L9570CDW.USB.SCN.WSERV32.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L9570CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L9570CDW series"
+
+;----------------------------------------
+; USB: XP, Server 2003 (64bit)
+;----------------------------------------
+[MFC-L9570CDW.USB.SCN.WXP64.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L9570CDW.USB.SCN.WXP64.DeviceData
+AddReg        = BrWia10USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX80.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L9570CDW.CopyFiles,BrWia10USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L9570CDW.USB.SCN.WXP64.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L9570CDW.USB.SCN.WXP64.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L9570CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L9570CDW series"
+
+;----------------------------------------
+; USB: Vist or later (32/64bit)
+;----------------------------------------
+[MFC-L9570CDW.USB.SCN.NT]
+Include       = sti.inf
+Needs         = STI.USBSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L9570CDW.USB.SCN.DeviceData
+AddReg        = BrWia20USB.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX80.AddReg
+CopyFiles     = BrTwdsFeUSB.MFC-L9570CDW.CopyFiles,BrWia20USB.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L9570CDW.USB.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.USBSection.Services
+
+[MFC-L9570CDW.USB.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4DB1AD10-3391-11D2-9A33-00C04FA36145}
+TwainDS       = "TW-Brother MFC-L9570CDW"
+Model         = 0-GENERAL
+STIFILE       = BrUsi13b.dll
+ModelName     = "MFC-L9570CDW series"
+
+;----------------------------------------
+; NET: XP / Server2003 (32/64bit)
+;----------------------------------------
+[MFC-L9570CDW.NET.SCN.WXP.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L9570CDW.NET.SCN.WXP.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia10Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX80.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L9570CDW.CopyFiles,BrWia10Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L9570CDW.NET.SCN.WXP.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L9570CDW.NET.SCN.WXP.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L9570CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L9570CDW series"
+
+;----------------------------------------
+; NET: Vista or later (32/64bit)
+;----------------------------------------
+[MFC-L9570CDW.NET.SCN.NT]
+Include       = sti.inf
+Needs         = STI.SerialSection
+SubClass      = StillImage
+DeviceType    = 1
+DeviceSubType = 0x1
+Capabilities  = 0x39
+PortSelect    = NO
+Events        = BrEvents
+DeviceData    = MFC-L9570CDW.NET.SCN.DeviceData
+AddReg        = BrWiaNetUi.AddReg,BrWia20Net.AddReg,BrModel.BC4.Common.AddReg,BrModel.BC4.DX80.AddReg
+CopyFiles     = BrTwdsFeNet.MFC-L9570CDW.CopyFiles,BrWia20Net.CopyFiles,BrTwdsMain.CopyFiles
+ICMProfiles   = "sRGB Color Space Profile.icm"
+
+[MFC-L9570CDW.NET.SCN.NT.Services]
+Include       = sti.inf
+Needs         = STI.SerialSection.Services
+
+[MFC-L9570CDW.NET.SCN.DeviceData]
+Server        = local
+UI Class ID   = {4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}
+TwainDS       = "TW-Brother MFC-L9570CDW LAN"
+Model         = 0-GENERAL
+STIFILE       = BrNetSti.dll
+LISTNAME      = "MFC-L9570CDW series"
+
+
+;----------------------------------------
+;----------------------------------------
+; Add reg
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; Add reg DeviceData
+;----------------------------------------
+[BrModel.BC4.Common.AddReg]
+HKR,DeviceData,ScannerType     ,0x00000,2
+HKR,DeviceData,DocHandling     ,0x00000,3
+HKR,DeviceData,SkeyHandling    ,0x00000,1
+HKR,DeviceData,EnCmpJ          ,0x00000,1
+HKR,DeviceData,CmpRate         ,0x00000,2
+HKR,DeviceData,MaxResoNo       ,0x00000,8
+HKR,DeviceData,MaxResoCatalog  ,0x00000,12
+HKR,DeviceData,OpticalResoX    ,0x00000,1200
+HKR,DeviceData,OpticalResoY    ,0x00000,2400
+HKR,DeviceData,ResoType        ,0x00000,2
+HKR,DeviceData,EventImage      ,0x00000,1
+HKR,DeviceData,EventOcr        ,0x00000,1
+HKR,DeviceData,EventEmail      ,0x00000,1
+HKR,DeviceData,EventFile2      ,0x00000,1
+HKR,DeviceData,SetupInit       ,0x00000,1
+HKR,DeviceData,BedHReg         ,0x00000,1
+HKR,DeviceData,ReadBufSize,0x00010001,2097152
+
+[BrModel.BC4.SX50.AddReg]
+HKR,DeviceData,Command-S       ,0x00000,1
+HKR,DeviceData,Command-D       ,0x00000,1
+HKR,DeviceData,Command-K       ,0x00000,0
+HKR,DeviceData,DuplexScn       ,0x00000,0
+HKR,DeviceData,DocMaxPages     ,0x00000,50
+HKR,DeviceData,DevBedWidth     ,0x00000,8500
+HKR,DeviceData,DevBedHeight    ,0x00000,11693
+HKR,DeviceData,DevFeederWidth  ,0x00000,8500
+HKR,DeviceData,DevFeederHeight ,0x00000,14000
+HKR,DeviceData,BedDocWidth     ,0x00000,8268
+HKR,DeviceData,BedDocHeight    ,0x00000,11456
+HKR,DeviceData,FeederDocWidth  ,0x00000,8268
+HKR,DeviceData,FeederDocHeight ,0x00000,13763
+HKR,DeviceData,BedScnSpecWidth ,0x00000,8500
+HKR,DeviceData,BedScnSpecHeight,0x00000,11693
+HKR,DeviceData,ISISDriverName,0x00000,BR8480.pxn
+HKR,DeviceData,ReadBufSize,0x00010001,2097152
+
+[BrModel.BC4.DX50.AddReg]
+HKR,DeviceData,Command-S       ,0x00000,1
+HKR,DeviceData,Command-D       ,0x00000,1
+HKR,DeviceData,Command-K       ,0x00000,1
+HKR,DeviceData,DuplexScn       ,0x00000,1
+HKR,DeviceData,DocMaxPages     ,0x00000,100
+HKR,DeviceData,DevBedWidth     ,0x00000,8500
+HKR,DeviceData,DevBedHeight    ,0x00000,11693
+HKR,DeviceData,DevFeederWidth  ,0x00000,8500
+HKR,DeviceData,DevFeederHeight ,0x00000,14000
+HKR,DeviceData,BedDocWidth     ,0x00000,8268
+HKR,DeviceData,BedDocHeight    ,0x00000,11456
+HKR,DeviceData,FeederDocWidth  ,0x00000,8268
+HKR,DeviceData,FeederDocHeight ,0x00000,13763
+HKR,DeviceData,BedScnSpecWidth ,0x00000,8500
+HKR,DeviceData,BedScnSpecHeight,0x00000,11693
+HKR,DeviceData,ISISDriverName,0x00000,BR8890.pxn
+HKR,DeviceData,ReadBufSize,0x00010001,2097152
+
+[BrModel.BC4.DX70.AddReg]
+HKR,DeviceData,Command-S       ,0x00000,1
+HKR,DeviceData,Command-D       ,0x00000,1
+HKR,DeviceData,Command-K       ,0x00000,1
+HKR,DeviceData,DuplexScn       ,0x00000,1
+HKR,DeviceData,DocMaxPages     ,0x00000,140
+HKR,DeviceData,DevBedWidth     ,0x00000,8500
+HKR,DeviceData,DevBedHeight    ,0x00000,14000
+HKR,DeviceData,DevFeederWidth  ,0x00000,8500
+HKR,DeviceData,DevFeederHeight ,0x00000,14000
+HKR,DeviceData,BedDocWidth     ,0x00000,8268
+HKR,DeviceData,BedDocHeight    ,0x00000,13763
+HKR,DeviceData,FeederDocWidth  ,0x00000,8268
+HKR,DeviceData,FeederDocHeight ,0x00000,13763
+HKR,DeviceData,BedScnSpecWidth ,0x00000,8500
+HKR,DeviceData,BedScnSpecHeight,0x00000,14000
+HKR,DeviceData,ISISDriverName,0x00000,BR8890.pxn
+HKR,DeviceData,ReadBufSize,0x00010001,2097152
+
+[BrModel.BC4.DX80.AddReg]
+HKR,DeviceData,Command-S       ,0x00000,1
+HKR,DeviceData,Command-D       ,0x00000,1
+HKR,DeviceData,Command-K       ,0x00000,1
+HKR,DeviceData,DuplexScn       ,0x00000,1
+HKR,DeviceData,DocMaxPages     ,0x00000,160
+HKR,DeviceData,DevBedWidth     ,0x00000,8500
+HKR,DeviceData,DevBedHeight    ,0x00000,14000
+HKR,DeviceData,DevFeederWidth  ,0x00000,8500
+HKR,DeviceData,DevFeederHeight ,0x00000,14000
+HKR,DeviceData,BedDocWidth     ,0x00000,8268
+HKR,DeviceData,BedDocHeight    ,0x00000,13763
+HKR,DeviceData,FeederDocWidth  ,0x00000,8268
+HKR,DeviceData,FeederDocHeight ,0x00000,13763
+HKR,DeviceData,BedScnSpecWidth ,0x00000,8500
+HKR,DeviceData,BedScnSpecHeight,0x00000,14000
+HKR,DeviceData,ISISDriverName,0x00000,BR8890.pxn
+HKR,DeviceData,ReadBufSize,0x00010001,2097152
+
+;----------------------------------------
+; Add reg USB
+;----------------------------------------
+[BrWia10USB.AddReg]
+HKR,,HardwareConfig,1,4
+HKR,,USDClass,,"{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD}"
+HKR,DeviceData,OpenTimeout,0x10001,360000
+HKCR,CLSID\{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD} ,,,%BrWiaUsd%
+HKCR,CLSID\{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD}\InProcServer32,,0x00020000,%%SystemRoot%%\System32\BrWia13b.dll
+HKCR,CLSID\{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD}\InProcServer32,ThreadingModel,,"Both"
+
+[BrWia20USB.AddReg]
+HKR,,HardwareConfig,1,4
+HKR,,USDClass,,"{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE}"
+HKR,DeviceData,ChangePaperSize,0x00000,0
+HKR,DeviceData,OpenTimeout,0x10001,360000
+HKCR,CLSID\{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE} ,,,%BrWiaUsd%
+HKCR,CLSID\{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE}\InProcServer32,,0x00020000,%%SystemRoot%%\System32\BrWi213b.dll
+HKCR,CLSID\{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE}\InProcServer32,ThreadingModel,,"Both"
+
+;----------------------------------------
+; Add reg NET
+;----------------------------------------
+[BrWia10Net.AddReg]
+HKR,,HardwareConfig,1,1
+HKR,,USDClass,,"{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD}"
+HKR,,CreateFileName,,BRNET
+HKR,DeviceData,OpenTimeout,0x10001,360000
+HKCR,CLSID\{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD} ,,,%BrWiaUsd%
+HKCR,CLSID\{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD}\InProcServer32,,0x00020000,%%SystemRoot%%\System32\BrWia13b.dll
+HKCR,CLSID\{DF2E1D41-D15E-46AF-B5B1-7D8ADC1D60FD}\InProcServer32,ThreadingModel,,"Both"
+
+[BrWia20Net.AddReg]
+HKR,,HardwareConfig,1,1
+HKR,,USDClass,,"{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE}"
+HKR,,CreateFileName,,BRNET
+HKR,DeviceData,ChangePaperSize,0x00000,0
+HKR,DeviceData,OpenTimeout,0x10001,360000
+HKCR,CLSID\{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE} ,,,%BrWiaUsd%
+HKCR,CLSID\{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE}\InProcServer32,,0x00020000,%%SystemRoot%%\System32\BrWi213b.dll
+HKCR,CLSID\{8586D0D0-1A8B-4ADC-82B3-0E2C581310AE}\InProcServer32,ThreadingModel,,"Both"
+
+[BrWiaNetUi.AddReg]
+HKCR,CLSID\{4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA},,,"WIA Driver UI Extension"
+HKCR,CLSID\{4B29E704-7E5A-466c-A5FD-8BAEC62DC2BA}\shellex\PropertySheetHandlers\{65F642BF-7D2E-4848-96E8-E2B24655E87B}
+HKCR,CLSID\{65F642BF-7D2E-4848-96E8-E2B24655E87B},,,"WIA Property Sheet Handlers"
+HKCR,CLSID\{65F642BF-7D2E-4848-96E8-E2B24655E87B}\InProcServer32,,0x00020000,%%SystemRoot%%\System32\BrWiaNCp.dll
+HKCR,CLSID\{65F642BF-7D2E-4848-96E8-E2B24655E87B}\InProcServer32,ThreadingModel,,"Both"
+
+;----------------------------------------
+; Add Service
+;----------------------------------------
+[BrScnUsb.AddService]
+DisplayName    = %BrScnUsb.SvcDesc%
+ServiceType    = 1 ; SERVICE_KERNEL_DRIVER
+StartType      = 3 ; SERVICE_DEMAND_START
+ErrorControl   = 1 ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\BrScnUsb.sys
+LoadOrderGroup = Base
+
+
+;----------------------------------------
+;----------------------------------------
+; Events
+;----------------------------------------
+;----------------------------------------
+[BrEvents]
+ScanToOcr   = %ScanToOcr%,{9d095b89-37d6-4877-afed-62a297dc6dbe},*
+ScanToSpApp = %ScanToSpApp%,{a6c5a715-8c6e-11d2-977a-0000f87a926f},*
+ScanToEmail = %ScanToEmail%,{c686dcee-54f2-419e-9a27-2fc7f2e98f9e},*
+ScanToFile  = %ScanToFile%,{fc4767c1-c8b3-48a2-9cfa-2e90cb3d3590},*
+
+
+;----------------------------------------
+;----------------------------------------
+; Copy Files
+;----------------------------------------
+;----------------------------------------
+
+;----------------------------------------
+; Copy Files Common
+;----------------------------------------
+[BrTwdsMain.CopyFiles]
+BsDeviceAccs.dll
+BsStiDevAccs.dll
+BsUsbDevAccs.dll
+BsNetDevAccs.dll
+BsScanCoreApi.dll
+BoScanValidator.dll
+TwCaps.dll
+TwTriplet.dll
+TwDsUiFe.dll
+TwDsUi.exe
+TwDsUiLaunch.exe
+Livet.dll
+System.Windows.Interactivity.dll
+Microsoft.Expression.Interactions.dll
+ColorDropDialog.dll
+
+TwHelpAru.chm
+TwHelpBul.chm
+TwHelpChn.chm
+TwHelpCht.chm
+TwHelpCze.chm
+TwHelpDan.chm
+TwHelpDut.chm
+TwHelpEng.chm
+TwHelpFin.chm
+TwHelpFrc.chm
+TwHelpFre.chm
+TwHelpGer.chm
+TwHelpHrv.chm
+TwHelpHun.chm
+TwHelpInd.chm
+TwHelpIta.chm
+TwHelpJpn.chm
+TwHelpKor.chm
+TwHelpNor.chm
+TwHelpPol.chm
+TwHelpPor.chm
+TwHelpPtb.chm
+TwHelpRom.chm
+TwHelpRus.chm
+TwHelpSlv.chm
+TwHelpSpa.chm
+TwHelpSrl.chm
+TwHelpSvk.chm
+TwHelpSwe.chm
+TwHelpTha.chm
+TwHelpTrk.chm
+TwHelpUkr.chm
+TwHelpUsa.chm
+TwHelpVit.chm
+
+[BrTwdsFeUSB.DCP-L8410CDW.CopyFiles]
+TwDsFe.ds
+DCP-L8410CDWU.ini
+
+[BrTwdsFeNet.DCP-L8410CDW.CopyFiles]
+TwDsFe.ds
+DCP-L8410CDWN.ini
+
+[BrTwdsFeUSB.MFC-L8610CDW.CopyFiles]
+TwDsFe.ds
+MFC-L8610CDWU.ini
+
+[BrTwdsFeNet.MFC-L8610CDW.CopyFiles]
+TwDsFe.ds
+MFC-L8610CDWN.ini
+
+[BrTwdsFeUSB.MFC-L8690CDW.CopyFiles]
+TwDsFe.ds
+MFC-L8690CDWU.ini
+
+[BrTwdsFeNet.MFC-L8690CDW.CopyFiles]
+TwDsFe.ds
+MFC-L8690CDWN.ini
+
+[BrTwdsFeUSB.MFC-L8900CDW.CopyFiles]
+TwDsFe.ds
+MFC-L8900CDWU.ini
+
+[BrTwdsFeNet.MFC-L8900CDW.CopyFiles]
+TwDsFe.ds
+MFC-L8900CDWN.ini
+
+[BrTwdsFeUSB.MFC-L9570CDW.CopyFiles]
+TwDsFe.ds
+MFC-L9570CDWU.ini
+
+[BrTwdsFeNet.MFC-L9570CDW.CopyFiles]
+TwDsFe.ds
+MFC-L9570CDWN.ini
+
+;----------------------------------------
+; Copy Files USB
+;----------------------------------------
+[BrScnUsb.CopyFiles]
+BrScnUsb.sys
+
+[BrWia10USB.CopyFiles]
+BrWia13b.dll
+BrUsi13b.dll
+BrJDec.dll
+
+[BrWia20USB.CopyFiles]
+BrWi213b.dll
+BrUsi13b.dll
+BrJDec.dll
+
+;----------------------------------------
+; Copy Files NET
+;----------------------------------------
+[BrWia10Net.CopyFiles]
+BrWia13b.dll
+BrJDec.dll
+
+[BrWia20Net.CopyFiles]
+BrWi213b.dll
+BrJDec.dll
+
+;[BrWiaNetCommon32.CopyFiles]
+;BrWiaNCp.dll
+;BrNetSti.dll
+;NSSearch.dll
+;BrMuSNMP.dll
+;Brnsplg.dll
+
+;[BrWiaNetCommon64.CopyFiles]
+;BrWiaNCp.dll
+;BrNetSti.dll
+;NSSRH64.dll
+;BrSNMP64.dll
+;Brnsplg.dll
+
+
+;----------------------------------------
+;----------------------------------------
+; Destination Directories
+;----------------------------------------
+;----------------------------------------
+[DestinationDirs]
+DefaultDestDir           = 11
+BrScnUsb.CopyFiles       = 12
+BrTwdsMain.CopyFiles     = 10,TWAIN_32\Brimc16a\Common
+
+BrTwdsFeUSB.DCP-L8410CDW.CopyFiles = 10,TWAIN_32\Brimc16a\DCP-L8410CDWU
+BrTwdsFeNet.DCP-L8410CDW.CopyFiles = 10,TWAIN_32\Brimc16a\DCP-L8410CDWN
+BrTwdsFeUSB.MFC-L8610CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L8610CDWU
+BrTwdsFeNet.MFC-L8610CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L8610CDWN
+BrTwdsFeUSB.MFC-L8690CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L8690CDWU
+BrTwdsFeNet.MFC-L8690CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L8690CDWN
+BrTwdsFeUSB.MFC-L8900CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L8900CDWU
+BrTwdsFeNet.MFC-L8900CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L8900CDWN
+BrTwdsFeUSB.MFC-L9570CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L9570CDWU
+BrTwdsFeNet.MFC-L9570CDW.CopyFiles = 10,TWAIN_32\Brimc16a\MFC-L9570CDWN
+
+
+;----------------------------------------
+;----------------------------------------
+; Source Disks
+;----------------------------------------
+;----------------------------------------
+[SourceDisksNames]
+1 = %BrDrvDisk1%
+
+[SourceDisksNames.x86]
+3 = %BrDrvDisk1%,,,x86
+[SourceDisksNames.amd64]
+4 = %BrDrvDisk1%,,,amd64
+
+[SourceDisksFiles]
+BrScnUsb.sys = 1,,
+BsDeviceAccs.dll = 1,,
+BsStiDevAccs.dll = 1,,
+BsUsbDevAccs.dll = 1,,
+BsNetDevAccs.dll = 1,,
+BsScanCoreApi.dll = 1,,
+BoScanValidator.dll = 1,,
+TwCaps.dll = 1,,
+TwTriplet.dll = 1,,
+TwDsUiFe.dll = 1,,
+TwDsUi.exe = 1,,
+TwDsUiLaunch.exe = 1,,
+Livet.dll = 1,,
+System.Windows.Interactivity.dll = 1,,
+Microsoft.Expression.Interactions.dll = 1,,
+ColorDropDialog.dll = 1,,
+TwHelpAru.chm = 1,,
+TwHelpBul.chm = 1,,
+TwHelpChn.chm = 1,,
+TwHelpCht.chm = 1,,
+TwHelpCze.chm = 1,,
+TwHelpDan.chm = 1,,
+TwHelpDut.chm = 1,,
+TwHelpEng.chm = 1,,
+TwHelpFin.chm = 1,,
+TwHelpFrc.chm = 1,,
+TwHelpFre.chm = 1,,
+TwHelpGer.chm = 1,,
+TwHelpHrv.chm = 1,,
+TwHelpHun.chm = 1,,
+TwHelpInd.chm = 1,,
+TwHelpIta.chm = 1,,
+TwHelpJpn.chm = 1,,
+TwHelpKor.chm = 1,,
+TwHelpNor.chm = 1,,
+TwHelpPol.chm = 1,,
+TwHelpPor.chm = 1,,
+TwHelpPtb.chm = 1,,
+TwHelpRom.chm = 1,,
+TwHelpRus.chm = 1,,
+TwHelpSlv.chm = 1,,
+TwHelpSpa.chm = 1,,
+TwHelpSrl.chm = 1,,
+TwHelpSvk.chm = 1,,
+TwHelpSwe.chm = 1,,
+TwHelpTha.chm = 1,,
+TwHelpTrk.chm = 1,,
+TwHelpUkr.chm = 1,,
+TwHelpUsa.chm = 1,,
+TwHelpVit.chm = 1,,
+
+DCP-L8410CDWU.ini = 1,,
+DCP-L8410CDWN.ini = 1,,
+MFC-L8610CDWU.ini = 1,,
+MFC-L8610CDWN.ini = 1,,
+MFC-L8690CDWU.ini = 1,,
+MFC-L8690CDWN.ini = 1,,
+MFC-L8900CDWU.ini = 1,,
+MFC-L8900CDWN.ini = 1,,
+MFC-L9570CDWU.ini = 1,,
+MFC-L9570CDWN.ini = 1,,
+TwDsFe.ds = 1,,
+
+[SourceDisksFiles.x86]
+BrWia13b.dll = 3,,
+BrWi213b.dll = 3,,
+BrUsi13b.dll = 3,,
+BrJDec.dll  = 3,,
+
+[SourceDisksFiles.amd64]
+BrWia13b.dll = 4,,
+BrWi213b.dll = 4,,
+BrUsi13b.dll = 4,,
+BrJDec.dll  = 4,,
+
+
+;----------------------------------------
+;----------------------------------------
+; Localizable Strings
+;----------------------------------------
+;----------------------------------------
+[Strings]
+BrDrvDisk1       = "Brother Scanner Driver Disk"
+BrScnUsb.SvcDesc = "Brother USB Still Image driver"
+BrWiaUsd         = "Brother Wia Scanner minidriver"
+
+ScanToOcr        = "Scan To OCR - Button Press"
+ScanToSpApp      = "Scan To Image - Button Press"
+ScanToEmail      = "Scan To E-mail - Button Press"
+ScanToFile       = "Scan To File - Button Press"

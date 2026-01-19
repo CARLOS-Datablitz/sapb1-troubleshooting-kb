@@ -14,6 +14,7 @@ Requisites:
 3. Get the drivers(Download Center: Select the model/select for Windows Server 2019(: Windows + R : winver)). C:\Users\administrator.FSI>wmic os get osarchitecture
 OSArchitecture
 64-bit
+cmd:
 echo %PROCESSOR_ARCHITECTURE%
 
 
@@ -21,14 +22,21 @@ echo %PROCESSOR_ARCHITECTURE%
 ip and port(ip-Accounting)
 Control Panel /Print Manager: ts02/Printers
 
-Nota: En impresoras Brothers hay que verificar que este en el puerto(editar), Asegúrate de marcar Raw y puerto 9100 (es el valor por defecto que espera Brother).
+Printer/Advanced/
+	- Print directly to the printer
+
+Nota: En impresoras Brothers hay que verificar que este en el puerto(editar),Port/Configure Port/ Asegúrate de marcar Raw y puerto 9100 (es el valor por defecto que espera Brother).
 A veces no sale la confirmación de exito de una impresión de prueba.
 
 =======================================
 
-Shipping office 10.90.170.13 HL-L6200DW series
-Front Office 10.90.170.11    HL-L6400DW series
-Xerox downstairs 10.90.170.31 Xerox® EC8056
-Xerox upstairs 10.90.170.32   Xerox® EC8056
-99172611
- 1933 960 359
+Brother MFC-L8610DCW series 192.168.65.20
+Xerox WorkCenter 6605ND 192.168.111.131 Carlisle, OH
+Canon iR-ADV C259 192.168.0.151 Franklin/HQ
+HP Color LaserJet MFP M283fdw 192.168.50.75 Pennsylvania
+Brother HL-L2395DW series 192.168.60.20 Tennessee
+Brother DCP-L2640DW 192.168.55.10 Illinois
+
+
+Brother MFC-L8610DCW series
+Brother MFC-L8900DCW series

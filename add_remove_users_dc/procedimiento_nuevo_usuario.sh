@@ -122,3 +122,35 @@ https://rds.ecolimpio.privatcloud.biz:10039/rdweb/webclient/index.html
 
 user17@ecolimpio.privatcloud.biz
 Ch@ng4MeNow!
+
+------------------------------- PASSWORD EXPIRE CHECK ------------------------
+Get-ADUser -Filter * -Properties msDS-UserPasswordExpiryTimeComputed |
+Select SamAccountName,
+       @{Name="PasswordExpiry";Expression={[datetime]::FromFileTime($_."msDS-UserPasswordExpiryTimeComputed")}} |
+Sort PasswordExpiry
+
+-------------------------------------------------------------------------------
+Get-ADUser -Filter * | ForEach-Object {
+    $policy = Get-ADUserResultantPasswordPolicy $_.SamAccountName -ErrorAction SilentlyContinue
+    [PSCustomObject]@{
+        User   = $_.SamAccountName
+        Policy = if ($policy) { $policy.Name } else { "DefaultDomainPolicy" }
+    }
+}
+
+
+================================================
+AD/DC:
+- 12 usuarios activos(user01 al user12, aunque los usuarios user11 y user12, nunca han iniciado sesión).
+- Usuario quiere 03 usuarios más, con esto serian 15 en total.
+
+RDS: 
+- Licencias disponibles 03
+- Recursos: RAM 22GB(uso 75%, para 15 usuarios se necesita 36, 38 GB), CPU: 12(para 15 usuarios se necesita 16 cores), HD: 100GB
+
+================================================
+https://rds.iad10123.privatcloud.biz:21103/rdweb/webclient/index.html
+user07@iad10123.privatcloud.biz
+Ch@ng4MeNow!
+
+Cha#cha#z1lla*9
