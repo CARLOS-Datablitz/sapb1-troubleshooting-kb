@@ -8,12 +8,12 @@ df -h
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
-chmod -R 777 dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
-chown -R ndbadm:sapsys dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4 && ls -lha
+mkdir db_summit_1/ db_summit_2/ db_summit_3/ db_summit_4
+chmod -R 777 db_summit_1/ db_summit_2/ db_summit_3/ db_summit_4
+chown -R ndbadm:sapsys db_summit_1/ db_summit_2/ db_summit_3/ db_summit_4 && ls -lha
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass:C4!qE0e]cVFy&$m 
+C4!qE0e]cVFy&$m 
 cd /ramo/APC
 ls -lha
 get 080SBOMAQEMAG25072025.tar.xz
@@ -27,23 +27,25 @@ bye
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E06"
+dbTenant="NDB"
 dbUser="B1SYSTEM"
-dbPass="1KA53e3ZhzMJ"
+dbPass="V9Hy0pQI7C8r"
 
 -------------------   
 # Testear la base de datos: NDB
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_APC'."*" as binary into '\'/tmp/dbAPC1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SUMMIT_PRODUCTION'."*" as binary into '\'/tmp/db_summit_1\'' with ignore existing threads 10;'
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbAPC1\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST1901";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/db_summit_1\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST1901";'
 
-rm -R dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+rm -R db_summit_1/ db_summit_2/ db_summit_3/ db_summit_4
 
   =========================  FIN =================
-tar -czf archivo.tar.gz 20250818_192501_E06_COMPLETE_DATA_BACKUP_databackup_2_1 &
+tar -cpzvf SUMMIT_PRODUCTION.tar.gz --numeric-owner --acls --xattrs -C /tmp/db_summit_1 .
+
 watch -n 5 'ls -lh archivo.tar.gz'
+
 

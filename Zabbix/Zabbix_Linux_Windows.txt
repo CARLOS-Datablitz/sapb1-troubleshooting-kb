@@ -1,0 +1,27 @@
+# ver los servicios zabbix configurados y su estado:
+
+PS C:\Windows\system32> Get-Service *zabbix*
+
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Zabbix Agent 2     Zabbix Agent 2
+
+PS C:\Windows\system32>
+
+Linux:
+systemctl status zabbix-agent
+systemctl start zabbix-agent
+systemctl stop zabbix-agent
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
+
+Windows (PowerShell):
+Get-Service *zabbix*
+
+Get-Service "Zabbix Agent 2"
+Start-Service "Zabbix Agent 2"
+Stop-Service "Zabbix Agent 2"
+Restart-Service "Zabbix Agent 2"
+Set-Service "Zabbix Agent 2" -StartupType Automatic
+Get-Service *zabbix*
+

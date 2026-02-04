@@ -22,3 +22,5 @@ sldwcms:~ # systemctl stop sapb1servertools.service
 apagar linux:
 systemctl reboot
 systemctl poweroff -----> !!!! CUIDADO SE PIERDE GESTION !!!!
+
+The servers have been restarted.

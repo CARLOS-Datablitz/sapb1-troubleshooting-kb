@@ -1,0 +1,7 @@
+
+
+------Español ----
+Se han creado exitosamente los 3 usuarios solicitados, user13, user14, user15; la contraseña es la predeterminada que se usa despues de una creación y puede ser cambiada tras el primer inicio de sesión, gracias.
+
+--------------------
+

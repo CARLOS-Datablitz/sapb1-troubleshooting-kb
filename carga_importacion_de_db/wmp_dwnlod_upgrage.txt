@@ -6,15 +6,14 @@ hanamt:/ # df -h
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir EXP-AMER dbamer1
-cd /tmp && ls -lhad EXP-AMER dbamer1
-chmod -R 777 EXP-AMER/ dbamer1/
-chown -R ndbadm:sapsys EXP-AMER/ dbamer1/ 
+mkdir WMP_ZIP/ db_wmp_1/ db_wmp_2/
+cd /tmp && ls -lhad WMP_ZIP db_wmp_1
+chmod -R 777 WMP_ZIP/ db_wmp_1/ db_wmp_2
+chown -R ndbadm:sapsys WMP_ZIP/ db_wmp_1/ db_wmp_2/
 
 # Descargar lso archivos del servidor SFTP desde la ruta que indica cliente
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass: 
-cd /Peru/carlosph_files
+C4!qE0e]cVFy&$m
 get BKOLD.tar.gz 
 mget *.tar.xz # descarga varios archivos a la vez, usando comodines (*, ?, etc.). 
 bye
@@ -23,12 +22,7 @@ ls -lha
   --------------------------------------------------------------------------
 # Extraer los archivos comprimidos en cada folder de destino
 # -xzf para le dice que descomprima con gzip y -xJf para .tar.xz
-tar -C /tmp/dbamer1 -xJf /tmp/EXP-AMER/044SBOKHSERVICIOS.tar.xz
-tar -C /tmp/dbwmp012 -xJf /tmp/EXP-AMER/012SBOBRUGGMEXICO.tar.xz
-tar -C /tmp/dbwmp016 -xJf /tmp/EXP-AMER/016SBOAKGTERMO.tar.xz
-tar -C /tmp/dbwmp017 -xJf /tmp/EXP-AMER/017SBOBENSELERMEX.tar.xz
-tar -C /tmp/dbwmp005 -xJf /tmp/EXP-AMER/005SBOPOLLMANNMEXICO.tar.xz
-tar -C /tmp/dbwmp008 -xJf /tmp/EXP-AMER/008SBOISRAVISION.tar.xz
+tar -C /tmp/db_wmp_2 -xJf /tmp/WMP_ZIP/000DBINICIAL2.tar.xz
 
 # Ver los nombres de los schemas a ver si coinciden 
 hanamt:/tmp # find /tmp/dbwmp0{44,17,16,12,08,05} -maxdepth 1 -mindepth 1
@@ -40,45 +34,24 @@ hanamt:/tmp #
 dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E07"
+dbTenant="E08"
 dbUser="B1SYSTEM"
-dbPass="NCXzVCFR7pEvPxsF"
+dbPass="htixXxwyWkfWxw3q"
 
 # Testear la base de datos: E07
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Importante dar permisos luego de que se descomprimio y se guardo en las nuevas carpetas:
-chmod -R 777 dbamer1/ dbwmp012/ dbwmp016/ dbwmp017/ dbwmp005/ dbwmp008/
-chown -R ndbadm:sapsys dbamer1/ dbwmp012/ dbwmp016/ dbwmp017/ dbwmp005/ dbwmp008/
-
-	# De no ser el caso hay que mover las carpetas hacia la ruta y darle los permisos
-	cd /tmp/dbwmp1/xxxx/xxxx/xxxx
-	mv export/ index/ /tmp/dbwmp1/
-	rm -R <folder> # solo tienen que estar el export/ y el index/  
-	cd /tmp/dbwmp2/xxxx/xxxx/xxxx
-	mv export/ index/ /tmp/dbwmp2/
-	chown -R ndbadm:sapsys dbwmp1/ dbwmp2/ && ls -lha
-
-	ls -lha /tmp/dbwmp1/export    #049SBOGSNMAQUINARIA
-	ls -lha /tmp/dbwmp2/export    #080SBOMAQEMAG
+chmod -R 777 db_wmp_1/ dbwmp012/ dbwmp016/ dbwmp017/ dbwmp005/ dbwmp008/
+chown -R ndbadm:sapsys db_wmp_1/ dbwmp012/ dbwmp016/ dbwmp017/ dbwmp005/ dbwmp008/
 
 # Import the shchema:
 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '044SBOKHSERVICIOS'."*" as binary from '\'/tmp/dbamer1\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '017SBOBENSELERMEX'."*" as binary from '\'/tmp/dbwmp017\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '016SBOAKGTERMO'."*" as binary from '\'/tmp/dbwmp016\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '012SBOBRUGGMEXICO'."*" as binary from '\'/tmp/dbwmp012\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '008SBOISRAVISION'."*" as binary from '\'/tmp/dbwmp008\'' with ignore existing threads 10;'
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '005SBOPOLLMANNMEXICO'."*" as binary from '\'/tmp/dbwmp005\'' with ignore existing threads 10;'
-
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '000CDMXBASE01'."*" as binary from '\'/tmp/db_wmp_1/000CDMXBASE01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import '000DBINICIAL2'."*" as binary from '\'/tmp/db_wmp_2/000DBINICIAL2\'' with ignore existing threads 10;'
 
 # Eliminar los archivos que ya no son necesarios
-cd /tmp && ls -lha && rm -rf EXP-AMER dbamer1 dbwmp012 dbwmp016 dbwmp017 dbwmp005 dbwmp008 
+cd /tmp && ls -lha && rm -rf WMP_ZIP db_wmp_1/ db_wmp_2/  
 
 # Upgrade en el rds01:
 \\lic\B1_SHF

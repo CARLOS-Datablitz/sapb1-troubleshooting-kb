@@ -73,6 +73,8 @@ A new user, user13, has been added. You will find the password in the link below
 Please verify that the new user’s access is working correctly and let us know if any adjustments are needed.
 Additionally, we would like to inform you that it is necessary to increase the resources of the RDS server. Please let us know the date and time when we can perform this task.
 
+
+You will find the default password at the link below (one-time-use link). You will be required to change the password upon your first login.
 ----------------------------------------------
 ===> Forward & Set to internal
 
@@ -81,7 +83,7 @@ n.dammer
 
 Hi, Jessica, hi Nicole, we've added a new user for the client ALLPRO.
 
-Hi Jessica, hi Nicole,
+Hi Jessica, hi Valentina,
 I’ve completed the removal of Nathan Galloway from the ALLPRO systems, per the customer’s request.
 
 -------------------------- TEST --------------------
@@ -154,3 +156,6 @@ user07@iad10123.privatcloud.biz
 Ch@ng4MeNow!
 
 Cha#cha#z1lla*9
+
+
+https://rds.Colorcompany.privatcloud.biz:22068/rdweb/webclient/index.html	

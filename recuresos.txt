@@ -1,0 +1,16 @@
+# Revisar el allocation limit por consola:
+# ruta del hdbsql cualquiera de estos dos:
+-/hana/shared/NDB/hdbclient/hdbsql
+-/usr/sap/hdbclient/hdbsql
+
+# forma de conectarte
+  \c[onnect]    -i <instance number>
+                -n <host>[:<port>]
+                -d <database name>
+                -u <user_name>
+                -p <password>
+                -U <user_store_key>
+        
+\c -i 00 -n 127.0.0.1 -d SYSTEMDB -u SYSTEM -p <password>
+
+SELECT DATABASE_NAME, KEY, VALUE FROM SYS_DATABASES.M_INIFILE_CONTENTS WHERE FILE_NAME = 'global.ini' AND SECTION = 'memorymanager' AND KEY = 'global_allocation_limit';

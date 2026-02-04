@@ -1,0 +1,17 @@
+
+------4/01/2026 14:41 ------
+sld:~ # df -h
+Filesystem                                   Size  Used Avail Use% Mounted on
+//sld/b1_shf/Attachments/FrutaCaroco/Anexos   80G   44G   37G  54% /mnt/FrutaCaroco/Anexos
+tmpfs                                        2.0G   48K  2.0G   1% /run/user/0
+sld:~ #
+
+============================================================
+
+
+============================================================
+
+
+============================================================
+mkdir -p /mnt/Attachments
+cat /hana/scripts/sbomailer.txt  ----> credenciales

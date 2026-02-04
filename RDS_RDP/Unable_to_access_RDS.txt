@@ -13,4 +13,11 @@ Reference ticket iSystems#99184554
 		
 ANSWER: Customer said: I tried from another browser and I was able to access the server. 
 		Telmo: maybe the problem was the web browser, maybe you can delete the cache memory of that browser.
+		
+=============================================
+https://rds.axis.privatcloud.biz:10091/rdweb		
+
+user: axis\administrator
+passw: dc password
+
 

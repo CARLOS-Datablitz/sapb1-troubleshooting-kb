@@ -1,0 +1,78 @@
+TROUBLESHOOTING GUIDE: PRINTER NOT CONNECTING TO NETWORK
+=========================================================
+
+ISSUE: New printer replacement needs to be added to network but doesn't show up
+MODEL: HP LaserJet Pro M428f-M429f
+MAC ADDRESS: 80:e8:2c:7a:2e:17
+
+INITIAL SYMPTOMS:
+- Printer physically connected to network
+- MAC address not showing in ARP table (arp -a command)
+- Unable to find printer IP address
+
+TROUBLESHOOTING STEPS THAT WORKED:
+===================================
+
+1. VERIFY PRINTER HAS MAC ADDRESS
+   - Ask on-site person to print Network Configuration Page
+   - From printer panel: Home → Reports → Configuration/Status Pages → Network Configuration Page
+   - Confirm MAC address on printed page
+
+2. CHECK IF PRINTER APPEARS IN ARP TABLE
+   - From remote computer (via AnyDesk): Open CMD
+   - Run: arp -a
+   - Search for the printer MAC address
+   - If not found, printer is not communicating with network
+
+3. VERIFY PHYSICAL CONNECTION STATUS (DEFINITIVE TEST)
+   - From printer panel: Home → Network → Wired (Ethernet) → Link Status
+   - If shows "None" = NO physical connection to network
+   - If shows "Connected" or "Ready" = Physical connection OK
+
+4. CHECK PHYSICAL NETWORK PORT LEDS (if visible)
+   - Look at back of printer where network cable connects
+   - LEDs are usually inside the RJ45 port (may be small/hard to see)
+   - Green LED = Link/Connection
+   - Amber LED = Network activity
+   - No lights = No physical connection
+
+5. TROUBLESHOOT CABLE CONNECTION
+   - Verify cable is fully plugged into printer
+   - Verify cable is fully plugged into wall port/switch
+   - Try a DIFFERENT network cable (THIS SOLVED THE ISSUE)
+   - Try a different switch port if available
+   - Ensure cable is in Ethernet/LAN port (not USB)
+
+6. VERIFY CONNECTION AFTER NEW CABLE
+   - Check Link Status again: should show "Connected"
+   - Check for IP address: Home → Network → TCP/IP → IPv4 Address
+   - Wait 1-2 minutes for DHCP to assign IP if shows 0.0.0.0
+   - Print Network Configuration Page again to confirm IP
+
+7. TEST NETWORK CONNECTIVITY FROM COMPUTER
+   - Once IP is obtained, run: ping [IP_ADDRESS]
+   - Should receive replies confirming network connectivity
+
+NEXT STEPS AFTER NETWORK CONNECTION ESTABLISHED:
+================================================
+1. Add printer to local computers using TCP/IP and the obtained IP address
+2. Configure printer in SAP:
+   - Transaction SPAD
+   - Create/modify Output Device
+   - Configure print server and queue
+   - Test print from SAP (transaction SP01)
+
+ROOT CAUSE IN THIS CASE:
+========================
+- Faulty network cable
+- Replacing cable with new one resolved the issue immediately
+
+KEY LESSON:
+===========
+When "Link Status" shows "None", the problem is ALWAYS physical:
+- Bad cable (most common)
+- Unplugged cable
+- Disabled switch port
+- Faulty printer network port
+
+Always check Link Status first - it's the definitive test for physical connectivity.

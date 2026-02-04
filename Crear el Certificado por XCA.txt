@@ -1,0 +1,94 @@
+#Crear el Certificado por XCA en /support
+How to create the Certificate
+1) Open the program SAP\Customers\+++Internal\Support\Xca\xca.exe"
+  ../customers/support/xca
+2) Import database "xca.db" common pass "Tar...."
+3) New Certificate 
+4) Source
+  Signing Request "default"
+  Signing
+    Use this Certificate for signing "iSystems[IN]"
+  Signature algorithm "SHA 256"
+  Template for the new certificate
+    (optional we can use the template "*.ttg.privatcloud.biz" - Apply All)
+5) Subject
+  InternalName='customer_name.privatcloud.biz'
+  Country Name='DE or US'
+  OrganizationalName='SAP'
+  StateOrProvince='NRW'
+  CommonName='*.customer_name.privatcloud.biz'
+  LocalityName='MG'
+  emailAddress='support_eu@isystems-integration.com - support_us@isystems-integration.com' / 'support_pe@isystems-integration.com'
+  OrganizationName='iSystems GmbH'
+    Private Key > "Generate a New PrivateKey"
+      Name='Customer_name.privatcloud.biz'
+      keytype='RSA'
+      keysize='2048 bit'
+      Remember as default = [no check] >>> CREATE
+6) Extentions
+  X509v3 Basic Constraints='Default'
+  Key Identifier='Default |X|-|X|'
+  Validity
+    Not before  2026-01-22 00:00 GMT
+    not after  2028-01-21 23:59 GMT
+  Time Range = '2 Years' >> lo demas 'Default'
+    X509v3 Subject Alternative Name 'FOR Multitenant'
+    DNS    localhost
+    DNS    db
+    DNS    sld
+    DNS    adm
+    DNS    rds
+    DNS    app
+    DNS    sap
+    DNS    hana
+    IP    127.0.0.1      #localhost
+    IP    212.162.6.43   #External IP
+    IP    10.2.40.2      #DB Server Multitenant
+    IP    10.2.40.3      #ADM Server 
+    IP    10.2.40.4      #RDS Server
+    IP    10.2.40.10     #SLD Server
+
+  X509v3 Subject Alternative Name 'FOR Hana Server'
+
+    DNS    localhost
+    DNS    adm
+    DNS    rds
+    DNS    app
+    DNS    sap
+    DNS    hana
+    IP    127.0.0.1      #localhost
+    IP    212.162.6.43   #External IP
+    IP    10.2.40.3      #DC Server 
+    IP    10.2.40.4      #ADM Server
+    IP    10.2.40.5      #RDS Server
+
+  X509v3 Subject Alternative Name 'SQL'
+  DNS:copycn, DNS:adveyecare.privatcloud.biz, DNS:localhost, DNS:dc, DNS:sql, DNS:adm, DNS:b1i, DNS:rds, IP:127.0.0.1, IP:10.2.200.83, IP:10.2.200.84, IP:10.2.200.85, IP:10.2.200.86, IP:94.134.190.206
+  
+  X509v3 Issuer Alternative Name='DNS:ssl.privatcloud.biz'
+  X509v3 CRL Distribution Points='URI:https://ssl.privatcloud.biz/iSystems%5BIN%5D.crl'
+  Authority Information Access='Null'
+7) Key Usage='Default'
+8) Nettscape='Default'
+9) Advanced='Default'
+10)Comment='Null'
+11)Comment=iSystems GmbH © 2023, All rights reserved. / Copyright 2021 WiSys All Rights Reserved.
+
+  Export the Cerificate ".cer" >> iSystems[CA]>> axis.privatecloud.bix >> ExportFormat='DER (*.cer)'(option 4)
+  Name='customer_name.privatcloud.biz'
+CARLOS:
+C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Pki\iSystems[adveyecare.privatcloud.biz]_NewXca.crt  
+  
+  Export the Cerificate ".pfx" >> ExportFormat='PKCS #12 (*.pfx)'(option 7)  ##at the moment to create this certificate this ask for a password what is this pass (sapB1iP)?
+    Name='customer_name.privatcloud.biz'
+    Filename='X:.....\iSystems GmbH\iSystems Support - SAP\EMEA\Customers\Support\Microsoft\Pki\iSystems[rds.customer_name.privatcloud.biz].pfx'
+
+Formart to export Certificate
+
+iSystems[rds.customer_name.privatcloud.biz].cer
+iSystems[rds.customer_name.privatcloud.biz].pfx
+
+Default password for Certificate is (sapB1iP)
+
+# Ruta donde se guarda los certificados trabajados
+C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Pki

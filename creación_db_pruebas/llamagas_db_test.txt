@@ -35,13 +35,13 @@ dbPass="by9W7IdKTlfPz28A"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema to llamagas_test/
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_LLAMAGAS'."*" as binary into '\'/tmp/llamagas_test\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TEST_INTEGRACION'."*" as binary into '\'/tmp/llamagas_test\'' with ignore existing threads 10;'
 
 # import
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TEST_INTEGRACION'."*" as binary from '\'/tmp/llamagas_test\'' with ignore existing threads 10;'
 
 # Import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TEST_INTEGRACION'."*" as binary from '\'/tmp/llamagas_test\'' with ignore existing threads 10 rename schema "TEST_INTEGRACION" to "TEST_RAMO";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_LLAMAGAS'."*" as binary from '\'/tmp/llamagas_test/SBO_LLAMAGAS\'' with ignore existing threads 10 rename schema "SBO_LLAMAGAS" to "SBO_LLAMA_GAS";'
 
 
 # Testear la base de datos: NDB
@@ -52,8 +52,10 @@ q # para salir de sql
 rm -R llamagas_test/ LLAMA_ZIP/
 
  =========================  FIN =================
+tar -xzvf /tmp/LLAMA_ZIP/SBO_LLAMAGAS_13_ENER.tar.gz -C /tmp/llamagas_test
+tar -czvf LLAMA_ZIP/TEST_INTEGRACION.tar.gz --transform 's/^llamagas_test/TEST_INTEGRACION/' llamagas_test/
 
-tar -czvf LLAMA_ZIP/SBO_LLAMAGAS_13_ENER.tar.gz --transform 's/^llamagas_test/SBO_LLAMAGAS/' llamagas_test/
+
 
 chmod -R 777 llamagas_test/ LLAMA_ZIP
 chown -R ndbadm:sapsys llamagas_test/ LLAMA_ZIP && ls -lha
