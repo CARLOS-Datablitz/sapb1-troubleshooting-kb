@@ -1,0 +1,679 @@
+================================================================================
+RELACIÓN ENTRE SAMBA Y SAP BUSINESS ONE SETUP WIZARD
+Documento Técnico - Upgrade de Esquema
+================================================================================
+
+Fecha de creación: 05 de Febrero, 2026
+Tema: Integración Samba/SLD/SAP B1 en ambientes mixtos Linux/Windows
+
+================================================================================
+RESUMEN EJECUTIVO
+================================================================================
+
+Este documento explica la relación crítica entre el servicio Samba (smb.service)
+en un servidor Linux SLES con SLD (System Landscape Directory) y el SAP Business
+One Setup Wizard ejecutado desde un servidor Windows Server 2019 con rol RDS.
+
+PROBLEMA IDENTIFICADO:
+- El Setup Wizard no mostraba la opción "Upgrade" para esquemas
+- Causa: Servicio smb.service detenido en el servidor Linux SLES
+- Solución: Reinicio del servicio Samba
+
+================================================================================
+1. ARQUITECTURA DEL AMBIENTE
+================================================================================
+
+Componentes involucrados:
+┌─────────────────────────────────────────────────────────────────┐
+│ SERVIDOR WINDOWS SERVER 2019 (ROL RDS)                          │
+│ - SAP Business One Setup Wizard (Cliente)                       │
+│ - Herramientas de administración SAP B1                         │
+└────────────────────┬────────────────────────────────────────────┘
+                     │
+                     │ Protocolo SMB/CIFS
+                     │ Puertos: 445, 139
+                     ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ SERVIDOR LINUX SLES                                             │
+│ - Samba SMB Daemon (smb.service)                                │
+│ - SLD (System Landscape Directory)                              │
+│ - Repositorios de instalación SAP B1                            │
+│ - Archivos de configuración y metadatos                         │
+└─────────────────────────────────────────────────────────────────┘
+
+================================================================================
+2. FUNCIÓN DE SAMBA EN ESTE ESCENARIO
+================================================================================
+
+2.1 ¿Qué es Samba?
+------------------
+Samba es una implementación libre del protocolo SMB/CIFS que permite la
+interoperabilidad entre sistemas Linux/Unix y Windows. Actúa como servidor
+de archivos e impresión compatible con redes Microsoft.
+
+2.2 Funciones específicas en SAP Business One:
+-----------------------------------------------
+
+a) COMPARTICIÓN DE ARCHIVOS MULTIPLATAFORMA
+   - Permite que Windows acceda a recursos Linux de forma nativa
+   - Implementa protocolos SMB1, SMB2 y SMB3 según configuración
+   - Maneja autenticación de dominio Windows/Active Directory
+
+b) ACCESO A REPOSITORIOS DE INSTALACIÓN
+   El Setup Wizard necesita acceder a:
+   • Archivos de configuración del SLD
+   • Paquetes de instalación y upgrade (.msi, .cab, archivos comprimidos)
+   • Scripts de actualización de esquema (.sql, .xml)
+   • Metadatos de versiones y dependencias
+   • Archivos de licenciamiento y validación
+   • Logs y archivos de auditoría
+
+c) COMUNICACIÓN CON SLD (System Landscape Directory)
+   El SLD almacena información crítica:
+   • Inventario completo de componentes SAP instalados
+   • Versiones actuales de esquemas de base de datos
+   • Configuraciones del landscape empresarial
+   • Información de licencias y addons
+   • Historial de upgrades y patches aplicados
+   • Dependencias entre componentes
+
+================================================================================
+3. POR QUÉ NO APARECÍA LA OPCIÓN "UPGRADE"
+================================================================================
+
+Cuando smb.service está detenido, ocurre la siguiente cadena de fallos:
+
+PASO 1: Setup Wizard intenta conectarse al SLD
+   └─> ERROR: No hay respuesta del servidor Samba
+   
+PASO 2: No puede leer información del esquema actual
+   └─> ERROR: No puede determinar versión instalada
+   
+PASO 3: No puede validar versiones disponibles
+   └─> ERROR: No sabe qué upgrades están disponibles
+   
+PASO 4: No puede verificar compatibilidad
+   └─> ERROR: No puede validar dependencias
+   
+RESULTADO: La opción "Upgrade" no se muestra en el wizard
+           (el sistema entra en modo degradado/seguro)
+
+================================================================================
+4. FLUJO DE COMUNICACIÓN DETALLADO
+================================================================================
+
+Flujo normal de operación durante un upgrade:
+
+1. Usuario ejecuta SAP B1 Setup Wizard en Windows RDS
+   ↓
+2. Wizard solicita credenciales y valida permisos
+   ↓
+3. Establece conexión SMB con servidor Linux SLES
+   | Protocolo: SMB 2.1 o superior (recomendado)
+   | Puerto: 445 (SMB directo) o 139 (NetBIOS)
+   | Autenticación: Kerberos o NTLM
+   ↓
+4. Accede al SLD vía Samba
+   | Lee: Landscape_data.xml
+   | Lee: Schema_versions.dat
+   | Lee: Component_registry.xml
+   ↓
+5. Compara versión actual vs versiones disponibles
+   | Valida: Compatibilidad de versiones
+   | Valida: Prerequisitos de upgrade
+   | Valida: Espacio en disco y recursos
+   ↓
+6. Muestra opciones disponibles en el wizard
+   | ✓ Upgrade (si hay versión superior disponible)
+   | ✓ Repair (si hay problemas detectados)
+   | ✓ Add/Remove components
+   ↓
+7. Durante el upgrade, descarga archivos necesarios vía SMB
+   ↓
+8. Actualiza información en SLD al finalizar
+
+================================================================================
+5. COMANDOS ÚTILES PARA DIAGNÓSTICO
+================================================================================
+
+5.1 EN EL SERVIDOR LINUX SLES:
+------------------------------
+
+# Verificar estado del servicio Samba
+systemctl status smb.service
+systemctl status nmb.service
+
+# Iniciar/Reiniciar servicios
+systemctl start smb.service
+systemctl restart smb.service
+
+# Habilitar inicio automático
+systemctl enable smb.service
+systemctl enable nmb.service
+
+# Ver logs en tiempo real
+journalctl -u smb.service -f
+tail -f /var/log/samba/log.smbd
+
+# Verificar configuración de Samba
+testparm -s
+
+# Listar shares activos
+smbstatus --shares
+
+# Ver conexiones activas
+smbstatus --processes
+
+# Verificar puertos en escucha
+netstat -tulpn | grep smbd
+ss -tulpn | grep smbd
+
+# Ver usuarios conectados
+smbstatus --users
+
+
+5.2 EN EL SERVIDOR WINDOWS:
+---------------------------
+
+# Verificar conectividad SMB desde PowerShell
+Test-NetConnection -ComputerName <IP_SLES> -Port 445
+
+# Listar recursos compartidos disponibles
+net view \\<IP_SLES>
+
+# Mapear unidad de red manualmente (prueba)
+net use Z: \\<IP_SLES>\SAP_Repository /user:<dominio>\<usuario>
+
+# Verificar sesiones SMB activas
+Get-SmbConnection
+
+# Diagnosticar problemas de SMB
+Get-SmbClientConfiguration
+
+
+5.3 DIAGNÓSTICO DE CONECTIVIDAD:
+--------------------------------
+
+# Desde Windows, hacer ping al servidor Linux
+ping <IP_SLES>
+
+# Verificar resolución de nombres
+nslookup <hostname_SLES>
+
+# Telnet a puerto SMB (si telnet está habilitado)
+telnet <IP_SLES> 445
+
+================================================================================
+6. CONFIGURACIÓN RECOMENDADA DE SAMBA
+================================================================================
+
+Archivo: /etc/samba/smb.conf
+
+Ejemplo de configuración mínima para SAP B1:
+
+[global]
+   workgroup = <TU_DOMINIO>
+   security = ads
+   realm = <TU_DOMINIO.COM>
+   
+   # Optimización para SAP
+   socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072
+   
+   # Protocolo SMB (forzar SMB2 o superior por seguridad)
+   server min protocol = SMB2
+   client min protocol = SMB2
+   
+   # Logging
+   log file = /var/log/samba/log.%m
+   max log size = 50
+   log level = 2
+   
+   # Seguridad
+   encrypt passwords = yes
+   map to guest = bad user
+
+[SAP_Repository]
+   comment = SAP Business One Installation Repository
+   path = /usr/sap/SAPBusinessOne/Repository
+   valid users = @SAP_Admins
+   read only = no
+   browseable = yes
+   create mask = 0664
+   directory mask = 0775
+
+[SLD_Data]
+   comment = System Landscape Directory Data
+   path = /usr/sap/SLD/data
+   valid users = @SAP_Admins
+   read only = yes
+   browseable = yes
+
+Después de modificar smb.conf:
+1. Validar configuración: testparm
+2. Reiniciar servicio: systemctl restart smb.service
+
+================================================================================
+7. TROUBLESHOOTING COMÚN
+================================================================================
+
+PROBLEMA 1: Servicio Samba se detiene inesperadamente
+------------------------------------------------------
+Causas posibles:
+• Errores en smb.conf (validar con testparm)
+• Falta de espacio en disco para logs
+• Conflictos de puertos con otros servicios
+• Problemas de autenticación con Active Directory
+
+Solución:
+1. Revisar logs: journalctl -u smb.service -n 100
+2. Validar configuración: testparm
+3. Verificar espacio: df -h
+4. Revisar membership de dominio: net ads testjoin
+
+PROBLEMA 2: Setup Wizard se conecta pero no muestra opciones
+------------------------------------------------------------
+Causas posibles:
+• Permisos insuficientes en carpetas compartidas
+• Archivos del SLD corruptos o bloqueados
+• Versión de protocolo SMB incompatible
+
+Solución:
+1. Verificar permisos: ls -la /usr/sap/SLD/data
+2. Revisar locks: smbstatus --locks
+3. Validar protocolo SMB en smb.conf
+
+PROBLEMA 3: Conexión lenta o timeouts
+--------------------------------------
+Causas posibles:
+• Latencia de red elevada
+• Firewall intermedio filtrando paquetes
+• Configuración TCP ineficiente
+
+Solución:
+1. Medir latencia: ping -c 100 <IP_SLES>
+2. Verificar MTU: ip link show
+3. Optimizar socket options en smb.conf
+
+PROBLEMA 4: Error de autenticación
+-----------------------------------
+Causas posibles:
+• Credenciales expiradas o incorrectas
+• Confianza de dominio rota
+• Sincronización de tiempo (Kerberos)
+
+Solución:
+1. Verificar fecha/hora: timedatectl
+2. Rejoin al dominio: net ads join
+3. Validar DNS: nslookup <dominio>
+
+================================================================================
+8. CHECKLIST PRE-UPGRADE
+================================================================================
+
+Antes de ejecutar cualquier upgrade de esquema SAP B1, verificar:
+
+□ Servicios Linux SLES:
+  □ smb.service está activo y habilitado
+  □ nmb.service está activo y habilitado
+  □ Sistema de archivos con espacio suficiente (mínimo 20% libre)
+  □ Logs de Samba sin errores recientes
+
+□ Conectividad:
+  □ Ping exitoso desde Windows a Linux
+  □ Puerto 445 accesible (Test-NetConnection)
+  □ Shares visibles (net view)
+  □ Mapeo de unidad funcional
+
+□ Permisos y Autenticación:
+  □ Usuario tiene permisos en SLD_Data y SAP_Repository
+  □ Membership de dominio válido (net ads testjoin)
+  □ Sincronización de tiempo correcta (±5 minutos)
+
+□ SAP Business One:
+  □ Backup completo de base de datos
+  □ No hay usuarios conectados al sistema
+  □ SQL Server Agent está corriendo
+  □ Espacio suficiente en base de datos (30% libre recomendado)
+
+□ Documentación:
+  □ Versión actual del esquema documentada
+  □ Versión objetivo del upgrade confirmada
+  □ Release notes revisadas
+  □ Plan de rollback preparado
+
+================================================================================
+9. MEJORES PRÁCTICAS
+================================================================================
+
+9.1 MONITOREO PROACTIVO
+-----------------------
+• Implementar monitoreo del servicio smb.service con alertas
+• Configurar Nagios/Zabbix/Prometheus para servicios críticos
+• Revisar logs de Samba semanalmente
+• Documentar incidentes y resoluciones
+
+Ejemplo de script de monitoreo (agregar a cron):
+
+#!/bin/bash
+# /usr/local/bin/check_samba.sh
+
+if ! systemctl is-active --quiet smb.service; then
+    echo "ALERT: Samba service is down!" | mail -s "Samba Alert" admin@empresa.com
+    systemctl start smb.service
+    logger "Samba service was down and has been restarted automatically"
+fi
+
+
+9.2 BACKUP Y RECUPERACIÓN
+--------------------------
+• Backup diario de /etc/samba/smb.conf
+• Backup del SLD antes de upgrades
+• Documentar configuración de shares
+• Mantener script de recuperación rápida
+
+9.3 SEGURIDAD
+-------------
+• Usar SMB3 con cifrado cuando sea posible
+• Deshabilitar SMB1 (vulnerabilidad conocida)
+• Implementar restricciones de IP en shares críticos
+• Auditar accesos regularmente
+• Mantener Samba actualizado con parches de seguridad
+
+9.4 PERFORMANCE
+---------------
+• Ajustar socket options según carga de trabajo
+• Monitorear uso de red durante upgrades
+• Considerar dedicar interfaz de red para tráfico SMB
+• Optimizar MTU para reducir fragmentación
+
+9.5 DOCUMENTACIÓN
+-----------------
+• Mantener diagrama de arquitectura actualizado
+• Documentar cada cambio en smb.conf con fecha y razón
+• Crear runbook para procedimientos de upgrade
+• Registrar configuración de firewall y puertos
+
+================================================================================
+10. INFORMACIÓN ADICIONAL Y RECURSOS
+================================================================================
+
+10.1 ARQUITECTURA SLD (System Landscape Directory)
+---------------------------------------------------
+El SLD es un repositorio central que contiene:
+
+• Software Component Versions (SWCV)
+• Technical Systems
+• Business Systems
+• Product Instances
+• Software Products
+
+En SAP Business One, el SLD almacena:
+- Información de todos los esquemas (company databases)
+- Versiones de aplicación instaladas
+- Add-ons registrados
+- Información de licencias
+- Configuración de servicios (DI Server, License Server, etc.)
+
+10.2 VERSIONES DE PROTOCOLO SMB
+-------------------------------
+• SMB 1.0: Obsoleto, inseguro (NO USAR)
+• SMB 2.0: Windows Vista/Server 2008
+• SMB 2.1: Windows 7/Server 2008 R2
+• SMB 3.0: Windows 8/Server 2012 (cifrado, multichannel)
+• SMB 3.02: Windows 8.1/Server 2012 R2
+• SMB 3.1.1: Windows 10/Server 2016+ (recomendado)
+
+Recomendación: Usar SMB 3.0 o superior para SAP B1
+
+10.3 PUERTOS RELEVANTES
+-----------------------
+• 445: SMB over TCP (directo, sin NetBIOS)
+• 139: SMB over NetBIOS
+• 137: NetBIOS Name Service
+• 138: NetBIOS Datagram Service
+
+Recomendación: Usar puerto 445 exclusivamente en ambientes modernos
+
+10.4 COMPATIBILIDAD SAP BUSINESS ONE
+------------------------------------
+SAP B1 soporta las siguientes configuraciones para SLD:
+
+• SLD en HANA (SAP HANA Platform)
+• SLD en SQL Server (Microsoft SQL Server)
+• SLD en archivos planos (configuración legacy)
+
+El acceso vía Samba es independiente del tipo de SLD backend,
+ya que Samba solo proporciona acceso a archivos.
+
+10.5 LOGS IMPORTANTES
+---------------------
+Linux SLES:
+• /var/log/samba/log.smbd (servicio principal)
+• /var/log/samba/log.nmbd (NetBIOS)
+• /var/log/samba/log.<nombre_cliente> (por cliente)
+• journalctl -u smb.service (systemd logs)
+
+Windows:
+• Event Viewer → Windows Logs → Application
+• Event Viewer → Microsoft → Windows → SMBClient
+• Event Viewer → Microsoft → Windows → SMBServer
+
+SAP Business One:
+• C:\Program Files\SAP\SAP Business One\Logs\
+• SQL Server Error Logs
+• Setup Wizard logs en %TEMP%
+
+10.6 COMANDOS AVANZADOS DE DIAGNÓSTICO
+---------------------------------------
+
+# Captura de tráfico SMB (requiere tcpdump/wireshark)
+tcpdump -i eth0 -w /tmp/smb_capture.pcap port 445
+
+# Análisis de performance de Samba
+smbstatus --profile
+
+# Test de velocidad de transferencia
+time dd if=/dev/zero of=/mnt/samba_share/testfile bs=1M count=1000
+
+# Verificar versión de protocolo negociado
+smbclient -L <servidor> -U <usuario> --debuglevel=3 | grep "Protocol"
+
+10.7 RECURSOS Y DOCUMENTACIÓN OFICIAL
+--------------------------------------
+• SAP Business One Administration Guide
+  https://help.sap.com/docs/SAP_BUSINESS_ONE
+
+• Samba Official Documentation
+  https://www.samba.org/samba/docs/
+
+• SUSE Linux Enterprise Server Documentation
+  https://documentation.suse.com/
+
+• SAP Note 2511404: SLD Configuration for SAP Business One
+  (requiere acceso a SAP Support Portal)
+
+• Microsoft SMB Protocol Documentation
+  https://docs.microsoft.com/en-us/windows/win32/fileio/microsoft-smb-protocol-and-cifs-protocol-overview
+
+================================================================================
+11. ESCENARIOS DE FALLO Y RECUPERACIÓN
+================================================================================
+
+ESCENARIO A: Samba caído durante upgrade en progreso
+-----------------------------------------------------
+Síntomas:
+- Setup Wizard se congela o muestra error de red
+- Transferencia de archivos interrumpida
+
+Acciones inmediatas:
+1. NO cerrar el Setup Wizard abruptamente
+2. Verificar estado en servidor Linux: systemctl status smb.service
+3. Reiniciar Samba: systemctl restart smb.service
+4. Si el wizard se recupera solo, dejar continuar
+5. Si no responde después de 5 minutos, cancelar y revisar logs
+6. Antes de reintentar, verificar integridad del esquema en SQL
+
+Prevención:
+- Realizar upgrades en ventanas de mantenimiento
+- Tener monitoreo activo durante el proceso
+- Script de watchdog que reinicie Samba si se cae
+
+ESCENARIO B: Pérdida de conectividad de red
+--------------------------------------------
+Síntomas:
+- Error "Network path not found"
+- Timeout en conexión SMB
+
+Acciones inmediatas:
+1. Verificar conectividad básica: ping, traceroute
+2. Verificar firewall: iptables -L -n -v
+3. Revisar configuración de red: ip addr show
+4. Verificar servicios de red: systemctl status network
+5. Revisar switches/routers intermedios
+
+ESCENARIO C: Corrupción de archivos del SLD
+--------------------------------------------
+Síntomas:
+- Setup Wizard muestra datos incorrectos o incompletos
+- Errores al leer configuración del landscape
+
+Acciones inmediatas:
+1. Detener servicios SAP B1
+2. Restaurar backup del directorio SLD
+3. Verificar permisos: chown -R sldadm:sapinst /usr/sap/SLD/data
+4. Validar integridad de archivos XML
+5. Reiniciar servicios y validar
+
+================================================================================
+12. ANEXOS
+================================================================================
+
+ANEXO A: Ejemplo de script de backup de configuración Samba
+------------------------------------------------------------
+#!/bin/bash
+# /usr/local/bin/backup_samba_config.sh
+
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/backup/samba"
+mkdir -p $BACKUP_DIR
+
+# Backup de configuración
+cp /etc/samba/smb.conf $BACKUP_DIR/smb.conf.$DATE
+
+# Backup de usuarios Samba
+pdbedit -L > $BACKUP_DIR/samba_users.$DATE
+
+# Backup de información del sistema
+smbstatus > $BACKUP_DIR/smbstatus.$DATE
+
+# Comprimir backups antiguos (más de 7 días)
+find $BACKUP_DIR -type f -mtime +7 -exec gzip {} \;
+
+# Eliminar backups muy antiguos (más de 90 días)
+find $BACKUP_DIR -type f -name "*.gz" -mtime +90 -delete
+
+echo "Backup completado: $DATE"
+
+
+ANEXO B: Script de validación pre-upgrade
+------------------------------------------
+#!/bin/bash
+# /usr/local/bin/pre_upgrade_check.sh
+
+echo "=== SAP B1 Pre-Upgrade Validation ==="
+echo ""
+
+# Check Samba
+echo "1. Verificando Samba..."
+if systemctl is-active --quiet smb.service; then
+    echo "   ✓ smb.service está activo"
+else
+    echo "   ✗ smb.service está INACTIVO"
+    exit 1
+fi
+
+# Check disk space
+echo "2. Verificando espacio en disco..."
+DISK_USAGE=$(df -h /usr/sap | tail -1 | awk '{print $5}' | sed 's/%//')
+if [ $DISK_USAGE -lt 80 ]; then
+    echo "   ✓ Espacio suficiente ($DISK_USAGE% usado)"
+else
+    echo "   ✗ Espacio insuficiente ($DISK_USAGE% usado)"
+    exit 1
+fi
+
+# Check network connectivity
+echo "3. Verificando conectividad de red..."
+if ping -c 3 <IP_WINDOWS_SERVER> > /dev/null 2>&1; then
+    echo "   ✓ Conectividad a servidor Windows OK"
+else
+    echo "   ✗ No hay conectividad a servidor Windows"
+    exit 1
+fi
+
+# Check SMB ports
+echo "4. Verificando puertos SMB..."
+if netstat -tuln | grep -q ":445"; then
+    echo "   ✓ Puerto 445 en escucha"
+else
+    echo "   ✗ Puerto 445 NO está en escucha"
+    exit 1
+fi
+
+echo ""
+echo "=== Todas las validaciones pasaron ==="
+echo "Sistema listo para upgrade"
+
+
+================================================================================
+CONCLUSIÓN
+================================================================================
+
+La relación entre Samba y el SAP Business One Setup Wizard es un componente
+crítico en ambientes mixtos Linux/Windows. El servicio Samba no es solo un
+servidor de archivos, sino el puente de comunicación esencial que permite:
+
+1. Acceso transparente a recursos Linux desde Windows
+2. Lectura y actualización del SLD (System Landscape Directory)
+3. Transferencia de archivos de instalación y upgrade
+4. Validación de versiones y compatibilidad
+
+La experiencia documentada (servicio detenido impidiendo mostrar opción de
+upgrade) es un caso típico que demuestra la dependencia del Setup Wizard
+en la disponibilidad del servicio Samba.
+
+RECOMENDACIONES FINALES:
+
+• Implementar monitoreo proactivo 24/7 del servicio smb.service
+• Documentar y mantener actualizada la configuración de Samba
+• Realizar pruebas periódicas de conectividad SMB
+• Incluir validación de Samba en checklists de mantenimiento
+• Capacitar al equipo de soporte en troubleshooting de Samba
+• Mantener backups de configuración y del SLD
+• Establecer procedimientos de recuperación ante fallos
+
+================================================================================
+HISTORIAL DE CAMBIOS
+================================================================================
+
+Versión 1.0 - 05/Feb/2026
+- Creación inicial del documento
+- Documentación del caso de estudio (servicio Samba detenido)
+- Inclusión de comandos de diagnóstico y troubleshooting
+- Agregado de mejores prácticas y recomendaciones
+
+================================================================================
+INFORMACIÓN DE CONTACTO Y SOPORTE
+================================================================================
+
+Para soporte adicional:
+• SAP Support Portal: https://support.sap.com/
+• Samba Support: https://www.samba.org/samba/support/
+• SUSE Support: https://www.suse.com/support/
+
+Recuerde: Siempre consulte la documentación oficial actualizada y las notas
+de SAP relevantes para su versión específica de SAP Business One.
+
+================================================================================
+FIN DEL DOCUMENT
+================================================================================

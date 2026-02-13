@@ -1,0 +1,1131 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║           GUÍA DE TROUBLESHOOTING: SAP HANA ↔ SAP BUSINESS ONE              ║
+║                                                                              ║
+║                    Verificación y Diagnóstico de Ambientes                  ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📚 TABLA DE CONTENIDOS
+═══════════════════════════════════════════════════════════════════════════════
+
+  1. Conceptos Básicos: ¿Cómo se Relacionan HANA y Business One?
+  2. Componentes Clave que los Unen
+  3. Checklist de Verificación Rápida
+  4. Guía Paso a Paso: Servidor HANA
+  5. Guía Paso a Paso: Servidor SAP Business One
+  6. Verificación de Conectividad de Red
+  7. Problemas Comunes y Soluciones
+  8. Ubicación de Logs Importantes
+  9. Comandos de Referencia Rápida
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📖 1. CONCEPTOS BÁSICOS
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ¿Qué es SAP HANA?                                                        │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Motor de base de datos in-memory de SAP. Es donde se ALMACENAN todos    │
+│ los datos de Business One (clientes, facturas, inventario, etc.)        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ¿Qué es SAP Business One?                                               │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Sistema ERP (aplicación) que usa HANA como su base de datos.            │
+│ Es la INTERFAZ donde los usuarios trabajan.                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ¿Cómo se Relacionan?                                                     │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌─────────────────────┐         ┌─────────────────────┐               │
+│  │  SAP BUSINESS ONE   │ ◄─────► │     SAP HANA        │               │
+│  │   (Aplicación)      │  Red    │  (Base de Datos)    │               │
+│  │                     │  TCP/IP │                     │               │
+│  │ • Service Layer     │ Puertos │ • Tenant Databases  │               │
+│  │ • Server Tools      │ 300XX   │ • IndexServer       │               │
+│  │ • License Manager   │         │ • NameServer        │               │
+│  └─────────────────────┘         └─────────────────────┘               │
+│                                                                          │
+│  Business One NECESITA que HANA esté corriendo para funcionar.          │
+│  Sin HANA = Sin datos = Sin Business One                                │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔌 2. COMPONENTES CLAVE QUE LOS UNEN
+═══════════════════════════════════════════════════════════════════════════════
+
+EN EL SERVIDOR HANA:
+  ✓ SAP Host Agent          → Monitoreo y gestión remota (saphostagent.service)
+  ✓ SAP Init                → Inicializador de servicios SAP (sapinit.service)
+  ✓ HDB Daemon              → Proceso principal que controla todo
+  ✓ NameServer              → Coordina las bases de datos tenant
+  ✓ IndexServer             → Motor de cada base de datos tenant
+  ✓ Puertos 30013, 30015    → Comunicación SQL y administrativa
+  ✓ Puertos 300XX           → Cada tenant tiene su puerto (ej: 30040-30118)
+
+EN EL SERVIDOR BUSINESS ONE:
+  ✓ SAP B1 Server Tools     → Servicios principales de B1
+  ✓ Authentication Service  → Autenticación de usuarios (oneshot)
+  ✓ Service Layer           → API para integraciones (puertos 50000-50004)
+  ✓ SLD Agent               → Registro y gestión de licencias
+  ✓ EDF Backend             → Documentos electrónicos (sapb1edfbackend.service)
+  ✓ Web Client              → Cliente web de B1 (puerto 443)
+  ✓ License Manager         → Control de licencias
+  ✓ HANA Client Drivers     → Permiten conectarse a HANA
+  
+  NOTA: SAP Host Agent puede o no estar presente en servidor B1
+
+EN LA RED:
+  ✓ Resolución DNS          → Los servidores deben resolver nombres
+  ✓ Puertos abiertos        → Firewall debe permitir comunicación
+  ✓ Conectividad TCP/IP     → Ping y conexión de sockets
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ⚡ 3. CHECKLIST DE VERIFICACIÓN RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+  Cuando reportan "No hay comunicación entre B1 y HANA", verifica en ORDEN:
+
+  [ ] 1. ¿HANA está corriendo?
+         → Ejecuta: HDB info (debe decir Running)
+  
+  [ ] 2. ¿Los servicios de B1 están corriendo?
+         → Ejecuta: systemctl status sapb1servertools.service
+  
+  [ ] 3. ¿Hay conectividad de red?
+         → Ejecuta: ping <servidor_hana>
+         → Ejecuta: nc -zv <servidor_hana> 30013
+  
+  [ ] 4. ¿El tenant database está activo?
+         → Verifica que la BD específica esté en estado ACTIVE
+  
+  [ ] 5. ¿Hay errores en los logs?
+         → Revisa logs de HANA y logs de B1 Server Tools
+  
+  [ ] 6. ¿Las credenciales son correctas?
+         → Verifica usuario/password no expirado ni bloqueado
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🖥️  4. GUÍA PASO A PASO: SERVIDOR HANA
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 1: Identificar la Instancia HANA y Servicios SAP                   │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Verificar servicios SAP de infraestructura:
+    systemctl list-units --type=service | grep -i sap
+
+  Deberías ver:
+    • saphostagent.service  → SAP Host Agent (monitoreo)
+    • sapinit.service       → SAP Init (inicializador)
+
+  Identificar instancia HANA:
+    cat /usr/sap/sapservices
+
+  Buscar:
+    • SID (ejemplo: NDB, HDB, PRD)
+    • Número de instancia (ejemplo: 00, 90, 99)
+    • Usuario admin (ejemplo: ndbadm, hdbadm)
+
+  Ejemplo de salida:
+    LD_LIBRARY_PATH=/usr/sap/NDB/HDB00/exe:$LD_LIBRARY_PATH
+                           ^^^  ^^^
+                           SID  Instancia
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 2: Verificar Estado de los Servicios                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Cambiar al usuario admin de HANA:
+    su - ndbadm
+
+  Verificar estado general:
+    HDB info
+
+  ✓ BUENO: Ves procesos como hdbnameserver, hdbindexserver corriendo
+  ✗ MALO:  No aparecen procesos o dice "Stopped"
+
+  Verificar estado detallado:
+    sapcontrol -nr 00 -function GetProcessList
+
+  ✓ BUENO: Todos los procesos muestran "GREEN, Running"
+  ✗ MALO:  Algún proceso muestra "RED" o "YELLOW"
+
+  Procesos importantes que DEBEN estar en GREEN:
+    • hdbdaemon          → Demonio principal
+    • hdbnameserver      → Servidor de nombres
+    • hdbindexserver     → Motor de base de datos
+    • hdbcompileserver   → Compilador
+    • hdbpreprocessor    → Preprocesador
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 3: Verificar Bases de Datos Tenant                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Conectarse a SYSTEMDB:
+    hdbsql -u SYSTEM -d SYSTEMDB
+
+  (Te pedirá password del usuario SYSTEM)
+
+  Listar todas las bases de datos:
+    SELECT DATABASE_NAME, ACTIVE_STATUS FROM SYS.M_DATABASES;
+
+  ✓ BUENO: La base de datos que usa B1 aparece con ACTIVE_STATUS = "YES"
+  ✗ MALO:  Aparece como "NO" o no existe
+
+  Ejemplo de salida:
+    DATABASE_NAME    ACTIVE_STATUS
+    "SYSTEMDB"       "YES"
+    "E07"            "YES"          ← Esta es la que usa B1
+    "E08"            "YES"
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 4: Verificar Puertos Abiertos                                      │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Verificar que los puertos estén escuchando:
+    ss -tuln | grep :300
+
+  ✓ BUENO: Ves líneas con "LISTEN" en puertos 30013, 30015, 300XX
+  ✗ MALO:  No aparecen puertos o muy pocos
+
+  Puertos importantes:
+    30013  → Puerto SQL principal (SYSTEMDB)
+    30015  → Puerto de administración
+    300XX  → Puertos de tenants (ejemplo: 30040, 30046, etc.)
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 5: Verificar Usuarios y Credenciales                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Conectarse a la base de datos tenant (ejemplo: E07):
+    hdbsql -u SYSTEM -d E07
+
+  Listar usuarios activos (sin usuarios del sistema):
+    SELECT USER_NAME, USER_DEACTIVATED, PASSWORD_CHANGE_TIME, 
+           LAST_SUCCESSFUL_CONNECT 
+    FROM SYS.USERS 
+    WHERE USER_NAME NOT LIKE '_SYS%' 
+    ORDER BY USER_NAME;
+
+  ✓ BUENO: El usuario que usa B1 (usualmente B1SYSTEM) aparece con:
+           - USER_DEACTIVATED = FALSE
+           - LAST_SUCCESSFUL_CONNECT reciente (hoy o ayer)
+
+  ✗ MALO:  - USER_DEACTIVATED = TRUE
+           - LAST_SUCCESSFUL_CONNECT muy antigua (meses)
+           - No aparece el usuario
+
+  Verificar detalles de un usuario específico:
+    SELECT USER_NAME, USER_DEACTIVATED, VALID_UNTIL, 
+           INVALID_CONNECT_ATTEMPTS, PASSWORD_LOCK_TIME 
+    FROM SYS.USERS 
+    WHERE USER_NAME = 'B1SYSTEM';
+
+  ✓ BUENO: INVALID_CONNECT_ATTEMPTS = 0 o bajo
+           PASSWORD_LOCK_TIME = NULL
+  ✗ MALO:  INVALID_CONNECT_ATTEMPTS alto (usuario bloqueado)
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 6: Revisar Recursos del Sistema                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Espacio en disco:
+    df -h
+
+  ⚠️  CRÍTICO SI:
+      /hana/data está > 90% usado
+      /hana/log está > 80% usado
+      /backup está > 95% usado
+
+  Memoria:
+    free -h
+
+  ⚠️  CRÍTICO SI:
+      Memoria disponible (available) < 10% del total
+      Swap usado cerca del 100%
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 7: Ubicación de Logs de HANA                                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Directorio principal de logs:
+    /usr/sap/<SID>/HDB<instancia>/<hostname>/trace/
+
+  Ejemplo:
+    /usr/sap/NDB/HDB00/hanamt.dctpamt093.privatcloud.biz/trace/
+
+  Logs más importantes:
+
+    nameserver_alert_*.trc
+      → Alertas críticas del nameserver
+      Comando: tail -100 /usr/sap/NDB/HDB00/*/trace/nameserver_alert_*.trc
+
+    nameserver_*.trc
+      → Log general del nameserver
+      Comando: tail -100 /usr/sap/NDB/HDB00/*/trace/nameserver_*.trc
+
+    indexserver_*.trc
+      → Logs de cada tenant database
+
+    backup.log
+      → Logs de backups
+
+  ¿Qué buscar en los logs?
+    ✗ "out of memory"
+    ✗ "disk full"
+    ✗ "crash" o "terminated"
+    ✗ "cannot allocate"
+    ✗ Errores con código "131" (lock timeout)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 💼 5. GUÍA PASO A PASO: SERVIDOR SAP BUSINESS ONE
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 1: Verificar Servicios de B1                                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Servicios de infraestructura SAP (opcionales en B1):
+    systemctl status saphostagent.service    # Monitoreo (si está instalado)
+    systemctl status sapinit.service         # Inicializador (si está instalado)
+
+  Servicios principales de B1:
+    systemctl status sapb1servertools.service
+    systemctl status sapb1servertools-authentication.service
+    systemctl status sldagent.service
+    systemctl status sapb1edfbackend.service
+
+  Service Layer (4 nodos + load balancer):
+    systemctl status b1s50000.service    # Load Balancer
+    systemctl status b1s50001.service    # Nodo 1
+    systemctl status b1s50002.service    # Nodo 2
+    systemctl status b1s50003.service    # Nodo 3
+    systemctl status b1s50004.service    # Nodo 4
+
+  ✓ BUENO: Todos muestran "active (running)"
+           (Excepto authentication que muestra "active (exited)" - NORMAL)
+  ✗ MALO:  Alguno muestra "failed" o "inactive"
+
+  ⚠️  ADVERTENCIA SI: Ves mensajes de "core dump" o "child pid exit signal"
+      → Indica crashes intermitentes, pero el servicio se auto-recupera
+
+  Verificar procesos del Web Client (si aplica):
+    ps aux | grep -E "gate.jar|auth.jar|tcli.jar" | grep -v grep
+  
+  ✓ BUENO: Si ves procesos java con estos nombres, Web Client está activo
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 2: Verificar Configuración de Conexión a HANA                      │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Ubicar archivo de configuración:
+    find /usr/sap/SAPBusinessOne -name "b1-local-machine.xml"
+
+  Archivo principal usualmente en:
+    /usr/sap/SAPBusinessOne/Common/Conf/b1-local-machine.xml
+
+  Ver configuración del Service Layer:
+    cat /usr/sap/SAPBusinessOne/ServiceLayer/conf/b1s.conf
+
+  Información importante a verificar:
+    {
+      "Server": "E07@hanamt.jerusalem.nubeprivada.biz:30013",
+                 ^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^^
+              Tenant  Hostname del servidor HANA      Puerto
+
+      "LicenseServer": "sld.jerusalem.nubeprivada.biz:40000",
+      "SessionTimeout": 30,
+      ...
+    }
+
+  ✓ BUENO: El hostname y puerto coinciden con el servidor HANA
+  ✗ MALO:  Hostname incorrecto, puerto equivocado, o tenant inexistente
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 3: Revisar Logs de B1 Server Tools                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Logs principales de Tomcat:
+    /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.out
+
+  Ver últimas 100 líneas:
+    tail -100 /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.out
+
+  ¿Qué buscar?
+    ✗ "authentication failed"         → Problema de credenciales
+    ✗ "connection refused"             → HANA no está escuchando
+    ✗ "timeout"                        → Problema de red o HANA lento
+    ✗ "lock wait timeout"              → Bloqueos en la BD
+    ✗ "cannot connect to database"     → Problema de conectividad
+
+  Logs del Service Layer:
+    ls /usr/sap/SAPBusinessOne/ServiceLayer/logs/
+
+  Ver errores recientes:
+    cat /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50001_log_*
+
+  ¿Qué buscar?
+    ✗ "double free or corruption"      → Bug de memoria (crash)
+    ✗ "child pid exit signal Aborted"  → Proceso crasheó
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 4: Verificar Recursos del Servidor B1                              │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Espacio en disco:
+    df -h
+
+  ⚠️  CRÍTICO SI:
+      /usr/sap está > 90% usado
+      Sistema (/) está > 90% usado
+
+  Memoria:
+    free -h
+
+  ⚠️  CRÍTICO SI:
+      Memoria disponible < 2GB
+      Swap usado > 80%
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🌐 6. VERIFICACIÓN DE CONECTIVIDAD DE RED
+═══════════════════════════════════════════════════════════════════════════════
+
+  DESDE EL SERVIDOR B1, ejecutar:
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Test 1: Resolución de Nombres (DNS)                                     │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Comando:
+    ping -c 3 hanamt.jerusalem.nubeprivada.biz
+
+  ✓ BUENO: 3 packets transmitted, 3 received, 0% packet loss
+           Latencia baja (< 5ms en red local)
+  ✗ MALO:  Packet loss > 0%
+           "Name or service not known" → Problema DNS
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Test 2: Conectividad de Puerto SQL (30013)                              │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Comando:
+    nc -zv hanamt.jerusalem.nubeprivada.biz 30013
+
+  ✓ BUENO: "Connection to ... 30013 port [tcp/*] succeeded!"
+  ✗ MALO:  "Connection refused" → HANA no está escuchando
+           "No route to host" → Problema de red/firewall
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Test 3: Verificar Otros Puertos Importantes                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Puerto de administración HANA:
+    nc -zv hanamt.jerusalem.nubeprivada.biz 30015
+
+  Puerto del tenant específico (ejemplo E07 en puerto 30070):
+    nc -zv hanamt.jerusalem.nubeprivada.biz 30070
+
+  Puerto del License Server (en el mismo servidor B1):
+    nc -zv localhost 40000
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔧 7. PROBLEMAS COMUNES Y SOLUCIONES
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: "Authentication Failed"                                       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   En logs de B1: "authentication failed", "invalid credentials"         │
+│                                                                          │
+│ VERIFICAR:                                                               │
+│   1. Usuario existe en HANA y está activo                               │
+│   2. Password no ha expirado                                            │
+│   3. Usuario no está bloqueado por intentos fallidos                    │
+│   4. Las credenciales en b1s.conf son correctas                         │
+│                                                                          │
+│ COMANDO DE DIAGNÓSTICO:                                                 │
+│   hdbsql -u SYSTEM -d E07                                               │
+│   SELECT USER_NAME, USER_DEACTIVATED, INVALID_CONNECT_ATTEMPTS         │
+│   FROM SYS.USERS WHERE USER_NAME = 'B1SYSTEM';                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: "Connection Refused" o "Cannot Connect"                       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   B1 no puede conectarse a HANA, timeout o connection refused           │
+│                                                                          │
+│ VERIFICAR:                                                               │
+│   1. HANA está corriendo (HDB info)                                     │
+│   2. Puerto 30013 está escuchando (ss -tuln | grep 30013)              │
+│   3. Firewall permite tráfico entre servidores                          │
+│   4. DNS resuelve correctamente el hostname                             │
+│   5. Tenant database está ACTIVE                                        │
+│                                                                          │
+│ COMANDO DE DIAGNÓSTICO:                                                 │
+│   Desde B1: nc -zv <hana_server> 30013                                  │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: "Lock Wait Timeout"                                           │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   Errores con código 131, "transaction rolled back by lock wait"        │
+│                                                                          │
+│ CAUSA:                                                                   │
+│   Transacciones largas bloqueando tablas, usuarios no commitean         │
+│                                                                          │
+│ VERIFICAR:                                                               │
+│   1. Transacciones activas en HANA                                      │
+│   2. Bloqueos de registros                                              │
+│   3. Usuarios con sesiones abiertas hace mucho tiempo                   │
+│                                                                          │
+│ COMANDO DE DIAGNÓSTICO:                                                 │
+│   hdbsql -u SYSTEM -d E07                                               │
+│   SELECT * FROM M_BLOCKED_TRANSACTIONS;                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: Service Layer con "Core Dumps"                                │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   systemctl status muestra "Process dumped core"                        │
+│   En logs: "double free or corruption"                                  │
+│                                                                          │
+│ CAUSA:                                                                   │
+│   Bug de memoria en el código del Service Layer (SAP)                   │
+│                                                                          │
+│ IMPACTO:                                                                 │
+│   El servicio se auto-recupera, pero puede causar:                      │
+│   - Pérdida de sesiones activas                                         │
+│   - Transacciones interrumpidas                                         │
+│   - Lentitud temporal                                                   │
+│                                                                          │
+│ SOLUCIÓN:                                                                │
+│   - Si es intermitente y poco frecuente: Monitorear                     │
+│   - Si es frecuente: Aplicar patches/hotfixes de SAP                    │
+│   - Documentar y reportar a SAP Support                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: sapb1edfbackend.service falla o no arranca                    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   No se pueden generar documentos electrónicos (facturas, boletas)      │
+│   Error al firmar documentos digitalmente                               │
+│                                                                          │
+│ VERIFICAR:                                                               │
+│   1. Servicio está corriendo: systemctl status sapb1edfbackend         │
+│   2. Conexión a HANA está activa                                        │
+│   3. Certificados digitales no han expirado                             │
+│   4. Configuración de facturación electrónica es correcta               │
+│                                                                          │
+│ LOGS:                                                                    │
+│   journalctl -u sapb1edfbackend.service -n 100                          │
+│   /usr/sap/SAPBusinessOne/EDF/logs/                                     │
+│                                                                          │
+│ IMPACTO:                                                                 │
+│   ❌ No se pueden emitir facturas electrónicas                          │
+│   ❌ Incumplimiento normativo (en países con facturación electrónica)   │
+│   ✅ El resto de B1 sigue funcionando                                   │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: Web Client no responde o es muy lento                         │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   Usuarios no pueden acceder vía web                                    │
+│   Pantallas cargan muy lento o se quedan en blanco                      │
+│                                                                          │
+│ VERIFICAR:                                                               │
+│   1. Procesos Web Client activos:                                       │
+│      ps aux | grep -E "gate.jar|auth.jar|tcli.jar|noti.jar"            │
+│                                                                          │
+│   2. Puerto 443 escuchando:                                             │
+│      ss -tuln | grep :443                                               │
+│                                                                          │
+│   3. Memoria disponible (Web Client consume mucha RAM):                 │
+│      free -h                                                            │
+│                                                                          │
+│   4. Logs del Web Client:                                               │
+│      ls /usr/sap/SAPBusinessOne/WebClient/logs/                         │
+│                                                                          │
+│ CAUSA COMÚN:                                                             │
+│   - Memoria insuficiente (Web Client puede usar 4GB+ por servicio)      │
+│   - Service Layer caído (Web Client depende de él)                      │
+│   - Certificado SSL expirado                                            │
+│                                                                          │
+│ SOLUCIÓN:                                                                │
+│   - Reiniciar servicios de Web Client si hay procesos zombies           │
+│   - Aumentar memoria si está al límite                                  │
+│   - Verificar certificados SSL válidos                                  │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: HANA con Disco Lleno (>90%)                                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   df -h muestra /hana/data o /hana/log > 90%                           │
+│                                                                          │
+│ RIESGO:                                                                  │
+│   HANA puede detenerse o volverse read-only                             │
+│                                                                          │
+│ ACCIÓN INMEDIATA:                                                        │
+│   1. Verificar logs antiguos que puedan eliminarse                      │
+│   2. Revisar archivos de trace antiguos (> 30 días)                    │
+│   3. Limpiar backups antiguos en /backup                               │
+│   4. Considerar expansión de disco                                      │
+│                                                                          │
+│ UBICACIÓN DE LOGS ANTIGUOS:                                             │
+│   /usr/sap/<SID>/HDB<inst>/*/trace/                                    │
+│   /backup/                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📂 8. UBICACIÓN DE LOGS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ LOGS DE SAP HANA                                                         │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Directorio principal:
+    /usr/sap/<SID>/HDB<instancia>/<hostname>/trace/
+
+  Ejemplo real:
+    /usr/sap/NDB/HDB00/hanamt.dctpamt093.privatcloud.biz/trace/
+
+  Archivos clave:
+    
+    nameserver_alert_*.trc
+      → ALERTAS CRÍTICAS del sistema
+      → Ver con: tail -200 nameserver_alert_*.trc
+    
+    nameserver_*.trc
+      → Log general del nameserver
+      → Ver con: tail -500 nameserver_*.trc
+    
+    indexserver_*.trc
+      → Logs de cada tenant database
+      → Ver con: tail -500 indexserver_*.trc
+    
+    backup.log
+      → Historial de backups
+      → Ver con: tail -200 backup.log
+    
+    daemon.*.trc
+      → Logs del daemon principal (HDB)
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ LOGS DE SAP BUSINESS ONE                                                │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Server Tools (Tomcat):
+    /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.out
+      → LOG PRINCIPAL de B1 Server Tools
+      → Ver con: tail -200 catalina.out
+
+    /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.YYYY-MM-DD.log
+      → Logs diarios de Tomcat
+
+    /usr/sap/SAPBusinessOne/Common/tomcat/logs/localhost.YYYY-MM-DD.log
+      → Logs de aplicaciones web
+
+  Service Layer:
+    /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50000_log_*
+      → Errores del Load Balancer
+
+    /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50001_log_*
+    /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50002_log_*
+    /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50003_log_*
+    /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50004_log_*
+      → Errores de cada nodo del Service Layer
+
+  SLD Agent:
+    /usr/sap/SAPBusinessOne/SLDAgent/logs/
+      → Logs del agente de licencias
+
+  EDF Backend (Documentos Electrónicos):
+    /usr/sap/SAPBusinessOne/EDF/logs/
+      → Logs de procesamiento de documentos electrónicos
+      → Ver errores de firma digital, DTE, CFDI, etc.
+
+  Web Client (si está instalado):
+    /usr/sap/SAPBusinessOne/WebClient/logs/
+      → Logs del cliente web (gate, auth, tcli, noti, etc.)
+  
+  Servicios de infraestructura SAP:
+    journalctl -u saphostagent.service
+      → Logs del SAP Host Agent (si está instalado)
+    
+    journalctl -u sapb1servertools-authentication.service
+      → Logs del servicio de autenticación
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ⚡ 9. COMANDOS DE REFERENCIA RÁPIDA
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ COMANDOS HANA (Ejecutar como usuario admin: su - ndbadm)                │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Verificar servicios SAP de infraestructura
+  systemctl list-units --type=service | grep -i sap
+  systemctl status saphostagent.service
+  systemctl status sapinit.service
+  
+  # Ver estado general de HANA
+  HDB info
+  
+  # Ver estado detallado de procesos
+  sapcontrol -nr 00 -function GetProcessList
+  
+  # Listar bases de datos tenant
+  hdbsql -u SYSTEM -d SYSTEMDB "SELECT DATABASE_NAME, ACTIVE_STATUS FROM SYS.M_DATABASES;"
+  
+  # Ver usuarios activos en un tenant
+  hdbsql -u SYSTEM -d E07 "SELECT USER_NAME, USER_DEACTIVATED, LAST_SUCCESSFUL_CONNECT FROM SYS.USERS WHERE USER_NAME NOT LIKE '_SYS%' ORDER BY USER_NAME;"
+  
+  # Ver puertos escuchando
+  ss -tuln | grep :300
+  
+  # Ver alertas recientes
+  tail -100 /usr/sap/NDB/HDB00/*/trace/nameserver_alert_*.trc
+  
+  # Ver recursos
+  df -h
+  free -h
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ COMANDOS SAP BUSINESS ONE (Linux)                                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Ver todos los servicios SAP
+  systemctl list-units --type=service | grep -i sap
+  systemctl list-units --type=service | grep -i b1
+  
+  # Ver estado de servicios de infraestructura SAP (si están instalados)
+  systemctl status saphostagent.service
+  systemctl status sapinit.service
+  
+  # Ver estado de servicios B1 principales
+  systemctl status sapb1servertools.service
+  systemctl status sapb1servertools-authentication.service
+  systemctl status sldagent.service
+  systemctl status sapb1edfbackend.service
+  
+  # Ver estado de Service Layer
+  systemctl status b1s50000.service
+  systemctl status b1s50001.service
+  systemctl status b1s50002.service
+  systemctl status b1s50003.service
+  systemctl status b1s50004.service
+  
+  # Ver configuración de conexión
+  cat /usr/sap/SAPBusinessOne/ServiceLayer/conf/b1s.conf
+  
+  # Ver logs principales
+  tail -200 /usr/sap/SAPBusinessOne/Common/tomcat/logs/catalina.out
+  
+  # Ver errores de Service Layer
+  ls /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_*
+  cat /usr/sap/SAPBusinessOne/ServiceLayer/logs/error_50001_log_*
+  
+  # Ver procesos Web Client (si aplica)
+  ps aux | grep -E "gate.jar|auth.jar|tcli.jar|noti.jar|extn.jar|anly.jar"
+  
+  # Ver logs de EDF (documentos electrónicos)
+  ls /usr/sap/SAPBusinessOne/EDF/logs/
+  
+  # Ver recursos
+  df -h
+  free -h
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ COMANDOS DE CONECTIVIDAD (Desde servidor B1)                            │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Test de ping
+  ping -c 3 hanamt.jerusalem.nubeprivada.biz
+  
+  # Test de puerto SQL
+  nc -zv hanamt.jerusalem.nubeprivada.biz 30013
+  
+  # Test de puerto administrativo
+  nc -zv hanamt.jerusalem.nubeprivada.biz 30015
+  
+  # Verificar DNS
+  host hanamt.jerusalem.nubeprivada.biz
+  nslookup hanamt.jerusalem.nubeprivada.biz
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ✅ FLUJO DE TROUBLESHOOTING RECOMENDADO
+═══════════════════════════════════════════════════════════════════════════════
+
+  Cuando reportan: "No hay comunicación entre B1 y HANA"
+
+  1. VERIFICAR HANA PRIMERO
+     ├─ Conectarse al servidor HANA
+     ├─ su - ndbadm
+     ├─ HDB info → ¿Está Running?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA CRÍTICO: HANA está detenido
+     │
+     ├─ sapcontrol -nr 00 -function GetProcessList → ¿Todo GREEN?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → Ver qué proceso está en RED/YELLOW
+     │
+     ├─ Verificar tenant database → ¿Está ACTIVE?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: Tenant detenido o no existe
+     │
+     └─ ss -tuln | grep 30013 → ¿Puerto escuchando?
+         ├─ SÍ → HANA está OK, continuar con B1
+         └─ NO → PROBLEMA: Puerto no está abierto
+
+  2. VERIFICAR BUSINESS ONE
+     ├─ Conectarse al servidor B1
+     ├─ systemctl status sapb1servertools.service → ¿Running?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: Servicio detenido
+     │
+     ├─ systemctl status b1s50000.service → ¿Running?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: Service Layer detenido
+     │
+     └─ tail -100 /usr/sap/.../catalina.out → ¿Errores recientes?
+         ├─ NO → Continuar con conectividad
+         └─ SÍ → Identificar tipo de error
+
+  3. VERIFICAR CONECTIVIDAD
+     ├─ ping <hana_server> → ¿Responde?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: Red o DNS
+     │
+     └─ nc -zv <hana_server> 30013 → ¿Puerto accesible?
+         ├─ SÍ → Continuar con credenciales
+         └─ NO → PROBLEMA: Firewall o puerto cerrado
+
+  4. VERIFICAR CREDENCIALES
+     ├─ En HANA: Verificar usuario B1SYSTEM
+     ├─ ¿Está activo? ¿Password válido? ¿Última conexión reciente?
+     │   ├─ SÍ → TODO OK, problema puede ser intermitente
+     │   └─ NO → PROBLEMA: Credenciales inválidas/expiradas
+
+  5. REVISAR LOGS DETALLADOS
+     └─ Buscar errores específicos en logs de HANA y B1
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🏗️  ARQUITECTURA COMPLETA DEL AMBIENTE
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ SERVIDOR: hanamt (SAP HANA DATABASE)                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  SERVICIOS DE INFRAESTRUCTURA SAP:
+    ✓ saphostagent.service       - SAP Host Agent (monitoreo y gestión)
+    ✓ sapinit.service            - SAP Init (inicializador, estado: exited)
+
+  SERVICIOS DE BASE DE DATOS HANA:
+    ✓ HDB Daemon                 - Proceso principal (PID único)
+    ✓ NameServer                 - Coordinador de tenants
+    ✓ IndexServer                - Motor de cada tenant (15 instancias: E01-E15)
+    ✓ CompileServer              - Compilador SQL
+    ✓ Preprocessor               - Preprocesador
+    ✓ ScriptServer               - Servidor de scripts (14 instancias)
+    ✓ WebDispatcher              - Dispatcher web
+    ✓ XSEngine                   - Motor XS
+
+  PUERTOS ESCUCHANDO:
+    • 30013                      - Puerto SQL principal (SYSTEMDB)
+    • 30015                      - Puerto de administración
+    • 30003                      - Tenant NDB (SYSTEMDB)
+    • 30040-30118                - Tenants E01-E15 (cada uno con su puerto)
+
+  UBICACIÓN DE DATOS:
+    /hana/data                   - Datos de las bases de datos
+    /hana/log                    - Logs transaccionales
+    /backup                      - Backups de HANA
+
+  USUARIO ADMINISTRADOR:
+    ndbadm                       - Usuario para gestionar HANA
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ SERVIDOR: sld (SAP BUSINESS ONE APPLICATION SERVER)                     │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  SERVICIOS DE INFRAESTRUCTURA SAP:
+    ⚠️  saphostagent.service      - NO INSTALADO (recomendado instalarlo)
+    ⚠️  sapinit.service           - NO INSTALADO (opcional)
+
+  SERVICIOS SAP BUSINESS ONE PRINCIPALES:
+    ✓ sapb1servertools.service              - SAP B1 Server Tools
+       Estado: active (running)
+       Función: Servicios principales del servidor B1
+    
+    ✓ sapb1servertools-authentication.service  - Autenticación
+       Estado: active (exited) ← NORMAL para tipo oneshot
+       Función: Autenticación y autorización de usuarios
+    
+    ✓ sldagent.service                      - SLD Agent
+       Estado: active (running)
+       Función: Gestión de licencias y registro de landscape
+    
+    ✓ sapb1edfbackend.service               - EDF Backend
+       Estado: active (running)
+       Función: Procesamiento de documentos electrónicos
+                (DTE, CFDI, NFe, facturación electrónica)
+
+  SERVICIOS SERVICE LAYER (API REST):
+    ✓ b1s50000.service           - Load Balancer (puerto 50000)
+    ✓ b1s50001.service           - Service Layer Node 1 (puerto 50001)
+    ✓ b1s50002.service           - Service Layer Node 2 (puerto 50002)
+    ✓ b1s50003.service           - Service Layer Node 3 (puerto 50003)
+    ✓ b1s50004.service           - Service Layer Node 4 (puerto 50004)
+
+  COMPONENTES WEB CLIENT (Procesos Java):
+    ✓ gate.jar                   - Gateway (puerto 443 HTTPS)
+    ✓ auth.jar                   - Autenticación web
+    ✓ tcli.jar                   - Terminal Client Interface
+    ✓ noti.jar                   - Notificaciones
+    ✓ extn.jar                   - Extensiones
+    ✓ anly.jar                   - Analytics
+
+  CONFIGURACIÓN DE CONEXIÓN A HANA:
+    Archivo: /usr/sap/SAPBusinessOne/ServiceLayer/conf/b1s.conf
+    
+    Servidor HANA: hanamt.jerusalem.nubeprivada.biz:30013
+    Tenant Database: E07
+    License Server: sld.jerusalem.nubeprivada.biz:40000
+    Protocolo: HTTPS con verificación TLS
+
+  USUARIO ADMINISTRADOR:
+    b1service0                   - Usuario para servicios B1
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ FLUJO DE COMUNICACIÓN ENTRE SERVIDORES                                  │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                         USUARIO FINAL                               │
+  │                              │                                      │
+  │                              ↓                                      │
+  │         ┌────────────────────────────────────────┐                  │
+  │         │   NAVEGADOR WEB (HTTPS:443)            │                  │
+  │         └────────────────┬───────────────────────┘                  │
+  │                          │                                          │
+  │                          ↓                                          │
+  │    ┌────────────────────────────────────────────────────┐           │
+  │    │  SERVIDOR: sld (SAP Business One)                  │           │
+  │    ├────────────────────────────────────────────────────┤           │
+  │    │  • Web Client (gate.jar, auth.jar, etc.)           │           │
+  │    │  • Service Layer (b1s50000-50004)                  │           │
+  │    │  • Server Tools (sapb1servertools)                 │           │
+  │    │  • EDF Backend (documentos electrónicos)           │           │
+  │    └────────────────┬───────────────────────────────────┘           │
+  │                     │                                               │
+  │                     │ Red TCP/IP                                    │
+  │                     │ Puerto 30013 (SQL)                            │
+  │                     │                                               │
+  │                     ↓                                               │
+  │    ┌────────────────────────────────────────────────────┐           │
+  │    │  SERVIDOR: hanamt (SAP HANA)                       │           │
+  │    ├────────────────────────────────────────────────────┤           │
+  │    │  • HANA Database (15 tenants)                      │           │
+  │    │    - SYSTEMDB                                      │           │
+  │    │    - E01, E02, E03, E04, E05                       │           │
+  │    │    - E07 ← CONECTADO A B1                          │           │
+  │    │    - E08, E09, E10, E11, E12                       │           │
+  │    │    - E13, E14, E15                                 │           │
+  │    │  • SAP Host Agent (monitoreo)                      │           │
+  │    └────────────────────────────────────────────────────┘           │
+  │                                                                     │
+  └─────────────────────────────────────────────────────────────────────┘
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ TABLA COMPARATIVA: SERVICIOS POR SERVIDOR                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  ┌────────────────────────────────┬────────────┬────────────┐
+  │ SERVICIO                       │   hanamt   │    sld     │
+  ├────────────────────────────────┼────────────┼────────────┤
+  │ saphostagent.service           │     ✅     │     ❌     │
+  │ sapinit.service                │     ✅     │     ❌     │
+  │ SAP HANA Database              │     ✅     │     ❌     │
+  │ sapb1servertools               │     ❌     │     ✅     │
+  │ sapb1servertools-auth          │     ❌     │     ✅     │
+  │ sldagent                       │     ❌     │     ✅     │
+  │ sapb1edfbackend                │     ❌     │     ✅     │
+  │ b1s50000 (SL Load Balancer)    │     ❌     │     ✅     │
+  │ b1s50001-50004 (SL Nodes)      │     ❌     │     ✅     │
+  │ Web Client (Java processes)    │     ❌     │     ✅     │
+  └────────────────────────────────┴────────────┴────────────┘
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ DEPENDENCIAS DE SERVICIOS                                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  EN hanamt:
+    1. Sistema operativo arranca
+    2. saphostagent.service inicia (monitoreo)
+    3. sapinit.service lee /usr/sap/sapservices
+    4. HDB Daemon inicia HANA
+    5. HANA tenants quedan disponibles
+
+  EN sld (ORDEN CRÍTICO):
+    1. Sistema operativo arranca
+    2. HANA debe estar accesible (prereq externo)
+    3. sapb1servertools-authentication.service inicia
+       ↓ (configura módulos de autenticación)
+    4. sapb1servertools.service inicia
+       ↓ (requiere autenticación funcionando)
+    5. sldagent.service inicia
+       ↓ (gestión de licencias)
+    6. sapb1edfbackend.service inicia
+       ↓ (documentos electrónicos)
+    7. b1s50000.service inicia (Load Balancer)
+       ↓
+    8. b1s50001-50004.service inician (Nodos Service Layer)
+       ↓
+    9. Web Client (Java processes) arrancan
+       ↓
+    10. Sistema completo operativo
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PUERTOS IMPORTANTES                                                      │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  SERVIDOR hanamt:
+    30013       - Puerto SQL principal (SYSTEMDB)
+    30015       - Puerto de administración HANA
+    30003       - Tenant SYSTEMDB
+    30040       - Tenant E01
+    30046       - Tenant E02
+    30052       - Tenant E03
+    30058       - Tenant E04
+    30064       - Tenant E05
+    30070       - Tenant E07 ← Conectado a B1
+    30076-30118 - Otros tenants (E08-E15)
+
+  SERVIDOR sld:
+    443         - Web Client HTTPS
+    40000       - License Server (SLD)
+    50000       - Service Layer Load Balancer
+    50001-50004 - Service Layer Nodes
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📝 NOTAS FINALES
+═══════════════════════════════════════════════════════════════════════════════
+
+  • La mayoría de problemas de comunicación son por:
+    1. HANA detenido o tenant inactivo (40%)
+    2. Problemas de red/firewall (30%)
+    3. Credenciales expiradas/incorrectas (20%)
+    4. Servicios de B1 detenidos (10%)
+
+  • SIEMPRE verifica en este orden:
+    HANA → B1 → Red → Credenciales → Logs
+
+  • Los core dumps en Service Layer son molestos pero usualmente no críticos
+    si el servicio se auto-recupera.
+
+  • Mantén monitoreo en:
+    - Espacio en disco de HANA (/hana/data)
+    - Memoria disponible (especialmente en sld con Web Client)
+    - Logs de alertas
+
+  • RECOMENDACIÓN: Instalar saphostagent.service en servidor sld para:
+    - Monitoreo centralizado
+    - Gestión remota
+    - Integración con SAP Solution Manager
+
+  • El servicio sapb1edfbackend es crítico si el país requiere facturación
+    electrónica. Sin él, no se pueden emitir documentos fiscales válidos.
+
+  • Web Client puede consumir 4GB+ de RAM por servicio. Monitorear memoria
+    en servidor sld si los usuarios reportan lentitud.
+
+  • Documenta SIEMPRE:
+    - Qué comandos ejecutaste
+    - Qué salidas obtuviste
+    - Qué cambios hiciste (si los hay)
+
+  • Servicios con estado "active (exited)" normales:
+    - sapinit.service (en hanamt)
+    - sapb1servertools-authentication.service (en sld)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📊 RESUMEN DE SERVICIOS POR SERVIDOR
+═══════════════════════════════════════════════════════════════════════════════
+
+  SERVIDOR hanamt (HANA):
+    Total de servicios SAP: 2 + HANA Database
+    • saphostagent.service          ✅ Running
+    • sapinit.service               ✅ Exited (normal)
+    • SAP HANA Database             ✅ Running (15 tenants activos)
+
+  SERVIDOR sld (B1):
+    Total de servicios SAP: 11 + Web Client
+    • sapb1servertools.service               ✅ Running
+    • sapb1servertools-authentication        ✅ Exited (normal)
+    • sldagent.service                       ✅ Running
+    • sapb1edfbackend.service                ✅ Running
+    • b1s50000.service                       ✅ Running (LB)
+    • b1s50001.service                       ✅ Running (Node 1)
+    • b1s50002.service                       ✅ Running (Node 2)
+    • b1s50003.service                       ✅ Running (Node 3)
+    • b1s50004.service                       ✅ Running (Node 4)
+    • Web Client (6 procesos Java)           ✅ Running
+    • saphostagent.service                   ❌ No instalado (recomendado)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                            FIN DE LA GUÍA
+═══════════════════════════════════════════════════════════════════════════════
+
+Creado por: Claude (Anthropic)
+Versión: 1.0
+Fecha: Febrero 2026
+Basado en: Ambiente real con SLES 15 SP4, SAP HANA NDB, SAP B1 Service Layer

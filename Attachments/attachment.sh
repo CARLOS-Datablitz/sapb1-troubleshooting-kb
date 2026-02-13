@@ -66,7 +66,7 @@ screen -dRR
 sld:~ # cd /usr/sap/SAPBusinessOne/B1_SHF/ && ls -lha
 mkdir -p CASTELLAnexos
 chmod -R 777 CASTELLAnexos
-chown -R b1service0b1service0 CASTELLAnexos
+chown -R b1service0:b1service0 CASTELLAnexos
 
 cd mnt
 mkdir -p CASTELLAnexos

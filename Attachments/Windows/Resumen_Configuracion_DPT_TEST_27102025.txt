@@ -1,0 +1,308 @@
+================================================================================
+          RESUMEN DE CONFIGURACIÓN - DPT_TEST_27102025
+          SISTEMA DE ATTACHMENTS PARA SAP BUSINESS ONE
+================================================================================
+
+CLIENTE: DPT
+FECHA: 11 de Febrero de 2026
+BASE DE DATOS: NDB (SAP HANA)
+SCHEMA: DPT_TEST_27102025
+
+================================================================================
+ESTADO FINAL
+================================================================================
+
+✓ CONFIGURACIÓN COMPLETADA EXITOSAMENTE
+✓ ATTACHMENTS FUNCIONANDO CORRECTAMENTE
+✓ ARCHIVOS VISIBLES EN LINUX Y WINDOWS
+✓ LISTO PARA USO EN PRODUCCIÓN
+
+
+================================================================================
+PASOS EJECUTADOS
+================================================================================
+
+───────────────────────────────────────────────────────────────────────────────
+PASO 1: CREAR ESTRUCTURA DE CARPETAS EN WINDOWS
+───────────────────────────────────────────────────────────────────────────────
+
+Ubicación: \\adm\Attachments\DPT_TEST_27102025\
+
+Estructura creada:
+
+  DPT_TEST_27102025\
+    ├── Attachments     ← Archivos adjuntos
+    ├── Bitmaps         ← Imágenes bitmap
+    ├── WordDocs        ← Documentos Word
+    ├── Extensions      ← Extensiones
+    ├── ExclDocs        ← Documentos Excel
+    ├── PDF             ← Archivos PDF
+    └── XML             ← Archivos XML
+
+Estado: ✓ Completado
+
+
+───────────────────────────────────────────────────────────────────────────────
+PASO 2: VERIFICAR VISIBILIDAD DESDE LINUX
+───────────────────────────────────────────────────────────────────────────────
+
+Comando ejecutado:
+
+  ls -la /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/
+
+Resultado:
+
+  drwxrwxrwx 2 b1service0 b1service0    0 Feb 11 08:31 Attachments
+  drwxrwxrwx 2 b1service0 b1service0    0 Feb 11 08:31 Bitmaps
+  drwxrwxrwx 2 b1service0 b1service0    0 May 28  2024 ExclDocs
+  drwxrwxrwx 2 b1service0 b1service0    0 Feb 11 08:31 Extensions
+  drwxrwxrwx 2 b1service0 b1service0    0 May 28  2024 PDF
+  drwxrwxrwx 2 b1service0 b1service0    0 Feb 11 08:31 WordDocs
+  drwxrwxrwx 2 b1service0 b1service0    0 May 28  2024 XML
+
+Estado: ✓ Todas las carpetas visibles desde Linux
+
+
+───────────────────────────────────────────────────────────────────────────────
+PASO 3: VERIFICAR QUE EL SCHEMA EXISTE EN HANA
+───────────────────────────────────────────────────────────────────────────────
+
+Comandos ejecutados:
+
+  su - ndbadm
+  hdbsql -i 00 -d NDB -u SYSTEM
+
+Query ejecutado:
+
+  SELECT SCHEMA_NAME FROM SCHEMAS WHERE SCHEMA_NAME LIKE '%27102025%';
+
+Resultado:
+
+  SCHEMA_NAME
+  "DPT_TEST_27102025"
+
+Estado: ✓ Schema encontrado en la base de datos NDB
+
+
+───────────────────────────────────────────────────────────────────────────────
+PASO 4: VERIFICAR CONFIGURACIÓN EN TABLA OADP
+───────────────────────────────────────────────────────────────────────────────
+
+Comandos ejecutados:
+
+  hdbsql -i 00 -d NDB -u B1SYSTEM
+
+Queries ejecutados:
+
+  SET SCHEMA DPT_TEST_27102025;
+
+  SELECT "PrintId", SUBSTRING("AttachPath", 1, 200) AS "AttachPath"
+  FROM OADP;
+
+Resultado:
+
+  PrintId: DPT
+  AttachPath: \\adm\Attachments\DPT_TEST_27102025\Attachments\
+
+Estado: ✓ Configuración correcta en OADP
+
+
+───────────────────────────────────────────────────────────────────────────────
+PASO 5: PRUEBA DE ESCRITURA
+───────────────────────────────────────────────────────────────────────────────
+
+Comando ejecutado:
+
+  echo "Test DPT_TEST_27102025" > /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/test_$(date +%Y%m%d_%H%M%S).txt
+
+Verificación:
+
+  ls -la /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/
+
+Resultado:
+
+  Archivo creado: test_20260211_153652.txt
+  ✓ Visible en Linux
+  ✓ Visible en Windows (\\adm\Attachments\DPT_TEST_27102025\Attachments\)
+
+Estado: ✓ Prueba exitosa
+
+
+================================================================================
+CONFIGURACIÓN TÉCNICA
+================================================================================
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ INFORMACIÓN DEL SISTEMA                                                    │
+├────────────────────────────────────────────────────────────────────────────┤
+│ Base de Datos:     NDB (SAP HANA)                                          │
+│ Schema:            DPT_TEST_27102025                                       │
+│ Servidor Linux:    sles                                                    │
+│ Servidor Windows:  10.2.101.52                                             │
+│ Share Windows:     \\adm\Attachments\                                      │
+│ Montaje Linux:     /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/           │
+│ Usuario/Grupo:     b1service0:b1service0 (UID:1002, GID:1001)             │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ RUTAS CONFIGURADAS EN SAP B1 (TABLA OADP)                                 │
+├────────────────────────────────────────────────────────────────────────────┤
+│ AttachPath:   \\adm\Attachments\DPT_TEST_27102025\Attachments\            │
+│ WordPath:     \\sles\B1_SHF\SAP_Anhaenge\DPT_PROD\WordDocs\    (*)        │
+│ BitmapPath:   \\sles\B1_SHF\SAP_Anhaenge\DPT_PROD\Bitmaps\     (*)        │
+│ ExtPath:      \\sles\B1_SHF\SAP_Anhaenge\DPT_PROD\Extensions\  (*)        │
+└────────────────────────────────────────────────────────────────────────────┘
+
+(*) NOTA: WordPath, BitmapPath y ExtPath aún apuntan a DPT_PROD.
+    Por ahora solo se configuró AttachPath según requerimiento del cliente.
+    Si se necesitan estas funcionalidades en el futuro, deberán actualizarse.
+
+
+================================================================================
+EQUIVALENCIA DE RUTAS (WINDOWS ↔ LINUX)
+================================================================================
+
+Windows:  \\adm\Attachments\DPT_TEST_27102025\Attachments\
+          ↕
+Linux:    /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/
+
+
+================================================================================
+COMANDOS DE VERIFICACIÓN RÁPIDA
+================================================================================
+
+1. Verificar montaje CIFS activo:
+   ─────────────────────────────────────────────────────────────────────────
+   mount | grep SAP_Anhaenge
+
+
+2. Verificar estructura de carpetas:
+   ─────────────────────────────────────────────────────────────────────────
+   ls -la /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/
+
+
+3. Verificar archivos en Attachments:
+   ─────────────────────────────────────────────────────────────────────────
+   ls -lah /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/
+
+
+4. Crear archivo de prueba:
+   ─────────────────────────────────────────────────────────────────────────
+   echo "Test" > /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/test_$(date +%Y%m%d_%H%M%S).txt
+
+
+5. Verificar configuración en HANA:
+   ─────────────────────────────────────────────────────────────────────────
+   su - ndbadm
+   hdbsql -i 00 -d NDB -u B1SYSTEM
+   SET SCHEMA DPT_TEST_27102025;
+   SELECT "PrintId", SUBSTRING("AttachPath", 1, 200) AS "AttachPath" FROM OADP;
+
+
+================================================================================
+PRUEBA DESDE SAP BUSINESS ONE
+================================================================================
+
+Para verificar que la configuración funciona correctamente desde el cliente
+SAP B1:
+
+1. Abrir SAP Business One
+2. Conectarse a la base de datos: DPT_TEST_27102025
+3. Ir a cualquier documento (ej: Factura de Clientes)
+4. Hacer clic en el ícono de Anexos (📎)
+5. Agregar un archivo PDF
+6. Guardar
+
+El archivo debe aparecer en:
+  • Linux:   /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/
+  • Windows: \\adm\Attachments\DPT_TEST_27102025\Attachments\
+
+
+================================================================================
+SOLUCIÓN DE PROBLEMAS
+================================================================================
+
+PROBLEMA: No se pueden adjuntar archivos desde SAP B1
+───────────────────────────────────────────────────────────────────────────────
+
+Verificar:
+  1. Montaje CIFS activo:
+     mount | grep SAP_Anhaenge
+
+  2. Permisos correctos:
+     ls -la /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/
+     (debe ser b1service0:b1service0)
+
+  3. Capacidad de escritura:
+     touch /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/test.txt
+
+  4. Espacio en disco:
+     df -h | grep SAP_Anhaenge
+
+
+PROBLEMA: Archivos no visibles en Windows
+───────────────────────────────────────────────────────────────────────────────
+
+Verificar:
+  1. Que el archivo existe en Linux:
+     ls -la /usr/sap/SAPBusinessOne/B1_SHF/SAP_Anhaenge/DPT_TEST_27102025/Attachments/
+
+  2. Refrescar la vista en Windows (F5)
+
+  3. Verificar conectividad:
+     ping 10.2.101.52
+
+
+================================================================================
+RESUMEN DE CONFIGURACIÓN DE OTRAS BASES DE DATOS
+================================================================================
+
+Para referencia, las siguientes bases de datos también están configuradas:
+
+┌─────────────────────────┬──────────────────────────────────────────────────┐
+│ Base de Datos           │ Estado                                           │
+├─────────────────────────┼──────────────────────────────────────────────────┤
+│ DPT_PROD                │ ✓ Configurado y funcionando                      │
+│ DPT_TEST_2024_08_26     │ ✓ Configurado y funcionando (con archivos)      │
+│ DPT_TEST_27102025       │ ✓ Configurado y funcionando (nuevo)             │
+│ DPT_KST                 │ ⚠ Estructura existe, configuración no verificada │
+└─────────────────────────┴──────────────────────────────────────────────────┘
+
+
+================================================================================
+NOTAS IMPORTANTES
+================================================================================
+
+• El montaje CIFS está configurado en /etc/fstab y se monta automáticamente
+  al iniciar el servidor Linux.
+
+• No se requieren cambios en SAP B1 para esta configuración, la ruta en OADP
+  ya estaba correctamente configurada.
+
+• Solo se verificó y configuró la funcionalidad de Attachments. Las rutas de
+  WordPath, BitmapPath y ExtPath no se modificaron por solicitud del cliente.
+
+• Los archivos adjuntos se almacenan en el servidor Windows y son accesibles
+  desde Linux mediante el montaje CIFS.
+
+• Los permisos son: drwxrwxrwx (777) para compatibilidad entre sistemas.
+
+
+Nota: Las rutas de WordPath, BitmapPath y ExtPath aún apuntan a DPT_PROD, pero como solo necesitas Attachments por ahora, no es necesario cambiarlas. Si en el futuro necesitas esas funcionalidades, deberán actualizarse.
+
+================================================================================
+CONTACTO Y REFERENCIAS
+================================================================================
+
+Documentación completa disponible en:
+  SAP_B1_Attachments_Configuracion_Completa.txt
+
+Configuración realizada por: Equipo de Soporte SAP
+Fecha de configuración: 11 de Febrero de 2026
+Sistema: SAP Business One con SAP HANA
+
+
+================================================================================
+                        ✓ CONFIGURACIÓN EXITOSA
+         DPT_TEST_27102025 LISTO PARA ADJUNTAR ARCHIVOS
+================================================================================

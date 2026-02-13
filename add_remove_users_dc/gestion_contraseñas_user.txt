@@ -1,0 +1,29 @@
+Caducidad, Extensión, Reseteo de contraseña
+
+---- Extensión de contraseñas -----
+Ticket de referencia: iSystems#99206412
+
+User: Se puede extender la fecha de expiración?
+Telmo: Claro que se puede extener, pero el cambio es a todos los usuarios del dominio, si estan conforme con eso ¿Que tiempo desean?
+
+User: Si, debería ser para todos los usuarios. ¿Cual es el tiempo máximo para extenderlo?
+Telmo: Como maximo podrían ser 180 días.
+
+Procedimiento:
+
+Windows +R : gpmc.msc ó gpedit.msc
+eg. casamarket.nubeprivada.biz
+		- Default Domain Policy // Right click >> Edit:
+Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies > Password Policy
+
+---------------------------------------------------
+
+
+
+
+---------------------------------------------------
+
+
+
+
+---------------------------------------------------

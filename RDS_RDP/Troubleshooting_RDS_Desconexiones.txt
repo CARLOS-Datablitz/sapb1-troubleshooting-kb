@@ -1,0 +1,116 @@
+============================================== TROUBLESHOOTING RDS –
+DESCONEXIONES INTERMITENTES Windows Server 2019
+==============================================
+
+1. CONTEXTO DEL INCIDENTE
+
+-   Servidor: Windows Server 2019 con rol RDS
+-   Síntoma: Desconexiones intermitentes de usuarios
+-   Frecuencia: Puntual / no afecta a todos
+-   Hora crítica: ~17:50
+-   Conectividad a Internet: Sin incidencias
+
+Objetivo: Identificar la causa raíz utilizando herramientas nativas de
+Windows, priorizando análisis por GUI (sin cambios iniciales).
+
+------------------------------------------------------------------------
+
+2. ACCESO AL VISOR DE EVENTOS (GUI)
+
+Desde el servidor:
+
+1)  Presionar: Win + R
+2)  Ejecutar: eventvwr.msc
+3)  Se abre el Visor de Eventos (Event Viewer)
+
+Ruta utilizada: Event Viewer └─ Windows Logs └─ System
+
+Motivo: El log System concentra eventos de: - Servicios - Kernel -
+Memoria - RDS - Fallos críticos del sistema
+
+------------------------------------------------------------------------
+
+3. FILTRADO POR HORA DEL INCIDENTE
+
+Acción clave para aislar el problema real.
+
+1)  En el panel derecho: → Click en “Filter Current Log…”
+2)  En el campo “Logged”: → Seleccionar “Custom range”
+3)  Definir rango horario:
+    -   Desde: 17:40
+    -   Hasta: 18:00
+4)  En “Event level” marcar: [X] Critical [X] Error [X] Warning
+5)  Aplicar filtro
+
+Resultado: Se elimina ruido y se visualizan solo los eventos
+relacionados al incidente.
+
+------------------------------------------------------------------------
+
+4. EVENTOS IDENTIFICADOS
+
+Fuente principal: - Service Control Manager
+
+Event ID detectados: - 7023 - 7034 - 7031 - 7009
+
+Eventos relevantes: - “The paging file is too small for this operation
+to complete” - Servicios terminados inesperadamente - Timeout al iniciar
+servicios - Caída de SAP Business One Client Agent
+
+Conclusión preliminar: El sistema estaba bajo presión de memoria y
+forzaba la detención de servicios.
+
+------------------------------------------------------------------------
+
+5. VALIDACIÓN DE RECURSOS DEL SISTEMA
+
+Herramienta: Task Manager → Performance → Memory
+
+Resultados: - RAM instalada: 16 GB - Uso de RAM: ~88% - Paging file: -
+Configuración: Manual - Tamaño: 2048 – 4096 MB - Disco: C:
+
+Evaluación: Configuración de memoria virtual insuficiente para entorno
+RDS + SAP + usuarios concurrentes.
+
+------------------------------------------------------------------------
+
+6. CORRELACIÓN FINAL
+
+Se correlacionaron: - Hora del incidente - Eventos críticos del
+sistema - Saturación de memoria - Caída de servicios - Desconexiones RDS
+
+Causa raíz confirmada: Insuficiencia de memoria física y virtual.
+
+------------------------------------------------------------------------
+
+7. ACCIÓN CORRECTIVA RECOMENDADA
+
+Opción recomendada: - Configurar Paging File en modo AUTOMÁTICO
+
+Alternativa manual: - Initial size: 16384 MB - Maximum size: 32768 MB
+
+Acción adicional: - Reinicio controlado del servidor
+
+------------------------------------------------------------------------
+
+8. RECOMENDACIÓN PREVENTIVA
+
+-   Evaluar ampliación de memoria RAM
+-   Justificación:
+    -   Entorno RDS con SAP
+    -   Horarios pico con alta concurrencia
+    -   Prevención de futuras desconexiones
+
+------------------------------------------------------------------------
+
+9. CONCLUSIÓN
+
+Las desconexiones no estuvieron relacionadas con problemas de red, sino
+con limitaciones de recursos del sistema.
+
+El uso del Visor de Eventos (GUI), junto con filtrado por hora y
+análisis de Event ID, permitió identificar rápidamente la causa raíz y
+definir acciones correctivas efectivas.
+
+============================================== Documento de referencia –
+Soporte RDS ==============================================

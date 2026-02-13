@@ -1,0 +1,145 @@
+SAP Business One - Keycloak OutOfMemoryError Troubleshooting Summary
+
+Generated on: 2026-02-11 19:11:03
+
+Environment Context
+
+-   Server Role: SAP Business One Server (SLD + Service Layer +
+    Keycloak)
+-   Database (HANA) runs on separate server
+-   Total RAM: 31 GB
+-   Approx. concurrent users: 15
+-   Issue observed during peak usage hours
+
+  ---------------------------------
+  1) Initial Service Health Check
+  ---------------------------------
+
+Command: systemctl status sap*
+
+Purpose: To verify the overall state of SAP B1 related services.
+
+Key Findings: - sapb1servertools.service → active (running) -
+sapb1edfbackend.service → active (running) -
+sapb1servertools-authentication.service → active (exited) but Java
+process running (normal behavior for oneshot service)
+
+Interpretation: All services were operational at time of check.
+
+  --------------------------------------
+  2) Review of Recent Restart Behavior
+  --------------------------------------
+
+Command: journalctl -u sapb1servertools –since “3 hours ago”
+
+Purpose: To determine whether the service restart was manual or caused
+by a crash.
+
+Finding: Tomcat did not stop in time. Killing Tomcat with the PID…
+Service restarted successfully.
+
+Interpretation: This was a controlled/manual restart, not a crash.
+
+  ------------------------------
+  3) Memory Usage Verification
+  ------------------------------
+
+Command: free -h
+
+Purpose: To verify if system memory pressure was causing issues.
+
+Result: - 31 GB total RAM - ~15 GB used - ~15 GB available - 0 swap
+usage
+
+Interpretation: No system-level memory pressure. OutOfMemoryError was
+not caused by lack of server RAM.
+
+  ----------------------------------
+  4) Detection of Java Heap Errors
+  ----------------------------------
+
+Command: journalctl -u sapb1servertools-authentication | grep -i
+“OutOfMemory”
+
+Finding: Jan 23 → OOM Feb 02 → OOM Feb 11 → OOM (peak hour)
+
+Error: Terminating due to java.lang.OutOfMemoryError: Java heap space
+
+Interpretation: Keycloak process exceeded its configured Java heap size
+and terminated.
+
+Important: The service did NOT auto-restart after OOM. Manual restart
+was required.
+
+  --------------------------------------------
+  5) Verification of Java Heap Configuration
+  --------------------------------------------
+
+Command: ps -ef | grep keycloak | grep java
+
+Finding: -Xms64m -Xmx512m
+
+Interpretation: - Initial heap: 64 MB - Maximum heap: 512 MB - Parameter
+-XX:+ExitOnOutOfMemoryError forces JVM to terminate on heap exhaustion
+
+Conclusion: 512 MB heap is insufficient for: - 15 concurrent users -
+Service Layer authentication load - Hibernate + JDBC operations - Peak
+hour activity
+
+  -----------------------------------
+  6) Location of Heap Configuration
+  -----------------------------------
+
+Command: systemctl cat sapb1servertools-authentication.service
+
+Finding:
+EnvironmentFile=/usr/sap/SAPBusinessOne/Common/keycloak/conf/env.conf
+
+Command: cat /usr/sap/SAPBusinessOne/Common/keycloak/conf/env.conf
+
+Finding: JAVA_OPTS_APPEND defined but no heap parameters present.
+
+Conclusion: Heap size was defaulted by SAP Keycloak distribution
+(Quarkus default).
+
+  ---------------------------
+  7) Corrective Action Plan
+  ---------------------------
+
+Modify file: /usr/sap/SAPBusinessOne/Common/keycloak/conf/env.conf
+
+Original:
+JAVA_OPTS_APPEND=‘-Djavax.net.ssl.trustStore=/var/lib/ca-certificates/java-cacerts’
+
+Updated:
+JAVA_OPTS_APPEND=‘-Djavax.net.ssl.trustStore=/var/lib/ca-certificates/java-cacerts
+-Xms512m -Xmx1024m’
+
+Rationale: - Increase max heap to 1024 MB (1 GB) - Conservative and safe
+for current load - Server has sufficient RAM (31 GB) - No HANA running
+locally
+
+  ----------------------
+  Technical Root Cause
+  ----------------------
+
+The OutOfMemoryError was not caused by: - Lack of physical memory -
+Kernel OOM killer - System swap exhaustion
+
+It was caused by: - JVM heap size limit (512 MB) - Peak authentication
+load - Hibernate + JDBC memory consumption - Forced termination due to
+-XX:+ExitOnOutOfMemoryError
+
+  -----------------
+  Risk Assessment
+  -----------------
+
+Before change: - Authentication service crashes during peak load -
+Requires manual restart - Potential login/service disruption
+
+After change (1GB heap): - Sufficient headroom for 15 users - Reduced
+risk of OOM - Stable authentication service
+
+  ---------------
+  End of Report
+  ---------------

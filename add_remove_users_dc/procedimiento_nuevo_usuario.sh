@@ -8,7 +8,7 @@ IMPORTANTE:
 (Ejemplo: Allpro OU/Tampa/Users)
 DC ----> Tools/Users and Devices AD
 			----> Copy one user.
-* TS01 ---> 25 User per server
+* TS01 ---> 25 User per server  -----> IMPORTANTE
 
 Esto te da el número de usuarios habilitados en el AD:
 Get-ADUser -Filter {Enabled -eq $true} | Measure-Object
@@ -159,3 +159,4 @@ Cha#cha#z1lla*9
 
 
 https://rds.Colorcompany.privatcloud.biz:22068/rdweb/webclient/index.html	
+user12@staufklebstoffe.privatcloud.biz

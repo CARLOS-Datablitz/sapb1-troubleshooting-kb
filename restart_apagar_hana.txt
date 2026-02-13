@@ -9,6 +9,9 @@ su - ndbadm
 exit
 top
 sles# systemctl stop sapinit sapb1servertools
+sles# systemctl reboot
+
+
 
 3. verificar que los serivicios esten apagados
 ==== EN EL PROXMOX =====
@@ -34,10 +37,14 @@ Nota: Tomar ss de SAP Business One Client en el RDS antes de realizar operación
 
 ====== VERIFICACION DE UPTIME =====
 SLES# uptime
+systemctl status sap*
 last reboot | head
 timedatectl status
+s
 WINDOWS:
 (gcim Win32_OperatingSystem).LastBootUpTime
 
+
+==========================
 apagar linux:
 systemctl poweroff

@@ -1,0 +1,583 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║              SERVICIO: sapb1servertools-authentication.service               ║
+║                                                                              ║
+║                  Autenticación en SAP Business One Server Tools              ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📚 TABLA DE CONTENIDOS
+═══════════════════════════════════════════════════════════════════════════════
+
+  1. ¿Qué es sapb1servertools-authentication.service?
+  2. ¿Para qué sirve?
+  3. ¿Cómo funciona?
+  4. Relación con SAP HANA
+  5. Relación con SAP Business One
+  6. Estado normal del servicio
+  7. Verificación y diagnóstico
+  8. Qué pasa si falla
+  9. Comandos útiles
+  10. Troubleshooting común
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📖 1. ¿QUÉ ES sapb1servertools-authentication.service?
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ DEFINICIÓN                                                               │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Es el servicio de AUTENTICACIÓN de SAP Business One Server Tools que    │
+│ maneja la validación de credenciales y autorización de usuarios para    │
+│ acceder a los componentes del servidor B1.                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ CARACTERÍSTICAS PRINCIPALES                                              │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  • Tipo de servicio: Auxiliar / Pre-requisito                           │
+│  • Ejecución: One-shot (se ejecuta una vez al inicio)                   │
+│  • Criticidad: ALTA - Sin él no hay acceso a B1                         │
+│  • Dependencia: Se inicia ANTES de sapb1servertools.service             │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🎯 2. ¿PARA QUÉ SIRVE?
+═══════════════════════════════════════════════════════════════════════════════
+
+  Este servicio proporciona las siguientes funcionalidades:
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ 1. AUTENTICACIÓN DE USUARIOS                                        │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │    Valida credenciales cuando usuarios o servicios intentan        │
+  │    conectarse a SAP Business One Server Tools.                      │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ 2. SINGLE SIGN-ON (SSO)                                             │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │    Permite inicio de sesión único entre diferentes componentes      │
+  │    de SAP Business One (Web Client, Service Layer, Analytics).      │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ 3. GESTIÓN DE TOKENS                                                │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │    Genera y valida tokens de sesión para mantener la seguridad      │
+  │    de las conexiones activas.                                       │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ 4. CONTROL DE ACCESO                                                │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │    Determina qué usuarios pueden acceder a qué recursos según       │
+  │    sus permisos configurados en HANA.                               │
+  └─────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔄 3. ¿CÓMO FUNCIONA?
+═══════════════════════════════════════════════════════════════════════════════
+
+  FLUJO DE AUTENTICACIÓN:
+
+  ┌────────────────────────────────────────────────────────────────────┐
+  │                                                                    │
+  │   [1] Usuario/Aplicación                                           │
+  │         │                                                          │
+  │         │ (solicita autenticación)                                 │
+  │         ↓                                                          │
+  │   [2] sapb1servertools-authentication.service                      │
+  │         │                                                          │
+  │         │ (consulta credenciales)                                  │
+  │         ↓                                                          │
+  │   [3] SAP HANA (Base de datos tenant - E07, E08, etc.)            │
+  │         │                                                          │
+  │         │ (verifica usuario en tabla SYS.USERS)                    │
+  │         │ (valida password, permisos, estado)                      │
+  │         ↓                                                          │
+  │   [4] sapb1servertools-authentication.service                      │
+  │         │                                                          │
+  │         │ (recibe resultado de validación)                         │
+  │         │ (genera token de sesión si es válido)                    │
+  │         ↓                                                          │
+  │   [5] Usuario/Aplicación                                           │
+  │         │                                                          │
+  │         └─► ACCESO CONCEDIDO o DENEGADO                            │
+  │                                                                    │
+  └────────────────────────────────────────────────────────────────────┘
+
+  PROCESO DE INICIALIZACIÓN:
+
+    1. Sistema inicia (boot)
+       ↓
+    2. systemd carga sapb1servertools-authentication.service
+       ↓
+    3. El servicio configura módulos de autenticación
+       ↓
+    4. Carga políticas de seguridad
+       ↓
+    5. Inicializa conexión con HANA
+       ↓
+    6. Servicio termina con estado "exited" (NORMAL)
+       ↓
+    7. Módulos de autenticación quedan activos en memoria
+       ↓
+    8. sapb1servertools.service puede iniciarse
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔗 4. RELACIÓN CON SAP HANA
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ CONEXIÓN DIRECTA CON HANA                                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  El servicio de autenticación se comunica directamente con HANA para:
+
+  ✓ CONSULTAR LA BASE DE DATOS
+    → Valida usuarios contra las tablas del tenant específico
+    → Lee información de la tabla SYS.USERS
+
+  ✓ VERIFICAR CREDENCIALES
+    → Comprueba usuario y password
+    → Valida que el usuario no esté bloqueado (USER_DEACTIVATED = FALSE)
+    → Verifica que el password no haya expirado
+
+  ✓ LEER POLÍTICAS DE SEGURIDAD
+    → Obtiene permisos del usuario
+    → Lee restricciones de acceso
+    → Verifica roles y autorizaciones
+
+  ✓ AUDITORÍA
+    → Registra intentos de autenticación en HANA
+    → Actualiza LAST_SUCCESSFUL_CONNECT
+    → Incrementa INVALID_CONNECT_ATTEMPTS si falla
+
+
+  EJEMPLO DE CONSULTA QUE REALIZA:
+
+    SELECT USER_NAME, 
+           USER_DEACTIVATED, 
+           VALID_UNTIL, 
+           INVALID_CONNECT_ATTEMPTS,
+           PASSWORD_LOCK_TIME
+    FROM SYS.USERS 
+    WHERE USER_NAME = 'usuario_solicitado';
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ DEPENDENCIA DE HANA                                                      │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  ⚠️  IMPORTANTE:
+      
+      Si HANA no está disponible:
+      ❌ La autenticación NO funcionará
+      ❌ No se podrá iniciar sesión en B1
+      ❌ El servicio puede fallar o quedar en espera
+
+      Por eso es crítico que HANA esté corriendo ANTES de iniciar
+      los servicios de SAP Business One.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔗 5. RELACIÓN CON SAP BUSINESS ONE
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ COMPONENTE AUXILIAR CRÍTICO                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Este servicio es un COMPONENTE AUXILIAR de sapb1servertools.service
+
+  ORDEN DE INICIO:
+
+    [1] sapb1servertools-authentication.service  ← Se inicia PRIMERO
+            ↓
+            ↓ (configura autenticación)
+            ↓
+    [2] sapb1servertools.service                 ← Se inicia DESPUÉS
+            ↓
+            ↓ (usa módulos de autenticación)
+            ↓
+    [3] Service Layer (b1s5000X.service)         ← Se inicia AL FINAL
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROPORCIONA SEGURIDAD PARA:                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  ✓ SAP B1 Server Tools
+    → Autenticación de administradores
+    → Acceso a configuraciones del servidor
+
+  ✓ Service Layer (puertos 50000-50004)
+    → Validación de llamadas API
+    → Tokens de sesión para clientes
+
+  ✓ Analytics Platform
+    → Acceso a reportes y dashboards
+    → Permisos de visualización de datos
+
+  ✓ Web Client
+    → Inicio de sesión de usuarios finales
+    → Gestión de sesiones web
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ✅ 6. ESTADO NORMAL DEL SERVICIO
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ¿QUÉ ES NORMAL?                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Cuando ejecutas:
+    systemctl status sapb1servertools-authentication.service
+
+  Es NORMAL ver:
+
+    ● sapb1servertools-authentication.service
+         Loaded: loaded
+         Active: active (exited)     ← ¡Esto es CORRECTO!
+                        ^^^^^^
+       Main PID: XXXX (code=exited, status=0/SUCCESS)
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ¿POR QUÉ DICE "exited"?                                                  │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  El estado "exited" NO significa que esté detenido.
+
+  Este es un servicio de tipo "oneshot", que significa:
+
+    1. Se ejecuta una vez al inicio del sistema
+    2. Realiza su tarea de configuración
+    3. Termina exitosamente (exited)
+    4. Los módulos que configuró quedan activos en memoria
+    5. No necesita seguir corriendo como proceso
+
+  ANALOGÍA:
+    Es como un electricista que viene a tu casa, instala los cables
+    de luz, verifica que todo funcione, y se va. La luz sigue
+    funcionando aunque el electricista ya no esté.
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ESTADOS POSIBLES                                                         │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  ✅ CORRECTO:
+     Active: active (exited)
+
+  ⚠️  ADVERTENCIA:
+     Active: activating (start)        ← Está tardando en iniciar
+     
+  ❌ PROBLEMA:
+     Active: failed
+     Active: inactive (dead)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔍 7. VERIFICACIÓN Y DIAGNÓSTICO
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ COMANDOS DE VERIFICACIÓN                                                │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Ver estado actual
+  systemctl status sapb1servertools-authentication.service
+
+  # Ver logs completos del servicio
+  journalctl -u sapb1servertools-authentication.service -n 50
+
+  # Ver solo errores
+  journalctl -u sapb1servertools-authentication.service | grep -i error
+
+  # Ver logs en tiempo real (útil al reiniciar)
+  journalctl -u sapb1servertools-authentication.service -f
+
+  # Verificar dependencias
+  systemctl list-dependencies sapb1servertools.service | grep auth
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ QUÉ BUSCAR EN LOS LOGS                                                  │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  ✓ SEÑALES DE ÉXITO:
+     "Authentication service started successfully"
+     "Loaded authentication modules"
+     "Connected to database"
+     status=0/SUCCESS
+
+  ✗ SEÑALES DE PROBLEMA:
+     "Failed to connect to database"
+     "Authentication module failed to load"
+     "Connection refused"
+     "Timeout"
+     status=1/FAILURE
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ VERIFICAR QUE ESTÁ FUNCIONANDO                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Si el servicio principal está corriendo, la autenticación funciona
+  systemctl status sapb1servertools.service
+
+  # Si muestra "active (running)", significa que la autenticación
+  # está OK (si no, sapb1servertools no podría iniciar)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ❌ 8. QUÉ PASA SI FALLA
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ SÍNTOMAS DE FALLO                                                        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Si sapb1servertools-authentication.service falla, verás:
+
+  ❌ NO PODRÁS:
+     • Iniciar sesión en SAP B1 Web Client
+     • Autenticarte en el Service Layer
+     • Acceder a Server Tools con credenciales
+     • Usar Single Sign-On (SSO)
+     • Generar tokens de API
+
+  ❌ SERVICIOS QUE NO ARRANCARÁN:
+     • sapb1servertools.service
+     • b1s50000.service (Service Layer Load Balancer)
+     • b1s5000X.service (Service Layer Nodes)
+
+  ✅ QUÉ SEGUIRÁ FUNCIONANDO:
+     • SAP HANA (es independiente)
+     • SLD Agent (sldagent.service)
+     • Los datos en HANA no se afectan
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ CAUSAS COMUNES DE FALLO                                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  1. HANA no está corriendo o no es accesible
+     → Solución: Iniciar HANA primero
+
+  2. No hay conectividad de red con HANA
+     → Solución: Verificar red, DNS, firewall
+
+  3. Credenciales de conexión incorrectas
+     → Solución: Verificar configuración en archivos .conf
+
+  4. Archivos de configuración corruptos
+     → Solución: Restaurar desde backup
+
+  5. Permisos incorrectos en archivos
+     → Solución: Verificar owner y permisos (b1service0)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🛠️  9. COMANDOS ÚTILES
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ GESTIÓN DEL SERVICIO                                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Ver estado
+  systemctl status sapb1servertools-authentication.service
+
+  # Reiniciar (si hubo cambios en configuración)
+  systemctl restart sapb1servertools-authentication.service
+
+  # Habilitar para que inicie automáticamente
+  systemctl enable sapb1servertools-authentication.service
+
+  # Deshabilitar inicio automático
+  systemctl disable sapb1servertools-authentication.service
+
+  # Ver si está habilitado
+  systemctl is-enabled sapb1servertools-authentication.service
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ DIAGNÓSTICO                                                              │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Ver logs de hoy
+  journalctl -u sapb1servertools-authentication.service --since today
+
+  # Ver logs de las últimas 2 horas
+  journalctl -u sapb1servertools-authentication.service --since "2 hours ago"
+
+  # Ver logs entre fechas específicas
+  journalctl -u sapb1servertools-authentication.service --since "2026-02-01" --until "2026-02-04"
+
+  # Ver logs con prioridad de error o superior
+  journalctl -u sapb1servertools-authentication.service -p err
+
+  # Exportar logs a archivo
+  journalctl -u sapb1servertools-authentication.service > auth_service_logs.txt
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ VERIFICACIÓN DE DEPENDENCIAS                                            │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Ver qué servicios dependen de este
+  systemctl list-dependencies --reverse sapb1servertools-authentication.service
+
+  # Ver qué necesita este servicio para funcionar
+  systemctl list-dependencies sapb1servertools-authentication.service
+
+  # Ver la cadena completa de dependencias
+  systemctl list-dependencies sapb1servertools.service --all
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔧 10. TROUBLESHOOTING COMÚN
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA 1: Servicio muestra "failed"                                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│ DIAGNÓSTICO:                                                             │
+│   journalctl -u sapb1servertools-authentication.service -n 100          │
+│                                                                          │
+│ CAUSAS COMUNES:                                                          │
+│   • HANA no está corriendo                                              │
+│   • No hay conectividad con HANA                                        │
+│   • Credenciales incorrectas                                            │
+│                                                                          │
+│ SOLUCIÓN:                                                                │
+│   1. Verificar que HANA esté corriendo (HDB info)                       │
+│   2. Probar conectividad: nc -zv <hana_server> 30013                    │
+│   3. Revisar configuración en archivos .conf                            │
+│   4. Reiniciar el servicio después de corregir                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA 2: Servicio tarda mucho en iniciar                             │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   Active: activating (start)                                            │
+│   Estado se queda así por varios minutos                                │
+│                                                                          │
+│ CAUSA:                                                                   │
+│   Esperando respuesta de HANA (timeout de red)                          │
+│                                                                          │
+│ SOLUCIÓN:                                                                │
+│   1. Verificar latencia de red: ping <hana_server>                      │
+│   2. Verificar que HANA responda: nc -zv <hana_server> 30013           │
+│   3. Si persiste, revisar firewall entre servidores                     │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA 3: Servicio OK pero usuarios no pueden autenticarse            │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   • Servicio muestra "active (exited)"                                  │
+│   • Pero usuarios reciben "authentication failed"                       │
+│                                                                          │
+│ DIAGNÓSTICO:                                                             │
+│   # En HANA, verificar usuarios                                         │
+│   hdbsql -u SYSTEM -d E07                                               │
+│   SELECT USER_NAME, USER_DEACTIVATED, INVALID_CONNECT_ATTEMPTS         │
+│   FROM SYS.USERS WHERE USER_NAME = 'usuario_problema';                  │
+│                                                                          │
+│ CAUSAS POSIBLES:                                                         │
+│   • Usuario desactivado (USER_DEACTIVATED = TRUE)                       │
+│   • Usuario bloqueado por intentos fallidos                             │
+│   • Password expirado                                                    │
+│   • Usuario no existe en el tenant correcto                             │
+│                                                                          │
+│ SOLUCIÓN:                                                                │
+│   # Desbloquear usuario en HANA                                         │
+│   ALTER USER usuario_problema RESET CONNECT ATTEMPTS;                   │
+│                                                                          │
+│   # Activar usuario                                                      │
+│   ALTER USER usuario_problema ACTIVATE USER NOW;                        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA 4: Después de reiniciar servidor, autenticación no funciona    │
+├──────────────────────────────────────────────────────────────────────────┤
+│ CAUSA:                                                                   │
+│   Orden de inicio incorrecto (B1 inició antes que HANA)                 │
+│                                                                          │
+│ SOLUCIÓN:                                                                │
+│   1. Detener servicios de B1:                                           │
+│      systemctl stop sapb1servertools.service                            │
+│      systemctl stop sapb1servertools-authentication.service             │
+│                                                                          │
+│   2. Verificar que HANA esté corriendo:                                 │
+│      su - ndbadm                                                        │
+│      HDB info                                                           │
+│                                                                          │
+│   3. Iniciar servicios de B1 en orden:                                  │
+│      systemctl start sapb1servertools-authentication.service            │
+│      systemctl start sapb1servertools.service                           │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📊 RESUMEN RÁPIDO
+═══════════════════════════════════════════════════════════════════════════════
+
+  ┌────────────────────────────────────────────────────────────────────┐
+  │ ASPECTO             │ DESCRIPCIÓN                                  │
+  ├────────────────────────────────────────────────────────────────────┤
+  │ Nombre              │ sapb1servertools-authentication.service      │
+  │ Tipo                │ Servicio auxiliar de seguridad (oneshot)     │
+  │ Función principal   │ Autenticación y autorización de usuarios     │
+  │ Relación con HANA   │ Valida credenciales contra la BD HANA        │
+  │ Relación con B1     │ Pre-requisito para Server Tools              │
+  │ Estado normal       │ active (exited) ← ESTO ES CORRECTO           │
+  │ Criticidad          │ ALTA - Sin él no hay acceso a B1             │
+  │ Orden de inicio     │ 1º Auth → 2º ServerTools → 3º ServiceLayer   │
+  │ Dependencia         │ Requiere HANA corriendo y accesible          │
+  └────────────────────────────────────────────────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📝 NOTAS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+  • Este servicio DEBE iniciar ANTES que sapb1servertools.service
+
+  • El estado "active (exited)" es NORMAL y CORRECTO para este tipo de
+    servicio (oneshot)
+
+  • Si HANA no está disponible, este servicio fallará y causará que
+    todos los servicios de B1 no puedan iniciar
+
+  • Los logs de autenticación también se guardan en HANA para auditoría
+
+  • Cada vez que reinicias este servicio, también debes reiniciar
+    sapb1servertools.service
+
+  • Si cambias configuración de autenticación, reinicia ambos servicios
+    en orden: primero authentication, luego servertools
+
+
+═══════════════════════════════════════════════════════════════════════════════
+                            FIN DEL DOCUMENTO
+═══════════════════════════════════════════════════════════════════════════════
+
+Creado por: Claude (Anthropic)
+Versión: 1.0
+Fecha: Febrero 2026
+Complemento de: Guía de Troubleshooting SAP HANA ↔ SAP Business One
