@@ -1,0 +1,73 @@
+# Ticket de referencia: iSystems#99167268
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir IKI dbiki 
+cd /tmp && ls -lhad IKI dbiki
+chmod -R 777 IKI/ dbiki/
+chown -R ndbadm:sapsys IKI/ dbiki/ && ls -lha && cd /tmp/
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+sld:~ # cat Desktop/SAP_Configuration2.txt
+dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="SYSTEM"
+dbPass="mSTqa8XM"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOIKI'."*" as binary into '\'/tmp/dbiki\'' with ignore existing threads 10;'
+
+# Comprimir en tar.gz
+tar -czvf /tmp/IKI/SBOIKI.tar.gz --transform 's/^dbiki/SBOIKI/' dbiki/
+
+# Confirmar los permisos:
+chmod -R 777 IKI/ dbiki/
+chown -R ndbadm:sapsys IKI/ dbiki/ && ls -l dbiki/ IKI/
+
+# Eliminar los archivos que ya no son necesarios
+rm -rf IKI/ dbiki/
+ls -l dbiki/ IKI/
+
+
+================================================================
+RENAME, EXPORT
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+
+# Export the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'RANDS_PROD'."*" as binary into '\'/tmp/dbth2\'' with ignore existing threads 10;'
+
+
+tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
+
+
+
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+# Ver el aproximado del archivo al ser descomprimido.
+tar -tvf archivo.tar | awk '{sum += $3} END {print sum " bytes"}'
+unrar lt archivo.rar | grep -E "Size:|Packed:"
+# Extraer los archivos en cada folder de destino.
+tar -C /tmp/dbiki -xzf /tmp/IKI/049SBOGSNMAQUINARIA25072025.tar.xz
+unrar x /tmp/IKI/COMPLETE_DATA_BACKUP07082025_datatmp_3_1.rar /tmp/dbiki/
+ls -lha
+/tmp/IKI rm *.rar
+

@@ -1,0 +1,65 @@
+# Ticket:iSystems#99172063 
+# Task:
+# 1- Download from the SFTP "Birlos_test.rar"
+# 2- Import to the DemoServer "NMX_LIVE" as "TEST_0101"
+# 3- Delete the test database "TEST_0101"
+
+# For Idean - Idean-HANA - hanamt - 10.3.27.2 / SLD 10.3.25.10
+# Date: 28/08/2025
+# Tenant NDB
+
+# Begining in the hana
+df -h      # ---> revisar si el directorio /tmp tiene espacio para la exportación, sino cambair de directorio a /backup
+screen -dRR
+cd /tmp && ls -lha
+mkdir DREAMPACKZIP dbdreampack1
+chmod -R 777 DREAMPACKZIP/ dbdreampack1/ && ls -lha
+chown -R ndbadm:sapsys DREAMPACKZIP/ dbdreampack1/ && ls -lha
+
+
+#SQL Varibles (B1SYSTEMA)
+sles:~ # cat Desktop/SAP_Configuration.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E12"
+dbUser="B1SYSTEM"
+dbPass="1m3f4GpL9fmACWOn"
+
+
+#Test DB
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+
+#Exportr the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_FIGURETTI_PROD'."*" as binary into '\'/tmp/dbdreampack1/\'' with ignore existing threads 10;'
+
+
+cd DREAMPACKZIP
+
+# Download from the SFTP
+#Correr el comando en el directorio donde queremos que se encuentre el archivo
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+pass: C4!qE0e]cVFy&$m
+cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 
+get NMX_LIVE.tar.gz
+bye
+
+#Untar and move to another folder
+# -xzf para le dice que descomprima con gzip y -xJf para .tar.xz
+tar -C /tmp/dbdreampack1 -xzf /tmp/DREAMPACKZIP/C11923_BIGVISION_MIGRATED_20250710_AB.tar.gz
+cd dbdreampack1/ && ls -lha
+
+#Import the shchema
+
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TST_MP_MUNDOPET'."*" as binary from '\'/tmp/mundoPet/\'' with ignore existing threads 10;'
+
+# Comprimir:
+tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO/' dbdreampack1/
+
+
+# Delete and list the non necessary files in one line
+ cd /tmp && ls -lha && rm -rf dbdreampack1/ DREAMPACKZIP/ && ls -lha
+
+ ================== FIN ==================
+ 

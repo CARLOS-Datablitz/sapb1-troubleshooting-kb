@@ -1,6 +1,6 @@
 Filtrar en PowerShell del AD:
 =========================================================================
-Esto te da una lista de usuarios habilitados que han iniciado sesión en los últimos 90 días:
+#Esto te da una lista de usuarios habilitados que han iniciado sesión en los últimos 90 días:
 
 $cutoff = (Get-Date).AddDays(-90)
 
@@ -16,7 +16,7 @@ $usuarios = Get-ADUser -Filter * -Properties LastLogonTimeStamp, Enabled | Where
 $usuarios
 
 # Muestra el total de usuarios al final
-Write-Host "Total de usuarios habilitados que iniciaron sesión en los últimos 60 días: $($usuarios.Count)" -ForegroundColor Cyan
+Write-Host "Total de usuarios habilitados que iniciaron sesión en los últimos 90 días: $($usuarios.Count)" -ForegroundColor Cyan
 
 =========================================================================
 Esto te da el número(solo cantidad) de usuarios habilitados en el AD:
@@ -63,7 +63,7 @@ $ou = "OU=Tampa,OU=Allpro OU,DC=Allpro,DC=local"
 # Obtener usuarios de la OU 'Tampa'
 $usuarios = Get-ADUser -SearchBase $ou -Filter * -Properties Enabled | Where-Object { $_.ObjectClass -eq 'user' }
 
-# Contar habilitados y deshabilitados
+# Contar habilitados y deshabilitados 
 $habilitados = ($usuarios | Where-Object { $_.Enabled -eq $true }).Count
 $deshabilitados = ($usuarios | Where-Object { $_.Enabled -eq $false }).Count
 
@@ -75,7 +75,7 @@ Write-Host "Total de usuarios en OU 'Tampa': $($habilitados + $deshabilitados)" 
 ==============  Lista los usuarios habilitados y deshabilitados ===============
 
 
-Get-ADUser -Filter * -Properties Enabled |
+$usuarios = Get-ADUser -Filter * -Properties Enabled |
 Select-Object `
     Name,
     SamAccountName,
@@ -83,6 +83,24 @@ Select-Object `
         if ($_.Enabled) { "Habilitado" } else { "Deshabilitado" }
     }} |
 Sort-Object Name
+
+# Mostrar la lista de usuarios
+$usuarios | Format-Table -AutoSize
+
+# Calcular totales
+$habilitados   = ($usuarios | Where-Object { $_.Estado -eq "Habilitado"   }).Count
+$deshabilitados = ($usuarios | Where-Object { $_.Estado -eq "Deshabilitado" }).Count
+$total          = $usuarios.Count
+
+# Mostrar resumen
+Write-Host ""
+Write-Host "===============================" -ForegroundColor Cyan
+Write-Host "  RESUMEN DE USUARIOS EN AD"     -ForegroundColor Cyan
+Write-Host "===============================" -ForegroundColor Cyan
+Write-Host "  Habilitados  : $habilitados"   -ForegroundColor Green
+Write-Host "  Deshabilitados: $deshabilitados" -ForegroundColor Red
+Write-Host "  Total         : $total"         -ForegroundColor White
+Write-Host "===============================" -ForegroundColor Cyan
 
 
 ======================= DURACION DE PASSWORDS=====================================

@@ -1,6 +1,8 @@
 Add & remove users process:
 Ch@ng4MeNow!
 
+IMPORTANTE:
+!! Se tienen que aumentar todos los recursos, tanto de hardware(cpu y ram), como software(licencias RDS).
 
 IMPORTANTE:
 !! todos los tickets donde dice que se crea usuario o se agregan recursos son Billable_WT
@@ -81,7 +83,7 @@ You will find the default password at the link below (one-time-use link). You wi
 j.kamphof
 n.dammer
 
-Hi, Jessica, hi Nicole, we've added a new user for the client ALLPRO.
+Hi, Jessica, hi Valentina, we've added a 06 new users for the client ALLPRO.
 
 Hi Jessica, hi Valentina,
 I’ve completed the removal of Nathan Galloway from the ALLPRO systems, per the customer’s request.
