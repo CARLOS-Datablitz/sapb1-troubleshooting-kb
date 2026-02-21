@@ -35,7 +35,10 @@ dbPass="9PwF4hANfby4"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_MIN_SAMANCO01'."*" as binary from '\'/tmp/samanco_db_1/samanco_db_1\'' with ignore existing threads 10;'
 
 # Realizar un export
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_PROD_XH'."*" as binary into '\'/tmp/samanco_db_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_SAMACO_PROD2'."*" as binary into '\'/tmp/samanco_db_1\'' with ignore existing threads 10;'
+
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_SAMACO_PROD2'."*" as binary from '\'/tmp/samanco_db_1/\'' with ignore existing threads 10 rename schema "SBO_SAMACO_PROD2" to "ZZ_SAMACO180226_ZZ";'
 
 # Eliminar los archivos que ya no son necesarios
 cd /tmp && ls -lha && rm -rf MIN_SAMANCO/ samanco_db_1/ samanco_db_2/ && ls -lha
