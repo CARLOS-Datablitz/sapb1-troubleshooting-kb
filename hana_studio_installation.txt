@@ -1,0 +1,9 @@
+Hana Studio Installation:
+
+\\sld\b1_shf\Hana _components
+SAP Hana Client son los drivers
+Y el otro es el Hana Studio
+Instala los drivers y luego el Hana Studio
+
+
+

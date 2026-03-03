@@ -6,6 +6,7 @@ sles: ~# su - ndbadm
 ndbadm@sles:/usr/sap/NDB/HDB00> ls -lha
 
 # Apagar la db HANA:
+sles: ~# su - ndbadm
 ndbadm@sles:/usr/sap/NDB/HDB00> ./HDB stop
 # Apagar el servidor(sles) desde el PROXMOX, para tomar un snapshot
 # Luego reiniciar el servidor y ver que los servicios levantan
@@ -21,6 +22,7 @@ sldwcms:~ # systemctl stop sapb1servertools.service
 
 apagar linux:
 systemctl reboot
+
 systemctl poweroff -----> !!!! CUIDADO SE PIERDE GESTION !!!!
 
 The servers have been restarted.

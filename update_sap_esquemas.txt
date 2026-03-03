@@ -1,0 +1,8 @@
+Revorg - RevorgNFR - Update SAP on server
+
+Pasos:
+
+1. Tener una copia de cada esquema de la db de cliente en el SFTP(carlos_files).
+	- Exportar todos los esquemas de cliente y subirlos al sftp ----> pregunta solo los esquemas creador por cliente y que se ven en el SAP Business One Client, o tambien el SBOCOMMON,B1AS, etc creados por defecto durante la instalción de B1
+2. Importarlos en el ambiente de prueba(testv10) y hacer el upgrade de estos esquemas.
+

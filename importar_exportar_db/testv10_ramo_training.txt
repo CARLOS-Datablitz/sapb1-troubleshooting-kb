@@ -3,15 +3,16 @@
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir db_buyandgo_1/ BUYANDGO_ZIP/
-chmod -R 777 db_buyandgo_1/ BUYANDGO_ZIP/
-chown -R ndbadm:sapsys db_buyandgo_1/ BUYANDGO_ZIP/ && ls -lha
+mkdir REVORG_ZIP/ revorg_db_2/ revorg_db_3/ revorg_db_4/ 
+
+chmod -R 777 REVORG_ZIP/ revorg_db_2/ revorg_db_3/ revorg_db_4/
+chown -R ndbadm:sapsys REVORG_ZIP/ revorg_db_2/ revorg_db_3/ revorg_db_4/
 
 =================================================
 2. Variables de entorno:
 2.1 Sacar información de las variables:
 sld:~ # 
-cat Desktop/SAP_Configuration.txt
+cat /root/Desktop/SAP_Configuration.txt
 2.2 Ingresar las variables en el sles:/tmp #
 # Varibles HANASQL (B1SYSTEM)
 
@@ -24,35 +25,42 @@ dbPass="Test1234"
 
 -------------------   
 
-
 # Testear la base de datos: NDB
 sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema
 sles:/tmp #
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BUYANDGO'."*" as binary into '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BUYANDGO'."*" as binary into '\'/tmp/revorg_db_1\'' with ignore existing threads 10;'
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_COMERCIALIZADORA_DEMO";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/revorg_db_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_COMERCIALIZADORA_DEMO";'
+
 # import
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/db_buyandgo_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'M4_MONICO01'."*" as binary from '\'/tmp/revorg_db_6/M4_MONICO01/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_SPA90'."*" as binary from '\'/tmp/revorg_db_13/S5_SPA90/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'PHYTOITALIA_TEST'."*" as binary from '\'/tmp/revorg_db_17/PHYTOITALIA_TEST/\'' with ignore existing threads 10;'
+
+
+
 # clean the hana:
-cd /tmp && rm -R BUYANDGO_ZIP/ db_buyandgo_1/ && ls | grep *buy*
+cd /tmp && rm -R REVORG_ZIP/ revorg_db_1/ revorg_db_2/ revorg_db_3/ revorg_db_4/
 
 =========================  FIN =================
+# Permissions:
+chmod -R 777 revorg_db_2/ revorg_db_3/ revorg_db_4/ 
+chown -R ndbadm:sapsys revorg_db_2/ revorg_db_3/ revorg_db_4/
 
-tar -czvf /tmp/BUYANDGO_ZIP/SBO_BUYANDGO_06_DIC.tar.gz -C /tmp/db_buyandgo_1 .
-tar -xzvf /tmp/BUYANDGO_ZIP/SBO_BUYANDGO_06_DIC_NO_DEPEN.tar.gz -C /tmp/db_buyandgo_1/
-
-chmod -R 777 BUYANDGO_ZIP/
-chown -R ndbadm:sapsys BUYANDGO_ZIP/ && ls -lha
-
+# SFTP:
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m
 cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 
 get NMX_LIVE.tar.gz
 bye
+
+# Extract:
+tar -xzvf /tmp/REVORG_ZIP/M4_MONICO01.tar.gz -C /tmp/revorg_db_6/
+tar -xzvf /tmp/REVORG_ZIP/S5_SPA90.tar.gz -C /tmp/revorg_db_13/
+tar -xzvf /tmp/REVORG_ZIP/PHYTOITALIA_TEST.tar.gz -C /tmp/revorg_db_17/
 

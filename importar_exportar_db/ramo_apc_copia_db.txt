@@ -8,16 +8,9 @@ df -h
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
-chmod -R 777 dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
-chown -R ndbadm:sapsys dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4 && ls -lha
-
-sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
-# pass:C4!qE0e]cVFy&$m 
-cd /ramo/APC
-ls -lha
-get 080SBOMAQEMAG25072025.tar.xz
-bye
+mkdir SBO_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+chmod -R 777 SBO_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+chown -R ndbadm:sapsys SBO_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4 && ls -lha
 
 =================================================
 2. Variables de entorno:
@@ -41,9 +34,20 @@ dbPass="1KA53e3ZhzMJ"
 # import and rename the schema
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_APC'."*" as binary from '\'/tmp/dbAPC1\'' with ignore existing threads 10 rename schema "SBO_APC" to "TEST1901";'
 
-rm -R dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+rm -R SBO_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
 
   =========================  FIN =================
-tar -czf archivo.tar.gz 20250818_192501_E06_COMPLETE_DATA_BACKUP_databackup_2_1 &
+tar -czvf /tmp/SBO_ZIP/SBO_APC.tar.gz --transform 's/^dbACP1/SBO_APC/' dbAPC1/
 watch -n 5 'ls -lh archivo.tar.gz'
+
+chmod -R 777 SBO_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4
+chown -R ndbadm:sapsys SBO_ZIP/ dbAPC1/ dbAPC2/ dbAPC3/ dbAPC4 && ls -lha
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
 

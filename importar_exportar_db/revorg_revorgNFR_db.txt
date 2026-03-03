@@ -1,0 +1,63 @@
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+# ping desde el rds,adm donde este el Sap Busineess Once(client) hacia el "hana"
+te va a resolver la ip del mt
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir REVORG_ZIP revorgnfr_db_1 revorgnfr_db_2 revorgnfr_db_3
+cd /tmp && ls -lhad REVORG_ZIP revorgnfr_d_/ revorgnfr_db_2/ revorgnfr_db_3/
+chmod -R 777 REVORG_ZIP/ revorgnfr_db_1/ revorgnfr_db_2/ revorgnfr_db_3/
+chown -R ndbadm:sapsys REVORG_ZIP/ revorgnfr_db_1/ revorgnfr_db_2/ revorgnfr_db_3/ && ls -lha
+
+2.  ----------------------------------------------------------------------------------------
+# Varibles SQL (B1SYSTEM) en el SLD
+sles:~ # cat /root/Desktop/SAP_Configuration.txt
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="B1SYSTEM"
+dbPass="p47JO4DgC1FR"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Realizar un export
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'L4_LOFARMA97'."*" as binary into '\'/tmp/revorgnfr_db_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'PHYTOITALIA_TEST'."*" as binary into '\'/tmp/revorgnfr_db_2\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export ''."*" as binary into '\'/tmp/revorgnfr_db_3\'' with ignore existing threads 10;'
+
+# Realizar un import 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_REVORG_ZIP01'."*" as binary from '\'/tmp/revorgnfr_db_1/revorgnfr_db_1\'' with ignore existing threads 10;'
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf REVORG_ZIP/ revorgnfr_db_1/ revorgnfr_db_2/ revorgnfr_db_3/ && ls -lha
+
+================================================================
+
+tar -czvf /tmp/REVORG_ZIP/L4_LOFARMA97.tar.gz --transform 's/^revorgnfr_db_1/L4_LOFARMA97/' revorgnfr_db_1/
+tar -czvf /tmp/REVORG_ZIP/PHYTOITALIA_TEST.tar.gz --transform 's/^revorgnfr_db_2/PHYTOITALIA_TEST/' revorgnfr_db_2/
+tar -czvf /tmp/REVORG_ZIP/L2_LIGO04.tar.gz --transform 's/^revorgnfr_db_3/L2_LIGO04/' revorgnfr_db_3/
+
+
+tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO /' dbdreampack1/
+
+Recomendación:
+Si quieres mantener el archivo original y obtener buena compresión, usa:
+tar -czf 102SBOPRETTL_20250923.tar.gz 102SBOPRETTL_20250923
+
+En .tar.xz:
+tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+
