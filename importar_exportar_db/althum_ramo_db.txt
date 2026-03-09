@@ -13,24 +13,15 @@ cd /tmp && ls -lhad COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 
 chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/
 chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ && ls -lha 
 
-# DE NOS SER EL CASO hay que mover las carpetas hacia la ruta y darle los permisos
-cd /tmp/dbwmp1/xxxx/xxxx/xxxx
-mv export/ index/ /tmp/dbwmp1/
-
-
-cd /tmp && ls -lha
-chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/
-chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/&esquema_07/ && ls -lha 
-
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
 sld:~ # cat Desktop/SAP_Configuration2.txt
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E01"
+dbTenant="E04"
 dbUser="B1SYSTEM"
-dbPass="J0Mf029FMWkv"
+dbPass="QuBwmMTq103LbjO2"
 
 # Testear la base de datos:BO1 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
@@ -39,7 +30,7 @@ dbPass="J0Mf029FMWkv"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_COMPRIMIDOS_ZIP01'."*" as binary from '\'/tmp/esquema_01/esquema_01\'' with ignore existing threads 10;'
 
 # Realizar un export
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'CO_VGS_COLOMBIA_PROD'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'ALTHUM_PCGE'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'EC_SBO_COMERCIALLAFERIA_PROD'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'EC_SBO_LAVETEC'."*" as binary into '\'/tmp/esquema_03\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'R3_OBSCOMMON'."*" as binary into '\'/tmp/esquema_04\'' with ignore existing threads 10;'
@@ -59,12 +50,9 @@ RENAME, EXPORT
 # Import the shchema and rename
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
 
-# Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_COMPRIMIDOS_ZIP01'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
-
 
 ---COMPRIMIR ----
-tar -czvf COMPRIMIDOS_ZIP/CO_VGS_COLOMBIA_PROD.tar.gz --transform 's/^esquema_01/CO_VGS_COLOMBIA_PROD/' esquema_01/
+tar -czvf COMPRIMIDOS_ZIP/ALTHUM_PCGE.tar.gz --transform 's/^esquema_01/ALTHUM_PCGE/' esquema_01/
 tar -czvf COMPRIMIDOS_ZIP/EC_SBO_COMERCIALLAFERIA_PROD.tar.gz --transform 's/^esquema_02/EC_SBO_COMERCIALLAFERIA_PROD/' esquema_02/
 tar -czvf COMPRIMIDOS_ZIP/EC_SBO_LAVETEC.tar.gz --transform 's/^esquema_03/EC_SBO_LAVETEC/' esquema_03/
 tar -czvf COMPRIMIDOS_ZIP/R3_OBSCOMMON.tar.gz --transform 's/^esquema_04/R3_OBSCOMMON/' esquema_04/

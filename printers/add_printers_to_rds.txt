@@ -35,5 +35,3 @@ Shipping office 10.90.170.13 HL-L6200DW series
 Front Office 10.90.170.11    HL-L6400DW series
 Xerox downstairs 10.90.170.31 Xerox® EC8056
 Xerox upstairs 10.90.170.32   Xerox® EC8056
-99172611
- 1933 960 359

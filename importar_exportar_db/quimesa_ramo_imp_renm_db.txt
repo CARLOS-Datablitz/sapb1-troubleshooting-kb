@@ -59,14 +59,11 @@ chown -R ndbadm:sapsys QUIMESA_ZIP/ dbquimesa1/ && ls -lha && cd /tmp/QUIMESA_ZI
 # Import the shchema and rename
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'QUIMESA_PRODUCCION'."*" as binary from '\'/tmp/dbquimesa1/\'' with ignore existing threads 10 rename schema "QUIMESA_PRODUCCION" to "TST_120226";'
 
-# Tiempos y respuestas de los imports realizados
-[ COMPLETE_DATA_BACKUP07082025_datatmp_3_1 ] ---> 0 rows affected (overall time 126.858411 sec; server time 126.858033 sec)
-
 # Eliminar los archivos que ya no son necesarios
 cd /tmp && ls -lha && rm -rf QUIMESA_ZIP/ dbquimesa1/ && ls -lha
 
 ================================  FIN ================================
 tar -cf QUIMESA_ZIP/QUIMESA_PRODUCCION_00.tar dbquimesa1
-tar -czvf /tmp/dbquimesa1/BASE_PE_LC.tar.gz --transform 's/^dbquimesa1/SBO_FIGURETTI_PROD/' dbquimesa1/
+tar -czvf /tmp/QUIMESA_ZIP/QUIMESA_PRODUCCION.tar.gz --transform 's/^dbquimesa1/QUIMESA_PRODUCCION/' dbquimesa1/
 # Al comprimir o descomprimir se tiene que reconfirmar los permisos
 chmod -R 777 QUIMESA_ZIP/ dbquimesa1/

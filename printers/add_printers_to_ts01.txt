@@ -11,7 +11,9 @@ Requisites:
 
 1. Ping or put put the ip to the browser.
 2. Check the models: put the ip on the browser and enter.
-3. Get the drivers(Download Center: Select the model/select for Windows Server 2019(: Windows + R : winver)). C:\Users\administrator.FSI>wmic os get osarchitecture
+3. Get the drivers(Download Center: Select the model/select for Windows Server 2019(: Windows + R : winver)).
+cmd:
+C:\Users\administrator.FSI>wmic os get osarchitecture
 OSArchitecture
 64-bit
 cmd:
@@ -21,6 +23,10 @@ echo %PROCESSOR_ARCHITECTURE%
 4. Install the drivers as administrator.
 ip and port(ip-Accounting)
 Control Panel /Print Manager: ts02/Printers
+
+Printer Addres/
+		Type of Device : TCP/IP Device
+		Uncheck: Auto detect the printer driver to use
 
 Printer/Advanced/
 	- Print directly to the printer
@@ -40,3 +46,4 @@ Brother DCP-L2640DW 192.168.55.10 Illinois
 
 Brother MFC-L8610DCW series
 Brother MFC-L8900DCW series
+HL-L5100DN series

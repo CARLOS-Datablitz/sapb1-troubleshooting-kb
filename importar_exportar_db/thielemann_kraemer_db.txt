@@ -1,0 +1,70 @@
+0.--------------------------------------------------------------------------
+Confirmar espacio disponible(/tmp o /tmp) donde vamos a trabajar(descargar el .tar,.rar, y descomprimir).
+isystems-mt02:~ # cd /
+isystems-mt02:/ # df -h
+# ping desde el rds,adm donde este el Sap Busineess Once(client) hacia el "hana"
+te va a resolver la ip del mt
+1.--------------------------------------------------------------------------
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lhad
+mkdir THIELEMANN_ZIP thielemann_db_1 thielemann_db_2
+cd /tmp && ls -lhad THIELEMANN_ZIP thielemann_db_1 thielemann_db_2
+chmod -R 777 THIELEMANN_ZIP/ thielemann_db_1/ thielemann_db_2/
+chown -R ndbadm:sapsys THIELEMANN_ZIP/ thielemann_db_1/ thielemann_db_2/ && ls -lha
+
+dbSql="/hana/shared/NDB/hdbclient/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="E15"
+dbUser="B1SYSTEM"
+dbPass="91Cf0EsXncLzdG7Y"
+
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Realizar un import 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_THIELEMANN_ZIP01'."*" as binary from '\'/tmp/thielemann_db_1/thielemann_db_1\'' with ignore existing threads 10;'
+
+# Realizar un export
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TTG_PROD'."*" as binary into '\'/tmp/thielemann_db_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'TTG_PROD'."*" as binary into '\'/tmp/thielemann_db_2\'' with ignore existing threads 10;'
+
+# Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf THIELEMANN_ZIP/ thielemann_db_1/ thielemann_db_2/ && ls -lha
+
+================================================================
+RENAME, EXPORT
+# Import the shchema and rename
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'RANDS_PROD'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
+
+#"Empaqueta el directorio dbdreampack1/, pero al guardarlo en el tar.gz, cámbiale el nombre a SBO_FIGURETTI_PROD":
+tar -czvf /tmp/DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/SBO_FIGURETTI_PROD/' dbdreampack1/
+dbdreampack1
+
+tar -czvf THIELEMANN_ZIP/TTG_PROD.tar.gz --transform 's/^thielemann_db_1/TTG_PROD/' thielemann_db_1/
+tar -czvf THIELEMANN_ZIP/TTG_PROD.tar.gz --transform 's/^thielemann_db_2/TTG_PROD/' thielemann_db_2/
+
+sftp -P 443 c.pecho@files.dctpa.privatcloud.biz
+
+Recomendación:
+Si quieres mantener el archivo original y obtener buena compresión, usa:
+tar -czf 102SBOPRETTL_20250923.tar.gz 102SBOPRETTL_20250923
+
+En .tar.xz:
+tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
+
+# Comprimir CARPETETA/NOMBRE_COMPRIMIDO.tar.gz nombre_archivo_a_comprimir
+tar -czf THIELEMANN_ZIP/SBO_THIELEMANN_ZIP.tar.gz thielemann_db_1/
+tar -czf THIELEMANN_ZIP/SBO_THIELEMANN_ZIP_TEST.tar.gz thielemann_db_2/
+chown -R ndbadm:sapsys THIELEMANN_ZIP/ thielemann_db_1/ thielemann_db_2/
+chmod -R 777 THIELEMANN_ZIP/ thielemann_db_1/ thielemann_db_2/
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz

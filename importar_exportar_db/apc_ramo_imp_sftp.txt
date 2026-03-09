@@ -43,10 +43,7 @@ cd /tmp && ls -lha && rm -rf APC_ZIP/ dbapc1/ dbapc2/ dbapc3/ dbapc4/   && ls -l
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'CHRISELPASTELERO'."*" as binary from '\'/tmp/dbth1\'' with ignore existing threads 10'
 
 # Export the schema
-
-tar -czvf /tmp/APC_ZIP/SBO_APC_02_ENE.tar.gz -C /tmp/dbapc1 .
-
-chmod -R 777 APC_ZIP/
+tar -czvf APC_ZIP/SBO_APC.tar.gz --transform 's/^dbapc1/SBO_APC/' dbapc1/
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz

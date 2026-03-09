@@ -1,0 +1,67 @@
+=================================================
+1. Preparar el entorno en el sles, HANA, HANA-MT:
+# Empecemos.....
+screen -dRR
+cd /tmp && ls -lha
+mkdir PACKAGE_ZIP/ esquema_01/ esquema_02/ esquema_03/ 
+chmod -R 777 PACKAGE_ZIP/ esquema_01/ esquema_02/ esquema_03/
+chown -R ndbadm:sapsys PACKAGE_ZIP/ esquema_01/ esquema_02/ esquema_03/
+
+=================================================
+2. Variables de entorno:
+2.1 Sacar información de las variables:
+sld:~ # 
+cat /root/Desktop/SAP_Configuration.txt
+2.2 Ingresar las variables en el sles:/tmp #
+# Varibles HANASQL (B1SYSTEM)
+
+dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="B1SYSTEM"
+dbPass="Test1234"
+
+-------------------   
+
+# Testear la base de datos: NDB
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# Export the schema
+sles:/tmp #
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BUYANDGO'."*" as binary into '\'/tmp/revorg_db_1\'' with ignore existing threads 10;'
+
+# import and rename the schema
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/revorg_db_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_COMERCIALIZADORA_DEMO";'
+
+# import
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TTG_PROD'."*" as binary from '\'/tmp/esquema_01/TTG_PROD/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TWT_PROD'."*" as binary from '\'/tmp/esquema_02/TWT_PROD/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TTG_EASYSCAN'."*" as binary from '\'/tmp/esquema_03/TTG_EASYSCAN/\'' with ignore existing threads 10;'
+
+# clean the hana:
+cd /tmp && rm -R PACKAGE_ZIP/ esquema_01/ esquema_02/ esquema_03/
+
+=========================  FIN =================
+# SFTP bring the .tar.gz to this testv10:
+
+cd /tmp/PACKAGE_ZIP && ls -lha
+
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+C4!qE0e]cVFy&$m
+cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 
+get NMX_LIVE.tar.gz
+bye
+
+# Extract:
+tar -xzvf /tmp/PACKAGE_ZIP/TTG_PROD.tar.gz -C /tmp/esquema_01/
+tar -xzvf /tmp/PACKAGE_ZIP/TWT_PROD.tar.gz -C /tmp/esquema_02/
+tar -xzvf /tmp/PACKAGE_ZIP/TTG_EASYSCAN.tar.gz -C /tmp/esquema_03/
+
+# Permissions:
+chmod -R 777 PACKAGE_ZIP/ esquema_01/ esquema_02/ esquema_03/ 
+chown -R ndbadm:sapsys PACKAGE_ZIP/ esquema_01/ esquema_02/ esquema_03/
+
+

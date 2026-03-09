@@ -34,5 +34,10 @@ open hosts
 10.2.23.2 sld.ugabiopharma.privatcloud.biz sld
 
 
+===== prueba =====
+cmd>ping sld.sampower.privatcloud.biz
+cmd>ping sld
+
+sld.sampower.privatcloud.biz:40000/ControlCenter/  -----> User: B1SiteUser and passw
 
 
