@@ -6,3 +6,24 @@ Hana Studio trabaja con las bases de datos, las cuales estan corriendo en los mu
 
 # Para ver las db's, para visualizarlas debemos hacerlo mediante el usuario B1SYSTEM.
 
+1# Windows
+Hostname: <mt-ip>
+Instance number: 00
+Mode: Multiple containers --> System database ó Tenant database(Name: E03)
+Description: system@systemdb-10.2.104.34 - sles.democlara.privatcloud.biz
+
+NETX --->
+
+2# Windows
+Authentication by database user:
+ User Name: SYSTEM ó B1SYSTEM
+ Password: 
+ Check: Store user name and password in secure storage
+
+FINISHED.
+
+Nota: Para ver los esquemas/db de cliente se debe conectar con el usuario B1SYSTEM.
+
+
+
+

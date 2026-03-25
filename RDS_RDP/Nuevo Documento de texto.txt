@@ -1,0 +1,33 @@
+# Ver conexiones RDS de AYER con total de usuarios únicos
+$ayer = (Get-Date).Date.AddDays(-1)
+$hoy  = (Get-Date).Date
+
+Get-WinEvent -LogName "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational" |
+Where-Object { $_.Id -in (21,22,23,24,25) -and $_.TimeCreated -ge $ayer -and $_.TimeCreated -lt $hoy } |
+Select-Object TimeCreated, 
+              @{N="Evento";E={
+                switch($_.Id){
+                  21 {"✅ Conectado"}
+                  22 {"🖥️ Shell iniciado"}
+                  23 {"🚪 Logout"}
+                  24 {"⚠️ Desconectado"}
+                  25 {"🔄 Reconectado"}
+                }
+              }},
+              @{N="Usuario";E={$_.Properties[0].Value}} |
+Sort-Object TimeCreated -Descending |
+Format-Table -AutoSize
+
+# Total de usuarios únicos conectados ayer (solo evento 21 = login exitoso)
+$totalUsuarios = Get-WinEvent -LogName "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational" |
+Where-Object { $_.Id -eq 21 -and $_.TimeCreated -ge $ayer -and $_.TimeCreated -lt $hoy } |
+ForEach-Object { $_.Properties[0].Value } |
+Sort-Object -Unique
+
+Write-Host "════════════════════════════════════════" -ForegroundColor Cyan
+Write-Host "📊 RESUMEN DE AYER: $($ayer.ToString('dd/MM/yyyy'))" -ForegroundColor Cyan
+Write-Host "════════════════════════════════════════" -ForegroundColor Cyan
+Write-Host "👥 Total usuarios únicos conectados ayer: $($totalUsuarios.Count)" -ForegroundColor Green
+Write-Host "📋 Usuarios:" -ForegroundColor Yellow
+$totalUsuarios | ForEach-Object { Write-Host "   → $_" -ForegroundColor White }
+Write-Host "════════════════════════════════════════" -ForegroundColor Cyan

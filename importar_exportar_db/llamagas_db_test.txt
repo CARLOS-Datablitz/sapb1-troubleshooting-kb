@@ -41,7 +41,7 @@ dbPass="by9W7IdKTlfPz28A"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TEST_INTEGRACION'."*" as binary from '\'/tmp/llamagas_test\'' with ignore existing threads 10;'
 
 # Import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'TEST_INTEGRACION'."*" as binary from '\'/tmp/llamagas_test/TEST_INTEGRACION\'' with ignore existing threads 10 rename schema "TEST_INTEGRACION" to "ZZ_PRUEBA_LP";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_LLAMA_GAS'."*" as binary from '\'/tmp/llamagas_test/\'' with ignore existing threads 10 rename schema "SBO_LLAMA_GAS" to "PRUEBAS_INTEGRALES";'
 
 
 # Testear la base de datos: NDB

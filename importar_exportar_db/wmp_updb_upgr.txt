@@ -1,14 +1,7 @@
-# Ticket de referencia:iSystems#99171083 
-Notas: HANA tambien tiene modo gráfico, pero mayormente lo hacemos con scripts. 
-
-# Tasks: 
-- Download from sftp.
-- Import schema.
-- Upgrade schema.
-
 # Download files from the SFTP and extract the files: /wmp/21082028/002-E07
 # Import the schemas downloaded and change the names: 
-044SBOKHSERVICIOS.tar.xz
+044SBOKHSERVICIOS.tar.xz ----> IMPORTANTE: "Nos pueden apoyar a compartir el siguiente respaldo de SAP que estén comprimidos en “.tar.xz” en la carpeta que indico en la captura, por favor." ---> Bucar en esta ruta: hanamt:/backup/REP #
+
 # Upgrade the schemas recently imported
 
 # For PARTNER/WMP - COSTOMER/WMP - /SLES/HANA/HANAMT(solamente aquí corren las db) - IP/10.3.31.2
@@ -43,6 +36,7 @@ ls -lha
   --------------------------------------------------------------------------
 # Extraer los archivos comprimidos en cada folder de destino
 # -xzf para le dice que descomprima con gzip y -xJf para .tar.xz
+# Comprimir una carpeta en su ubicacion actual
 tar -C /tmp/dbwmp044 -xJf /tmp/WMPE01/091SBOVEKAMX.tar.xz
 # Ver los nombres de los schemas a ver si coinciden 
 hanamt:/tmp # find /tmp/dbwmp0{44,17,16,12,08,05} -maxdepth 1 -mindepth 1

@@ -1,51 +1,28 @@
 iSystems#99176409
 
 Pasos para borrar el keycloack admin en caso de que la opción que está en el bookstack falle:
-
 You will have to recreate the user.
-
 You can use the steps below to delete the user first. I'll put them in for both HANA and SQL. 
-
 Please backup the B1AS schema first. After you will have to recreate the user according to the steps in the Admin guide.
-
 SQL Version:
-
 DELETE FROM B1AS.dbo.USER_ROLE_MAPPING WHERE USER_ID IN (SELECT ID FROM
-
 B1AS.dbo.USER_ENTITY WHERE SERVICE_ACCOUNT_CLIENT_LINK is null and REALM_ID in (SELECT ID FROM
-
 B1AS.dbo.REALM WHERE NAME = 'master'));
 
-
 DELETE FROM B1AS.dbo.CREDENTIAL WHERE USER_ID IN (SELECT ID FROM B1AS.dbo.USER_ENTITY WHERE
-
 SERVICE_ACCOUNT_CLIENT_LINK is null and REALM_ID in (SELECT ID FROM B1AS.dbo.REALM WHERE NAME =
-
 'master'));
 
-
 DELETE FROM B1AS.dbo.USER_ENTITY WHERE SERVICE_ACCOUNT_CLIENT_LINK is null and REALM_ID in
-
 (SELECT ID FROM B1AS.dbo.REALM WHERE NAME = 'master');
 
-
 HANA Version:
-
 DELETE FROM B1AS.USER_ROLE_MAPPING WHERE USER_ID IN (SELECT ID FROM B1AS.USER_ENTITY
-
-
 WHERE SERVICE_ACCOUNT_CLIENT_LINK is null and REALM_ID in (SELECT ID FROM B1AS.REALM WHERE
-
-
 NAME = 'master'));
 
-
-
 DELETE FROM B1AS.CREDENTIAL WHERE USER_ID IN (SELECT ID FROM B1AS.USER_ENTITY WHERE
-
 SERVICE_ACCOUNT_CLIENT_LINK is null and REALM_ID in (SELECT ID FROM B1AS.REALM WHERE NAME =
-
-
 'master'));
 
 DELETE FROM B1AS.USER_ENTITY WHERE SERVICE_ACCOUNT_CLIENT_LINK is null and REALM_ID in

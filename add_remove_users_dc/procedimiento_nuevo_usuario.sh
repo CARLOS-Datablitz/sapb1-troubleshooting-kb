@@ -87,6 +87,8 @@ Hi, Jessica, hi Valentina, we've added a 06 new users for the client ALLPRO.
 
 Hi Jessica, hi Valentina,
 I’ve completed the removal of Nathan Galloway from the ALLPRO systems, per the customer’s request.
+Hi Jessica, hi Valentina,
+A new user has been added to Be1eye -  ColorCompany systems, per the customer’s request.
 
 -------------------------- TEST --------------------
 RdsHtml5

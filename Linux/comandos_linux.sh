@@ -1,6 +1,6 @@
 ------------------------------------
 #buscar en el directorio actual(.) el archivo
-~$ find . -name <filename*>
+~$ find . -name "*<filename>*"
 
 which <program name eg. file>
 /usr/bin/file
@@ -10,8 +10,9 @@ echo $PATH
 $ updatedb
 $ locate new.txt
 
-
-
+------------------------------------
+#leer las primera 50 lineas de un archivo:
+head -n /ruta/del/archivo.txt
 ------------------------------------
 #pwd como variable:
 $ cat $(pwd)/*
@@ -31,6 +32,7 @@ $ cat /etc/passwd | tail -n 2
 $ cat /etc/passwd | awk 'NR==2'
 ------------------------------------
 $ cat /usr/share/rockyou.txt | grep ^hola # busca explicitamente todas las palabras que inican con hola
+$ cat /usr/share/rockyou.txt | grep "^hola$" # busca explicitamente solo la palabra hola
 
 ------------------------------------
 #ver interfaces de red cableado y wifi

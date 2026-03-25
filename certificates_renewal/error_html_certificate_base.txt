@@ -1,11 +1,11 @@
 #change:
 $dcusr      = "administrator"                   #admin User on DC
-$dcpw       = "gfiAFk8i"                #admin User Password on DC
-$rnb        = "aibmb"                        		#Domain Name
-$fqdn       = "aibmb.privatcloud.biz"        		#Fully Qualified Domain Name
-$dcip       = "10.2.59.3"                    #IP from Domain Controller
-$rdsip      = "10.2.59.5"                    #IP from RDS Server
-$rdstcp     = "10076"                           #RDS Port
+$dcpw       = "chvaK5eZ"                #admin User Password on DC
+$rnb        = "ansorg"                        		#Domain Name
+$fqdn       = "ansorg.privatcloud.biz"        		#Fully Qualified Domain Name
+$dcip       = "172.22.27.3"                    #IP from Domain Controller
+$rdsip      = "172.22.27.5"                    #IP from RDS Server
+$rdstcp     = "10210"                           #RDS Port
 $tdc        = "dc.$fqdn"                        #DNS Server Name
 $rdb        = "rds.$fqdn"                       #Connection Broker Name
 $rdg        = "rds.$fqdn"                       #Gateway Server Name
@@ -14,8 +14,8 @@ $rdw        = "rds.$fqdn"                       #Web Access Server Name
 $rdl        = "rds.$fqdn"                       #License Server Name
 $rdc        = "SAP"                             #Collection Name
 $rdspw      = "sapB1iP";$rdspw = ConvertTo-SecureString -String "$rdspw" -AsPlainText -Force #Cert Password
-$rdspfx     = 'c:\aibmb.privatcloud.biz.pfx' #PFX file path
-$rdscer     = 'c:\aibmb.privatcloud.biz.cer' #CER file path
+$rdspfx     = 'c:\ansorg.privatcloud.biz.pfx' #PFX file path
+$rdscer     = 'c:\ansorg.privatcloud.biz.cer' #CER file path
 $langen        = "1"                            #1=en 0=de Windows Installation Language
 #keep:
 $dcpass     = ConvertTo-SecureString -AsPlainText $dcpw -Force #dont change $dcpass and $domaincred

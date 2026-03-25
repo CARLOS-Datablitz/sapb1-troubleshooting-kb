@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDS Troubleshooting Guide — E43</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e3a5f;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #00ff9d;
+    --warn: #ffb800;
+    --danger: #ff4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0d1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    position: relative;
+  }
+
+  .header-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header-tag::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 60%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .meta-bar {
+    display: flex;
+    gap: 24px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .meta-item span {
+    color: var(--accent3);
+  }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(0,255,157,0.05));
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-box::before {
+    content: '!';
+    position: absolute;
+    right: 20px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 120px;
+    font-weight: 800;
+    color: rgba(0,212,255,0.04);
+    font-family: 'Syne', sans-serif;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .summary-box h2 {
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .summary-box p {
+    font-size: 14px;
+    color: #94a3b8;
+    line-height: 1.7;
+  }
+
+  .summary-box strong { color: var(--text); }
+
+  /* DIAGNOSIS CARDS */
+  .diagnosis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .diag-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .diag-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .diag-card .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  .dot-green { background: var(--accent3); box-shadow: 0 0 6px var(--accent3); }
+  .dot-red { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+  .dot-yellow { background: var(--warn); box-shadow: 0 0 6px var(--warn); }
+
+  .diag-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+  }
+
+  .diag-card .value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .diag-card .desc {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* SECTION TITLES */
+  .section {
+    margin-bottom: 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .step-number {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    color: var(--bg);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-number.warn { background: var(--warn); }
+  .step-number.danger { background: var(--danger); }
+  .step-number.green { background: var(--accent3); }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .section-desc {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+
+  .code-header {
+    background: var(--surface2);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-header .lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .code-header .purpose {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .code-header .dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .code-header .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #e2e8f0;
+  }
+
+  .cm { color: #6a9955; } /* comments */
+  .kw { color: #569cd6; } /* keywords */
+  .fn { color: #dcdcaa; } /* functions */
+  .st { color: #ce9178; } /* strings */
+  .nm { color: #b5cea8; } /* numbers */
+  .op { color: #d4d4d4; } /* operators */
+  .va { color: #9cdcfe; } /* variables */
+
+  /* INFO BOXES */
+  .info-box {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    border-left: 3px solid;
+  }
+
+  .info-box.danger {
+    background: rgba(255,68,68,0.08);
+    border-color: var(--danger);
+    color: #fca5a5;
+  }
+
+  .info-box.warn {
+    background: rgba(255,184,0,0.08);
+    border-color: var(--warn);
+    color: #fde68a;
+  }
+
+  .info-box.success {
+    background: rgba(0,255,157,0.07);
+    border-color: var(--accent3);
+    color: #86efac;
+  }
+
+  .info-box.info {
+    background: rgba(0,212,255,0.07);
+    border-color: var(--accent);
+    color: #7dd3fc;
+  }
+
+  .info-box strong { color: white; }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(30,58,95,0.5);
+    color: #94a3b8;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  td:first-child { color: var(--warn); font-weight: 700; }
+  td.green { color: var(--accent3); }
+  td.red { color: var(--danger); }
+  td.normal { color: var(--text); font-weight: 400; }
+
+  tr:hover td { background: rgba(0,212,255,0.03); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    gap: 12px;
+  }
+
+  footer .left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  footer .right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media print {
+    body { background: white; color: black; }
+    body::before { display: none; }
+    .code-block { border: 1px solid #ccc; }
+    pre { color: #1a1a1a; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-tag">RDS Troubleshooting Guide</div>
+    <h1>Windows RDS<br>Diagnóstico & Scripts</h1>
+    <p class="subtitle">// Servidor: 172.22.50.21 · Cliente: Unirez E43 · iSystems GmbH</p>
+    <div class="meta-bar">
+      <div class="meta-item">Servidor: <span>RDS (Workgroup)</span></div>
+      <div class="meta-item">OS: <span>Windows Server 2019</span></div>
+      <div class="meta-item">RAM: <span>64 GB</span></div>
+      <div class="meta-item">CPU: <span>16 Cores</span></div>
+      <div class="meta-item">Usuarios AD: <span>55</span></div>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <div class="summary-box">
+    <h2>// Diagnóstico Principal</h2>
+    <p>
+      El servidor RDS único atiende <strong>55 usuarios activos</strong> superando el umbral interno de <strong>25 usuarios/servidor</strong>.
+      Se confirmaron desconexiones en cascada con código <strong>STATUS_INSUFFICIENT_RESOURCES (0xD0000001)</strong> y ausencia de un segundo 
+      Session Host (TS01). El RD Connection Broker está instalado pero <strong>sin deployment formal</strong> ni segundo nodo al que distribuir carga.
+      <br><br>
+      <strong>Solución:</strong> Desplegar TS01 como segundo RD Session Host y configurar el broker para balanceo de carga.
+    </p>
+  </div>
+
+  <!-- STATUS CARDS -->
+  <div class="diagnosis-grid">
+    <div class="diag-card">
+      <div class="label"><span class="status-dot dot-red"></span>Estado RDS</div>
+      <div class="value">Sobrecargado</div>
+      <div class="desc">55 usuarios en 1 servidor</div>
+    </div>
+    <div class="diag-card">
+      <div class="label"><span class="status-dot dot-yellow"></span>Broker</div>
+      <div class="value">Sin Deploy</div>
+      <div class="desc">Instalado pero no configurado</div>
+    </div>
+    <div class="diag-card">
+      <div class="label"><span class="status-dot dot-green"></span>Licencias</div>
+      <div class="value">Activas</div>
+      <div class="desc">License Server local OK</div>
+    </div>
+    <div class="diag-card">
+      <div class="label"><span class="status-dot dot-red"></span>Dominio AD</div>
+      <div class="value">Workgroup</div>
+      <div class="desc">No unido a dominio</div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number">01</div>
+      <div>
+        <div class="section-title">Verificar roles RDS instalados</div>
+        <div class="section-desc">Confirmar qué roles están activos en el servidor</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots">
+          <div class="dot" style="background:#ff5f56"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#27c93f"></div>
+        </div>
+        <span class="lang">PowerShell</span>
+        <span class="purpose">Roles instalados</span>
+      </div>
+      <pre><span class="cm"># Ver todos los roles RDS instalados</span>
+<span class="fn">Get-WindowsFeature</span> <span class="op">-Name</span> <span class="st">RDS-*</span> <span class="op">|</span> <span class="fn">Where-Object</span> <span class="op">{</span><span class="va">$_</span>.InstallState <span class="op">-eq</span> <span class="st">"Installed"</span><span class="op">}</span> <span class="op">|</span> 
+<span class="fn">Select</span> Name, DisplayName</pre>
+    </div>
+
+    <div class="info-box info">
+      <strong>Resultado esperado en este servidor:</strong> RDS-RD-Server, RDS-Gateway, RDS-Licensing, RDS-Connection-Broker, RDS-Web-Access — todos en una sola máquina (all-in-one).
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number">02</div>
+      <div>
+        <div class="section-title">Verificar sesiones activas y desconectadas</div>
+        <div class="section-desc">Ver usuarios conectados en tiempo real</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots">
+          <div class="dot" style="background:#ff5f56"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#27c93f"></div>
+        </div>
+        <span class="lang">CMD / PowerShell</span>
+        <span class="purpose">Sesiones activas</span>
+      </div>
+      <pre><span class="cm"># Ver todas las sesiones (activas + desconectadas)</span>
+<span class="fn">qwinsta</span> <span class="op">/server:</span><span class="nm">172.22.50.21</span>
+
+<span class="cm"># Alternativa con query</span>
+<span class="fn">query session</span> <span class="op">/server:</span><span class="nm">172.22.50.21</span>
+
+<span class="cm"># Cerrar una sesión desconectada específica (reemplazar ID)</span>
+<span class="fn">reset session</span> <span class="nm">ID</span> <span class="op">/server:</span><span class="nm">172.22.50.21</span></pre>
+    </div>
+
+    <table>
+      <thead><tr><th>Estado</th><th>Descripción</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr><td>Aktiv</td><td class="normal">Usuario trabajando activamente</td><td class="green">Normal</td></tr>
+        <tr><td>Verb.</td><td class="normal">Sesión conectada</td><td class="green">Normal</td></tr>
+        <tr><td>Getr.</td><td class="normal">Sesión desconectada (usuario cerró cliente pero sigue en servidor)</td><td class="red">Revisar / Limpiar</td></tr>
+        <tr><td>Abhör.</td><td class="normal">Listener RDP (siempre presente, ID 65536)</td><td class="green">Normal</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box warn">
+      <strong>Atención:</strong> IDs de sesión altos (ej: 75+) indican muchas sesiones acumuladas durante el día. Son secuenciales e incrementales desde el último reinicio del servicio.
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number warn">03</div>
+      <div>
+        <div class="section-title">Ver log de eventos RDS — Conexiones y errores</div>
+        <div class="section-desc">Detectar desconexiones en cascada y códigos de error</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots">
+          <div class="dot" style="background:#ff5f56"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#27c93f"></div>
+        </div>
+        <span class="lang">PowerShell</span>
+        <span class="purpose">Log nativo RDS — últimos 50 eventos</span>
+      </div>
+      <pre><span class="cm"># Log nativo de RDS - Conexiones y desconexiones</span>
+<span class="fn">Get-WinEvent</span> <span class="op">-LogName</span> <span class="st">"Microsoft-Windows-TerminalServices-LocalSessionManager/Operational"</span> <span class="op">-MaxEvents</span> <span class="nm">50</span> <span class="op">|</span>
+<span class="fn">Select-Object</span> TimeCreated, Id, Message <span class="op">|</span>
+<span class="fn">Format-List</span></pre>
+    </div>
+
+    <table>
+      <thead><tr><th>Event ID</th><th>Significado</th><th>Severidad</th></tr></thead>
+      <tbody>
+        <tr><td>21</td><td class="normal">✅ Usuario conectado exitosamente</td><td class="green">Normal</td></tr>
+        <tr><td>22</td><td class="normal">🖥️ Shell/escritorio iniciado</td><td class="green">Normal</td></tr>
+        <tr><td>23</td><td class="normal">🚪 Usuario cerró sesión (logout)</td><td class="green">Normal</td></tr>
+        <tr><td>24</td><td class="normal">⚠️ Sesión desconectada</td><td class="red">Revisar</td></tr>
+        <tr><td>25</td><td class="normal">🔄 Sesión reconectada</td><td class="green">Normal</td></tr>
+        <tr><td>40</td><td class="normal">🔴 Sesión terminada — ver código de razón</td><td class="red">Crítico</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead><tr><th>Código (ID 40)</th><th>Significado</th><th>Acción</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td class="normal">Desconexión limpia/normal</td><td class="green">Ninguna</td></tr>
+        <tr><td>3</td><td class="normal">Sistema terminó la sesión</td><td class="red">Investigar</td></tr>
+        <tr><td>4</td><td class="normal">Conexión de red perdida (cliente)</td><td class="red">Red cliente</td></tr>
+        <tr><td>12</td><td class="normal">Límite de recursos / timeout</td><td class="red">Sobrecarga</td></tr>
+        <tr><td>3489660929</td><td class="normal">0xD0000001 — STATUS_INSUFFICIENT_RESOURCES</td><td class="red">🚨 Crítico</td></tr>
+      </tbody>
+    </table>
+
+    <div class="info-box danger">
+      <strong>🚨 Código 3489660929 (0xD0000001):</strong> El servidor se quedó sin recursos para mantener la sesión. Múltiples ocurrencias en cascada = servidor saturado. Requiere acción inmediata.
+    </div>
+  </div>
+
+  <!-- STEP 4 — STAR SCRIPT -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number green">04</div>
+      <div>
+        <div class="section-title">Script principal — Usuarios conectados hoy</div>
+        <div class="section-desc">Resumen diario con total de usuarios únicos y detalle de eventos</div>
+      </div>
+    </div>
+
+    <div class="info-box success">
+      <strong>⭐ Script principal de diagnóstico diario.</strong> Ejecutar al inicio del turno o cuando el cliente reporte lentitud. Muestra todos los eventos del día con total de usuarios únicos.
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots">
+          <div class="dot" style="background:#ff5f56"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#27c93f"></div>
+        </div>
+        <span class="lang">PowerShell</span>
+        <span class="purpose">⭐ Usuarios conectados hoy + resumen</span>
+      </div>
+      <pre><span class="cm"># Ver conexiones RDS de HOY con total de usuarios únicos</span>
+<span class="va">$hoy</span> <span class="op">=</span> (<span class="fn">Get-Date</span>).Date
+
+<span class="fn">Get-WinEvent</span> <span class="op">-LogName</span> <span class="st">"Microsoft-Windows-TerminalServices-LocalSessionManager/Operational"</span> <span class="op">|</span>
+<span class="fn">Where-Object</span> <span class="op">{</span> <span class="va">$_</span>.Id <span class="op">-in</span> (<span class="nm">21</span>,<span class="nm">22</span>,<span class="nm">23</span>,<span class="nm">24</span>,<span class="nm">25</span>) <span class="op">-and</span> <span class="va">$_</span>.TimeCreated <span class="op">-ge</span> <span class="va">$hoy</span> <span class="op">}</span> <span class="op">|</span>
+<span class="fn">Select-Object</span> TimeCreated, 
+              <span class="op">@{</span>N<span class="op">=</span><span class="st">"Evento"</span>;E<span class="op">={</span>
+                <span class="kw">switch</span>(<span class="va">$_</span>.Id)<span class="op">{</span>
+                  <span class="nm">21</span> <span class="op">{</span><span class="st">"✅ Conectado"</span><span class="op">}</span>
+                  <span class="nm">22</span> <span class="op">{</span><span class="st">"🖥️ Shell iniciado"</span><span class="op">}</span>
+                  <span class="nm">23</span> <span class="op">{</span><span class="st">"🚪 Logout"</span><span class="op">}</span>
+                  <span class="nm">24</span> <span class="op">{</span><span class="st">"⚠️ Desconectado"</span><span class="op">}</span>
+                  <span class="nm">25</span> <span class="op">{</span><span class="st">"🔄 Reconectado"</span><span class="op">}</span>
+                <span class="op">}</span>
+              <span class="op">}},</span>
+              <span class="op">@{</span>N<span class="op">=</span><span class="st">"Usuario"</span>;E<span class="op">={</span><span class="va">$_</span>.Properties[<span class="nm">0</span>].Value<span class="op">}}</span> <span class="op">|</span>
+<span class="fn">Sort-Object</span> TimeCreated <span class="op">-Descending</span> <span class="op">|</span>
+<span class="fn">Format-Table</span> <span class="op">-AutoSize</span>
+
+<span class="cm"># Total de usuarios únicos conectados hoy (solo evento 21 = login exitoso)</span>
+<span class="va">$totalUsuarios</span> <span class="op">=</span> <span class="fn">Get-WinEvent</span> <span class="op">-LogName</span> <span class="st">"Microsoft-Windows-TerminalServices-LocalSessionManager/Operational"</span> <span class="op">|</span>
+<span class="fn">Where-Object</span> <span class="op">{</span> <span class="va">$_</span>.Id <span class="op">-eq</span> <span class="nm">21</span> <span class="op">-and</span> <span class="va">$_</span>.TimeCreated <span class="op">-ge</span> <span class="va">$hoy</span> <span class="op">}</span> <span class="op">|</span>
+<span class="fn">ForEach-Object</span> <span class="op">{</span> <span class="va">$_</span>.Properties[<span class="nm">0</span>].Value <span class="op">}</span> <span class="op">|</span>
+<span class="fn">Sort-Object</span> <span class="op">-Unique</span>
+
+<span class="fn">Write-Host</span> <span class="st">"════════════════════════════════════════"</span> <span class="op">-ForegroundColor</span> Cyan
+<span class="fn">Write-Host</span> <span class="st">"📊 RESUMEN DEL DÍA: $(Get-Date -Format 'dd/MM/yyyy')"</span> <span class="op">-ForegroundColor</span> Cyan
+<span class="fn">Write-Host</span> <span class="st">"════════════════════════════════════════"</span> <span class="op">-ForegroundColor</span> Cyan
+<span class="fn">Write-Host</span> <span class="st">"👥 Total usuarios únicos conectados hoy: $($totalUsuarios.Count)"</span> <span class="op">-ForegroundColor</span> Green
+<span class="fn">Write-Host</span> <span class="st">"📋 Usuarios:"</span> <span class="op">-ForegroundColor</span> Yellow
+<span class="va">$totalUsuarios</span> <span class="op">|</span> <span class="fn">ForEach-Object</span> <span class="op">{</span> <span class="fn">Write-Host</span> <span class="st">"   → $_"</span> <span class="op">-ForegroundColor</span> White <span class="op">}</span>
+<span class="fn">Write-Host</span> <span class="st">"════════════════════════════════════════"</span> <span class="op">-ForegroundColor</span> Cyan</pre>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number">05</div>
+      <div>
+        <div class="section-title">Verificar recursos del servidor en tiempo real</div>
+        <div class="section-desc">CPU, RAM y procesos durante un evento de lentitud</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots">
+          <div class="dot" style="background:#ff5f56"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#27c93f"></div>
+        </div>
+        <span class="lang">PowerShell</span>
+        <span class="purpose">CPU, RAM, procesos pesados</span>
+      </div>
+      <pre><span class="cm"># Top 10 procesos por CPU</span>
+<span class="fn">Get-Process</span> <span class="op">|</span> <span class="fn">Sort-Object</span> CPU <span class="op">-Descending</span> <span class="op">|</span> <span class="fn">Select-Object</span> <span class="op">-First</span> <span class="nm">10</span> Name, CPU, WorkingSet
+
+<span class="cm"># RAM libre disponible (en GB)</span>
+[System.Math]::Round((<span class="fn">Get-WmiObject</span> Win32_OperatingSystem).FreePhysicalMemory<span class="op">/</span><span class="nm">1MB</span>, <span class="nm">2</span>)
+
+<span class="cm"># Estado de adaptadores de red (velocidad de enlace)</span>
+<span class="fn">Get-NetAdapter</span> <span class="op">|</span> <span class="fn">Select</span> Name, Status, LinkSpeed, DriverDescription</pre>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number">06</div>
+      <div>
+        <div class="section-title">Verificar License Server y CALs</div>
+        <div class="section-desc">Estado del servidor de licencias RDS</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="dots">
+          <div class="dot" style="background:#ff5f56"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#27c93f"></div>
+        </div>
+        <span class="lang">PowerShell</span>
+        <span class="purpose">Licencias RDS</span>
+      </div>
+      <pre><span class="cm"># Ver estado del License Server</span>
+<span class="fn">Get-WmiObject</span> <span class="op">-Namespace</span> <span class="st">"Root\CIMv2"</span> <span class="op">-Class</span> <span class="st">"Win32_TSLicenseServer"</span>
+
+<span class="cm"># Ver CALs emitidas (usuarios con licencia activa)</span>
+<span class="fn">Get-WmiObject</span> <span class="op">-Namespace</span> <span class="st">"Root\CIMv2"</span> <span class="op">-Class</span> <span class="st">"Win32_TSIssuedLicense"</span> <span class="op">|</span> 
+<span class="fn">Select-Object</span> LicenseStatus, sIssuedToUser, sIssuedToComputer <span class="op">|</span> 
+<span class="fn">Format-Table</span> <span class="op">-AutoSize</span></pre>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SOLUTION -->
+  <div class="section">
+    <div class="section-header">
+      <div class="step-number danger">!</div>
+      <div>
+        <div class="section-title">Solución definitiva recomendada</div>
+        <div class="section-desc">Infraestructura objetivo para 55+ usuarios</div>
+      </div>
+    </div>
+
+    <div class="info-box danger">
+      <strong>Situación actual:</strong> 1 servidor RDS → 55 usuarios → Sobrecarga garantizada en horas pico.<br>
+      <strong>Umbral interno iSystems:</strong> Máximo 25 usuarios por servidor RDS.
+    </div>
+
+    <table>
+      <thead><tr><th>Componente</th><th>Acción</th><th>Prioridad</th></tr></thead>
+      <tbody>
+        <tr><td>TS01</td><td class="normal">Desplegar segundo RD Session Host</td><td class="red">🔴 Alta</td></tr>
+        <tr><td>RD Broker</td><td class="normal">Configurar deployment formal con RDS + TS01</td><td class="red">🔴 Alta</td></tr>
+        <tr><td>Load Balance</td><td class="normal">Activar balanceo de carga entre ambos servidores</td><td class="red">🔴 Alta</td></tr>
+        <tr><td>Sesiones timeout</td><td class="normal">Configurar límite de sesiones desconectadas (ej: 2h)</td><td class="red">🟡 Media</td></tr>
+        <tr><td>Dominio AD</td><td class="normal">Evaluar unir servidor a dominio para gestión centralizada</td><td class="green">🟢 Baja</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="left">
+      iSystems GmbH · support@isystems.email<br>
+      Generado: 20/03/2026 · Caso: Unirez E43 RDP Lentitud
+    </div>
+    <div class="right">
+      RDS · 172.22.50.21<br>
+      Windows Server 2019
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

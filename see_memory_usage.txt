@@ -1,6 +1,0 @@
-see_memory_usage
-
-Usar PowerShell para listar los procesos que más consumen memoria:
-
-Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 Name, Id, CPU, @{Name="Memory(MB)";Expression={"{0:N2}" -f ($_.WorkingSet / 1MB)}}
-

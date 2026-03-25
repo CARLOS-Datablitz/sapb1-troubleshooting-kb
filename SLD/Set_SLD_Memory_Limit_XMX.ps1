@@ -1,0 +1,69 @@
+# ticket: iSystems#99162001
+
+
+!!!!! IMPORTANTE PRE-REQUISITE !!!!
+# Before add/edit memory check how many is available from PROXMOX
+# Verify how meny user license customer has as there must be a match between number of users and number of XmxGB
+
+El script es un procedimiento seguro y remoto para aumentar la memoria de SAP Business One Server Tools sin perder la conexión y dejando respaldo para deshacer el cambio si algo sale mal:
+
+*** El script de abajo se ejecuto en el sles 
+
+screen -dRR  ----> recupera o crea una sesión de terminal que sigue viva aunque te desconectes, y te la entrega inmediatamente.
+
+# 1. leer archivo
+cat /usr/sap/SAPBusinessOne/Common/tomcat/service/control.sh
+head -n 50 /usr/sap/SAPBusinessOne/Common/tomcat/service/control.sh
+
+# 2. Detener los servicios antes de realizar algun cambio:
+DETENER:
+-------
+systemctl stop sapb1servertools-authentication.service
+systemctl stop sapb1servertools.service
+
+# 3. en esta linea debe decir 8 Gigas en Mega, lo cambiaras
+'Xmx8192M' ---> 'Xmx12288M'
+
+# pero antes deten el SAP y el Token y luego crear una copia del archivo control.sh
+systemctl stop sapb1servertools.service sapb1servertools-authentication.service
+cd /usr/sap/SAPBusinessOne/Common/tomcat/service/
+cp control.sh control.sh.bck
+vim control.sh
+
+# cambia el valor de esa linea
+'Xmx16384M'
+
+# inicia los servicios nuevamente
+systemctl start sapb1servertools.service 
+systemctl start sapb1servertools-authentication.service
+
+# Toma captura del cambio y mandaselo a lara nuevamente en ingles, (no como replay sino como comentario interno)
+
+-----------------------------------------------------------------------
+1. Conexion a la OpenVPN DU
+2. Ping al SLES ping 10.2.101.226.
+3. Connect through mobaXterm
+4. 
+
+
+
+Propósito y escenarios del script
+
+Paso                          | Propósito exacto                                                                                 | Escenario típico
+----------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------
+screen -dRR                   | Abrir una sesión independiente que no se cierra si se cae tu conexión SSH.                       | Trabajar remotamente y ejecutar cambios delicados sin riesgo de quedarte a “medio gas” si la red falla.
+
+cat / head … control.sh       | Verificar el contenido del script que arranca el Tomcat de SAP Business One (B1).                | Antes de modificar la memoria máxima (heap) del servicio, asegurarte de qué línea cambiar y que el archivo realmente existe.
+
+systemctl stop …              | Parar los servicios de B1 para que el cambio de memoria no se aplique sobre caliente.            | Siempre que se ajuste memoria o parámetros JVM de Tomcat.
+
+cp control.sh control.sh.bck  | Hacer una copia de seguridad antes de editar.                                                     | Buena práctica en cualquier cambio crítico: permite volver atrás si algo falla.
+
+Editar Xmx8192M → Xmx12288M   | Aumentar la memoria máxima del heap de 8 GB a 12 GB para el proceso Java (Tomcat).               | • B1 Server Tools se queda sin memoria (OutOfMemory). • Se incrementa la carga de usuarios o servicios. • Se migra a un servidor con más RAM.
+
+systemctl start …             | Levantar los servicios con la nueva configuración.                                               | Después de cualquier ajuste de memoria o JVM.
+
+screen detach                 | Dejar la sesión corriendo sin perder el trabajo ni cerrar la terminal.                           | Ideal para largas operaciones o monitoreo posterior a los cambios.
+
+-----------------------------------------------------------------------
+Kraemer - alpina - sles/dcduvpn

@@ -34,7 +34,7 @@ sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_PROD_XH'."*" as binary into '\'/tmp/dbreleng1\'' with ignore existing threads 10;'
 
 # import and rename the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_PROD_XH'."*" as binary from '\'/tmp/dbreleng1\'' with ignore existing threads 10 rename schema "SBO_PROD_XH" to "CARGASI_0711";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_PROD_XH'."*" as binary from '\'/tmp/dbreleng1\'' with ignore existing threads 10 rename schema "SBO_PROD_XH" to "ZZ_BK160326";'
 
 # Remover las carpetas creadas y ya no necesarias:
 rm -R XPLO_RELENG dbreleng1

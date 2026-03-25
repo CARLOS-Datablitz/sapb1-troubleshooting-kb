@@ -14,32 +14,28 @@ X Certificate and Key managment/certicates/<Certificate_Name>/Export
 4. Luego copy to, using One Command, ISCDE folder de cliente donde esta su Server Questions.xlsx, and edit the name(remove iSystems[]).
 and then to Desktop/Downloads and from here move to the RDS C:\
 
-===================== Cambiar los certificados en el RDS ===========================
+===================== Cambiar/importar los certificados en el RDS ===========================
+- Tener los certificados en el C:\ del RDS de cliente, borrar los certificados antiguos.
 
-En el Server Manager Dashboar> Remote Destop Services/Overview/DEPLOYMENT OVERVIEW > TASKS/Edit Deployment Propertie
+1#
+En el Server Manager Dashboar> Remote Destop Services/Overview/DEPLOYMENT OVERVIEW > TASKS/Edit Deployment Properties
 																								->Certificates ->
--> - RD Connection Broker - Enable Signing --> Select existing certificate --> Choose from RDS C:\ .pfx Password: sapB1iP --> Apply --> Next
+-> - RD Connection Broker - Enable Signing --> Select existing certificate --> Choose from RDS C:\ .pfx Password: sapB1iP --> Check: "Allow the certicate to be ...." --> Apply(NO OK es al ultimo) --> Next
    - RD Conecction Broker - Publishing
    - RD Web Access
    - RD Gateway
-   
+   --> OK
+  
+2#
+See certificate_rds.ps1 file on this folder, edit it with the data of customer env.
+run the above script on the PowerShell ISE as administrador
 
-RD Connection Broker - Enable Signing
-RD Connection Broker - Publishin
-RD Web Access
-RD Gateway
-
-1. Select existing certificate...
-/second option: > chose the .pfx from C:\
-2. Password: sapB1iP
-3. Check the box.
 
 ========================================================================================
 
 On your PC´s browser:
-A: h
-ttps://rds.bodenfachmarkt.privatcloud.biz:10089/rdweb
-B: https://rds.bodenfachmarkt.privatcloud.biz:10089/rdweb/webclient/index.html
+A: RdsLogin: https://rds.bodenfachmarkt.privatcloud.biz:10089/rdweb
+B: RdsHtml5: https://rds.bodenfachmarkt.privatcloud.biz:10089/rdweb/webclient/index.html
 
 1. Check date of expiration or validation: browser> La conexión es segura/El certificado es valido > Período de validez
 2. Desde A: RDS Credentials/ Click SAP(it will downloaded)/execute it / RDS credentials > Conexión a Escritorio Remoto(your should be in the rds server).
@@ -53,4 +49,5 @@ Ctrl + h para sustituir
 4. Ejecutar el script en un PowerShell ISE, como administrador, 
 5. Luego de editar y ejecutar el scrip se debe probar la conexión en el link pero en modo oculto ya que se quedan guardada la sesión fallída en las cookies.
 
-
+Escritorio remoto desde tu PC local:
+Windows + R: mstsc /v:10.2.200.85/admin
