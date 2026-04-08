@@ -94,6 +94,7 @@ sudo systemctl status sapb1servertools-authentication
 |---|---|
 | Tomcat (ServerTools) | `/opt/sap/SAPBusinessOne/ServerTools/tomcat/logs/catalina.out` |
 | SLD | `/opt/sap/SAPBusinessOne/ServerTools/tomcat/logs/` |
+|     |                                                    |
 
 ---
 
