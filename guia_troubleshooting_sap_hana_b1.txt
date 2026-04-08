@@ -15,11 +15,12 @@
   2. Componentes Clave que los Unen
   3. Checklist de Verificación Rápida
   4. Guía Paso a Paso: Servidor HANA
-  5. Guía Paso a Paso: Servidor SAP Business One
-  6. Verificación de Conectividad de Red
-  7. Problemas Comunes y Soluciones
-  8. Ubicación de Logs Importantes
-  9. Comandos de Referencia Rápida
+  5. Guía Paso a Paso: Servidor SAP Business One (Linux)
+  6. Guía Paso a Paso: Servidor ADM + B1i (Windows Server 2019)  ← NUEVO
+  7. Verificación de Conectividad de Red
+  8. Problemas Comunes y Soluciones
+  9. Ubicación de Logs Importantes
+ 10. Comandos de Referencia Rápida
 
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -41,20 +42,37 @@
 └──────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ ¿Cómo se Relacionan?                                                     │
+│ ¿Qué es B1i (SAP Business One Integration Framework)?                   │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Motor de integración nativo de SAP B1 que conecta el ERP con sistemas   │
+│ externos (tiendas online, WMS, otros ERPs, etc.) mediante flujos XML.   │
+│ Corre en el servidor Windows con rol "ADM + B1i".                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ¿Cómo se Relacionan todos los Componentes?                              │
 ├──────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │  ┌─────────────────────┐         ┌─────────────────────┐               │
-│  │  SAP BUSINESS ONE   │ ◄─────► │     SAP HANA        │               │
-│  │   (Aplicación)      │  Red    │  (Base de Datos)    │               │
-│  │                     │  TCP/IP │                     │               │
-│  │ • Service Layer     │ Puertos │ • Tenant Databases  │               │
-│  │ • Server Tools      │ 300XX   │ • IndexServer       │               │
-│  │ • License Manager   │         │ • NameServer        │               │
-│  └─────────────────────┘         └─────────────────────┘               │
+│  │  ADM + B1i          │         │     SAP HANA        │               │
+│  │  (Windows 2019)     │◄──────► │  (Base de Datos)    │               │
+│  │                     │TCP 30013│                     │               │
+│  │ • B1i Framework     │         │ • Tenant Databases  │               │
+│  │ • SAP B1 Client     │         │ • IndexServer       │               │
+│  │ • Admin Tools       │         │ • NameServer        │               │
+│  └──────────┬──────────┘         └─────────────────────┘               │
+│             │ HTTPS 50000                    ▲                          │
+│             ▼                               │ TCP 30013                 │
+│  ┌─────────────────────┐                   │                           │
+│  │  SAP BUSINESS ONE   │───────────────────┘                           │
+│  │  Service Layer      │                                               │
+│  │  (Linux)            │                                               │
+│  │ • Service Layer     │                                               │
+│  │ • Server Tools      │                                               │
+│  │ • SLD Agent         │                                               │
+│  └─────────────────────┘                                               │
 │                                                                          │
-│  Business One NECESITA que HANA esté corriendo para funcionar.          │
-│  Sin HANA = Sin datos = Sin Business One                                │
+│  Sin HANA = Sin datos = Sin Business One = Sin B1i                      │
 └──────────────────────────────────────────────────────────────────────────┘
 
 
@@ -69,12 +87,19 @@ EN EL SERVIDOR HANA:
   ✓ Puertos 30013, 30015    → Comunicación SQL y administrativa
   ✓ Puertos 300XX           → Cada tenant tiene su puerto (ej: 30040-30118)
 
-EN EL SERVIDOR BUSINESS ONE:
+EN EL SERVIDOR BUSINESS ONE (Linux):
   ✓ SAP B1 Server Tools     → Servicios principales de B1
   ✓ Service Layer           → API para integraciones (puertos 50000-50004)
   ✓ SLD Agent               → Registro y gestión de licencias
   ✓ License Manager         → Control de licencias
   ✓ HANA Client Drivers     → Permiten conectarse a HANA
+
+EN EL SERVIDOR ADM + B1i (Windows Server 2019):          ← NUEVO
+  ✓ B1i Integration Service → Motor de integración con sistemas externos
+  ✓ SAP B1 Client           → Interfaz administrativa y de configuración
+  ✓ Administration Tools    → Herramientas de gestión del ambiente B1
+  ✓ Puerto 8080 / 8443      → Consola web de administración de B1i
+  ✓ Puerto 8900             → Comunicación interna de B1i
 
 EN LA RED:
   ✓ Resolución DNS          → Los servidores deben resolver nombres
@@ -91,20 +116,23 @@ EN LA RED:
   [ ] 1. ¿HANA está corriendo?
          → Ejecuta: HDB info (debe decir Running)
   
-  [ ] 2. ¿Los servicios de B1 están corriendo?
+  [ ] 2. ¿Los servicios de B1 (Linux) están corriendo?
          → Ejecuta: systemctl status sapb1servertools.service
   
-  [ ] 3. ¿Hay conectividad de red?
+  [ ] 3. ¿El servicio B1i (Windows) está corriendo?
+         → Verifica en Services.msc: "SAP Business One Integration Service"
+  
+  [ ] 4. ¿Hay conectividad de red?
          → Ejecuta: ping <servidor_hana>
          → Ejecuta: nc -zv <servidor_hana> 30013
   
-  [ ] 4. ¿El tenant database está activo?
+  [ ] 5. ¿El tenant database está activo?
          → Verifica que la BD específica esté en estado ACTIVE
   
-  [ ] 5. ¿Hay errores en los logs?
-         → Revisa logs de HANA y logs de B1 Server Tools
+  [ ] 6. ¿Hay errores en los logs?
+         → Revisa logs de HANA, B1 Server Tools y B1i
   
-  [ ] 6. ¿Las credenciales son correctas?
+  [ ] 7. ¿Las credenciales son correctas?
          → Verifica usuario/password no expirado ni bloqueado
 
 
@@ -283,7 +311,7 @@ EN LA RED:
 
 
 ═══════════════════════════════════════════════════════════════════════════════
- 💼 5. GUÍA PASO A PASO: SERVIDOR SAP BUSINESS ONE
+ 💼 5. GUÍA PASO A PASO: SERVIDOR SAP BUSINESS ONE (Linux)
 ═══════════════════════════════════════════════════════════════════════════════
 
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -384,10 +412,164 @@ EN LA RED:
 
 
 ═══════════════════════════════════════════════════════════════════════════════
- 🌐 6. VERIFICACIÓN DE CONECTIVIDAD DE RED
+ 🖥️  6. GUÍA PASO A PASO: SERVIDOR ADM + B1i (Windows Server 2019)
 ═══════════════════════════════════════════════════════════════════════════════
 
-  DESDE EL SERVIDOR B1, ejecutar:
+  Este servidor cumple dos roles críticos:
+    • ADM  → Herramientas administrativas de SAP B1 y cliente B1
+    • B1i  → SAP Business One Integration Framework (motor de integración)
+
+  ⚠️  IMPORTANTE: Los comandos de esta sección se ejecutan en Windows
+      (PowerShell o CMD con privilegios de administrador)
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 1: Verificar el Servicio de B1i                                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Opción A — Desde PowerShell:
+    Get-Service -Name "*B1i*"
+    Get-Service -Name "*SAPBusinessOneIntegration*"
+
+  Opción B — Desde Services.msc (GUI):
+    Buscar: "SAP Business One Integration Service"
+
+  ✓ BUENO: Status = "Running"
+  ✗ MALO:  Status = "Stopped" o "StartPending"
+
+  Si el servicio está detenido, iniciarlo:
+    Start-Service -Name "SAP Business One Integration Service"
+
+  Ver últimas entradas del log de eventos de Windows:
+    Get-EventLog -LogName Application -Source "*B1i*" -Newest 20
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 2: Verificar la Consola Web de B1i                                 │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Abrir en navegador (desde el mismo servidor o con acceso de red):
+    http://<servidor_b1i>:8080/b1i/
+    https://<servidor_b1i>:8443/b1i/
+
+  Credenciales por defecto:
+    Usuario: B1iAdmin  (o el configurado durante instalación)
+
+  ✓ BUENO: La consola carga y muestra el dashboard de B1i
+  ✗ MALO:  "Connection refused" → El servicio no está escuchando
+           "Page not found"    → Ruta incorrecta o error de instalación
+
+  Verificar que los puertos estén escuchando (desde PowerShell):
+    netstat -ano | findstr ":8080"
+    netstat -ano | findstr ":8443"
+    netstat -ano | findstr ":8900"
+
+  ✓ BUENO: Aparecen entradas con estado "LISTENING"
+  ✗ MALO:  No aparecen → Servicio caído o mal configurado
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 3: Verificar Conectividad de B1i hacia HANA y Service Layer        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  B1i necesita alcanzar DOS destinos:
+    1. SAP HANA (TCP 30013)          → Para leer/escribir datos
+    2. Service Layer B1 (TCP 50000)  → Para ejecutar operaciones B1
+
+  Test de conectividad desde PowerShell:
+
+    # Test hacia HANA (puerto SQL)
+    Test-NetConnection -ComputerName hanamt.jerusalem.nubeprivada.biz -Port 30013
+
+    # Test hacia Service Layer
+    Test-NetConnection -ComputerName <servidor_b1_linux> -Port 50000
+
+    # Test hacia License Server
+    Test-NetConnection -ComputerName <servidor_sld> -Port 40000
+
+  ✓ BUENO: TcpTestSucceeded = True
+  ✗ MALO:  TcpTestSucceeded = False → Firewall o servicio caído
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 4: Revisar Configuración de Conexión de B1i                        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Ruta de instalación típica de B1i:
+    C:\Program Files\SAP\SAP Business One Integration\
+
+  Archivo de configuración principal:
+    C:\Program Files\SAP\SAP Business One Integration\conf\b1i.xml
+    (o b1i-config.xml según versión)
+
+  Parámetros clave a verificar:
+    • Hostname del servidor HANA
+    • Puerto de conexión HANA (30013)
+    • Hostname del Service Layer
+    • Puerto del Service Layer (50000)
+    • Credenciales de usuario B1i en HANA
+
+  ✓ BUENO: Los valores coinciden con el ambiente real
+  ✗ MALO:  Hostnames incorrectos o apuntando a otro ambiente
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 5: Revisar Logs de B1i                                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Directorio de logs de B1i:
+    C:\Program Files\SAP\SAP Business One Integration\log\
+
+  Archivos de log principales:
+    b1i.log          → Log general del servicio B1i
+    b1i-error.log    → Errores del servicio
+    scenario_*.log   → Logs de cada escenario de integración
+
+  Ver log general (PowerShell):
+    Get-Content "C:\Program Files\SAP\SAP Business One Integration\log\b1i.log" -Tail 100
+
+  ¿Qué buscar en los logs?
+    ✗ "Connection refused"            → No alcanza HANA o Service Layer
+    ✗ "Authentication failed"         → Credenciales incorrectas o expiradas
+    ✗ "timeout"                       → Problema de red o sobrecarga
+    ✗ "Service not available"         → Service Layer no responde
+    ✗ "Scenario execution failed"     → Error en un flujo de integración
+    ✗ "License error"                 → Problema con licencia de B1i
+
+  Revisar también el Visor de Eventos de Windows:
+    Aplicación → Source: "SAP Business One Integration"
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PASO 6: Verificar Recursos del Servidor ADM + B1i                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Espacio en disco (PowerShell):
+    Get-PSDrive -PSProvider FileSystem
+
+  ⚠️  CRÍTICO SI:
+      Disco C: tiene menos de 10GB libres
+      Disco donde está B1i tiene menos de 5GB libres
+
+  Memoria (PowerShell):
+    Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory
+
+  ⚠️  CRÍTICO SI:
+      Memoria libre (FreePhysicalMemory) < 1GB
+
+  Procesos Java de B1i (B1i corre sobre JVM):
+    Get-Process -Name "java" | Select-Object Id, CPU, WorkingSet
+
+  ⚠️  ADVERTENCIA SI:
+      Proceso Java consume > 80% de CPU sostenido
+      WorkingSet (memoria) del proceso Java > 4GB sin justificación
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🌐 7. VERIFICACIÓN DE CONECTIVIDAD DE RED
+═══════════════════════════════════════════════════════════════════════════════
+
+  DESDE EL SERVIDOR B1 (Linux), ejecutar:
 
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ Test 1: Resolución de Nombres (DNS)                                     │
@@ -428,8 +610,30 @@ EN LA RED:
     nc -zv localhost 40000
 
 
+  DESDE EL SERVIDOR ADM + B1i (Windows), ejecutar en PowerShell:
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Test 4: Conectividad desde B1i hacia HANA y Service Layer               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Test hacia HANA
+  Test-NetConnection -ComputerName hanamt.jerusalem.nubeprivada.biz -Port 30013
+
+  # Test hacia Service Layer B1
+  Test-NetConnection -ComputerName <servidor_b1_linux> -Port 50000
+
+  # Test hacia License Server
+  Test-NetConnection -ComputerName <servidor_sld> -Port 40000
+
+  # Test de DNS desde Windows
+  Resolve-DnsName hanamt.jerusalem.nubeprivada.biz
+
+  ✓ BUENO: TcpTestSucceeded = True en todos los tests
+  ✗ MALO:  TcpTestSucceeded = False → Revisar firewall Windows o de red
+
+
 ═══════════════════════════════════════════════════════════════════════════════
- 🔧 7. PROBLEMAS COMUNES Y SOLUCIONES
+ 🔧 8. PROBLEMAS COMUNES Y SOLUCIONES
 ═══════════════════════════════════════════════════════════════════════════════
 
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -464,7 +668,8 @@ EN LA RED:
 │   5. Tenant database está ACTIVE                                        │
 │                                                                          │
 │ COMANDO DE DIAGNÓSTICO:                                                 │
-│   Desde B1: nc -zv <hana_server> 30013                                  │
+│   Desde B1 Linux: nc -zv <hana_server> 30013                           │
+│   Desde B1i Win:  Test-NetConnection -ComputerName <hana> -Port 30013  │
 └──────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -528,9 +733,51 @@ EN LA RED:
 │   /backup/                                                              │
 └──────────────────────────────────────────────────────────────────────────┘
 
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: B1i no procesa integraciones / Escenarios fallando            │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   Datos no fluyen entre B1 y sistemas externos                          │
+│   En consola B1i: escenarios en estado "Error" o "Stopped"             │
+│   En logs: "Scenario execution failed"                                  │
+│                                                                          │
+│ VERIFICAR EN ORDEN:                                                      │
+│   1. Servicio B1i está corriendo (Services.msc)                        │
+│   2. B1i alcanza el Service Layer (Test-NetConnection puerto 50000)    │
+│   3. B1i alcanza HANA (Test-NetConnection puerto 30013)                │
+│   4. Credenciales de B1i en HANA son válidas y no expiradas            │
+│   5. Revisar logs del escenario específico que falla                    │
+│      C:\...\SAP Business One Integration\log\scenario_*.log            │
+│                                                                          │
+│ COMANDO DE DIAGNÓSTICO (PowerShell):                                    │
+│   Test-NetConnection -ComputerName <servidor_b1_linux> -Port 50000     │
+│   Get-Content "C:\...\log\b1i-error.log" -Tail 50                      │
+└──────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ PROBLEMA: Consola Web de B1i inaccesible (puerto 8080/8443)             │
+├──────────────────────────────────────────────────────────────────────────┤
+│ SÍNTOMA:                                                                 │
+│   No se puede acceder a http://<servidor>:8080/b1i/                    │
+│   Browser dice "Connection refused" o timeout                           │
+│                                                                          │
+│ VERIFICAR:                                                               │
+│   1. Servicio B1i está corriendo                                        │
+│   2. Puerto 8080/8443 está escuchando:                                  │
+│      netstat -ano | findstr ":8080"                                     │
+│   3. Firewall de Windows permite el puerto:                             │
+│      Get-NetFirewallRule | Where-Object {$_.LocalPort -eq "8080"}      │
+│   4. El proceso Java de B1i está activo:                               │
+│      Get-Process -Name "java"                                           │
+│                                                                          │
+│ SOLUCIÓN SI EL SERVICIO ESTÁ CORRIENDO PERO EL PUERTO NO RESPONDE:     │
+│   Reiniciar el servicio B1i:                                            │
+│   Restart-Service -Name "SAP Business One Integration Service"          │
+└──────────────────────────────────────────────────────────────────────────┘
+
 
 ═══════════════════════════════════════════════════════════════════════════════
- 📂 8. UBICACIÓN DE LOGS IMPORTANTES
+ 📂 9. UBICACIÓN DE LOGS IMPORTANTES
 ═══════════════════════════════════════════════════════════════════════════════
 
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -566,7 +813,7 @@ EN LA RED:
 
 
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ LOGS DE SAP BUSINESS ONE                                                │
+│ LOGS DE SAP BUSINESS ONE (Linux)                                        │
 └──────────────────────────────────────────────────────────────────────────┘
 
   Server Tools (Tomcat):
@@ -594,8 +841,35 @@ EN LA RED:
     /usr/sap/SAPBusinessOne/SLDAgent/logs/
 
 
+┌──────────────────────────────────────────────────────────────────────────┐
+│ LOGS DE B1i (Windows Server 2019)                                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  Directorio principal de logs:
+    C:\Program Files\SAP\SAP Business One Integration\log\
+
+  Archivos clave:
+
+    b1i.log
+      → LOG PRINCIPAL del servicio B1i
+      → Ver con: Get-Content "...\log\b1i.log" -Tail 200
+
+    b1i-error.log
+      → Errores específicos del servicio
+      → Ver con: Get-Content "...\log\b1i-error.log" -Tail 100
+
+    scenario_<nombre>.log
+      → Log de cada escenario/flujo de integración
+      → Ver con: Get-Content "...\log\scenario_*.log" -Tail 100
+
+  Visor de Eventos de Windows:
+    → Panel: Aplicación
+    → Fuente: "SAP Business One Integration"
+    → Ver con: Get-EventLog -LogName Application -Source "*B1i*" -Newest 30
+
+
 ═══════════════════════════════════════════════════════════════════════════════
- ⚡ 9. COMANDOS DE REFERENCIA RÁPIDA
+ ⚡ 10. COMANDOS DE REFERENCIA RÁPIDA
 ═══════════════════════════════════════════════════════════════════════════════
 
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -654,7 +928,44 @@ EN LA RED:
 
 
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ COMANDOS DE CONECTIVIDAD (Desde servidor B1)                            │
+│ COMANDOS B1i - ADM (Windows Server 2019 / PowerShell)                  │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  # Ver estado del servicio B1i
+  Get-Service -Name "*B1i*"
+  Get-Service -Name "*SAPBusinessOneIntegration*"
+  
+  # Iniciar / Detener / Reiniciar servicio B1i
+  Start-Service   -Name "SAP Business One Integration Service"
+  Stop-Service    -Name "SAP Business One Integration Service"
+  Restart-Service -Name "SAP Business One Integration Service"
+  
+  # Ver puertos activos de B1i
+  netstat -ano | findstr ":8080"
+  netstat -ano | findstr ":8443"
+  netstat -ano | findstr ":8900"
+  
+  # Test de conectividad hacia HANA
+  Test-NetConnection -ComputerName hanamt.jerusalem.nubeprivada.biz -Port 30013
+  
+  # Test de conectividad hacia Service Layer
+  Test-NetConnection -ComputerName <servidor_b1_linux> -Port 50000
+  
+  # Ver logs de B1i
+  Get-Content "C:\Program Files\SAP\SAP Business One Integration\log\b1i.log" -Tail 100
+  Get-Content "C:\Program Files\SAP\SAP Business One Integration\log\b1i-error.log" -Tail 50
+  
+  # Ver eventos de B1i en Windows
+  Get-EventLog -LogName Application -Source "*B1i*" -Newest 20
+  
+  # Ver recursos del sistema
+  Get-PSDrive -PSProvider FileSystem
+  Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory
+  Get-Process -Name "java" | Select-Object Id, CPU, WorkingSet
+
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ COMANDOS DE CONECTIVIDAD (Desde servidor B1 Linux)                      │
 └──────────────────────────────────────────────────────────────────────────┘
 
   # Test de ping
@@ -696,7 +1007,7 @@ EN LA RED:
          ├─ SÍ → HANA está OK, continuar con B1
          └─ NO → PROBLEMA: Puerto no está abierto
 
-  2. VERIFICAR BUSINESS ONE
+  2. VERIFICAR BUSINESS ONE (Linux)
      ├─ Conectarse al servidor B1
      ├─ systemctl status sapb1servertools.service → ¿Running?
      │   ├─ SÍ → Continuar
@@ -707,10 +1018,28 @@ EN LA RED:
      │   └─ NO → PROBLEMA: Service Layer detenido
      │
      └─ tail -100 /usr/sap/.../catalina.out → ¿Errores recientes?
-         ├─ NO → Continuar con conectividad
+         ├─ NO → Continuar con B1i
          └─ SÍ → Identificar tipo de error
 
-  3. VERIFICAR CONECTIVIDAD
+  3. VERIFICAR B1i (Windows)  ← NUEVO
+     ├─ Conectarse al servidor ADM + B1i
+     ├─ Get-Service -Name "*B1i*" → ¿Running?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: Servicio B1i detenido
+     │
+     ├─ netstat -ano | findstr ":8080" → ¿Puerto escuchando?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: B1i no levantó correctamente
+     │
+     ├─ Test-NetConnection hacia HANA (30013) → ¿TcpTestSucceeded = True?
+     │   ├─ SÍ → Continuar
+     │   └─ NO → PROBLEMA: B1i no alcanza HANA
+     │
+     └─ Revisar b1i-error.log → ¿Errores recientes?
+         ├─ NO → B1i OK
+         └─ SÍ → Identificar tipo de error (auth, timeout, scenario)
+
+  4. VERIFICAR CONECTIVIDAD
      ├─ ping <hana_server> → ¿Responde?
      │   ├─ SÍ → Continuar
      │   └─ NO → PROBLEMA: Red o DNS
@@ -719,14 +1048,14 @@ EN LA RED:
          ├─ SÍ → Continuar con credenciales
          └─ NO → PROBLEMA: Firewall o puerto cerrado
 
-  4. VERIFICAR CREDENCIALES
+  5. VERIFICAR CREDENCIALES
      ├─ En HANA: Verificar usuario B1SYSTEM
      ├─ ¿Está activo? ¿Password válido? ¿Última conexión reciente?
      │   ├─ SÍ → TODO OK, problema puede ser intermitente
      │   └─ NO → PROBLEMA: Credenciales inválidas/expiradas
 
-  5. REVISAR LOGS DETALLADOS
-     └─ Buscar errores específicos en logs de HANA y B1
+  6. REVISAR LOGS DETALLADOS
+     └─ Buscar errores específicos en logs de HANA, B1 y B1i
 
 
 ═══════════════════════════════════════════════════════════════════════════════
@@ -737,18 +1066,22 @@ EN LA RED:
     1. HANA detenido o tenant inactivo (40%)
     2. Problemas de red/firewall (30%)
     3. Credenciales expiradas/incorrectas (20%)
-    4. Servicios de B1 detenidos (10%)
+    4. Servicios de B1 o B1i detenidos (10%)
 
   • SIEMPRE verifica en este orden:
-    HANA → B1 → Red → Credenciales → Logs
+    HANA → B1 (Linux) → B1i (Windows) → Red → Credenciales → Logs
 
   • Los core dumps en Service Layer son molestos pero usualmente no críticos
     si el servicio se auto-recupera.
 
+  • B1i corre sobre Java (JVM). Si el proceso Java consume recursos
+    excesivos, puede afectar el rendimiento general del servidor Windows.
+
   • Mantén monitoreo en:
     - Espacio en disco de HANA (/hana/data)
-    - Memoria disponible
-    - Logs de alertas
+    - Espacio en disco del servidor B1i (C:\)
+    - Memoria disponible en todos los servidores
+    - Logs de alertas de HANA y B1i
 
   • Documenta SIEMPRE:
     - Qué comandos ejecutaste
@@ -761,6 +1094,7 @@ EN LA RED:
 ═══════════════════════════════════════════════════════════════════════════════
 
 Creado por: Claude (Anthropic)
-Versión: 1.0
-Fecha: Febrero 2026
-Basado en: Ambiente real con SLES 15 SP4, SAP HANA NDB, SAP B1 Service Layer
+Versión: 2.0
+Fecha: Abril 2026
+Basado en: Ambiente real con SLES 15 SP4, SAP HANA NDB/E15, SAP B1 Service Layer,
+           Windows Server 2019 (ADM + B1i Integration Framework)

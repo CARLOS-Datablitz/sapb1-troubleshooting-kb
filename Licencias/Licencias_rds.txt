@@ -1,0 +1,21 @@
+Licencias RDS for activate and new users:
+
+For new users:
+RDS/Right click/Install Licenses/
+
+License Program: Service Provider License Agreetment.
+Agreetment numbeer: 67475361
+Product version: Check with PowerShell: (Get-CimInstance Win32_OperatingSystem) | Select-Object Caption, Version, BuildNumber
+License Type: RDS Per User CAL
+
+To activate license:
+
+- Email: support@isystems.email
+- Organizational Unit: IT
+- Company Address: Engelblecker Straße 140 a+b
+- City: Mönchengladbach
+- State/province: NRW
+- Postal code: 19905
+
+
+

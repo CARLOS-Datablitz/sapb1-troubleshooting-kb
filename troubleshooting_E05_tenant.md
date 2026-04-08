@@ -53,6 +53,17 @@ Todos los procesos de HANA estaban en estado `GREEN / Running`, pero **no aparec
 ## 3. Paso 2 — Verificar Estado de Todos los Tenants
 
 **Comando ejecutado:**
+
+Antes de hacer las consultas SQL, primero cargar la variables:
+dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
+dbInstance="00"
+dbHost="127.0.0.1"
+dbTenant="NDB"
+dbUser="SYSTEM"
+dbPass="Test1234"
+eg: testv10:~ # "$dbSql" -i "$dbInstance" -n "$dbHost" -u SYSTEM -p "$dbPass" -d SYSTEMDB \
+>   'SELECT DATABASE_NAME, ACTIVE_STATUS FROM SYS.M_DATABASES;'
+
 ```bash
 "$dbSql" -i "$dbInstance" -n "$dbHost" -u SYSTEM -p "$dbPass" -d SYSTEMDB \
   'SELECT DATABASE_NAME, ACTIVE_STATUS FROM SYS.M_DATABASES;'

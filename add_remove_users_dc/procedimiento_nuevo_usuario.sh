@@ -67,7 +67,7 @@ Quedamos pendientes a su confirmación.
 Saludos cordiales,
 
 ----------------------------------------------
-Se han agregado un nuevo usuario, user13; encontrará la contraseña en el link de abajo, cambiar la contraseña luego del primer acceso.
+Se han agregado un nuevo usuario, user13; encontrará la contraseña en el link de abajo, cambiar la contraseña antes del primer acceso.
 Por favor, verifiquen que el acceso del nuevo usuario esté funcionando correctamente y hágannoslo saber si se necesita algún ajuste.
 
 

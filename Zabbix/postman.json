@@ -1,0 +1,499 @@
+{
+	"info": {
+		"_postman_id": "3706ba03-88a0-4401-be5a-3a75727635c1",
+		"name": "Create Hosts",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28911641"
+	},
+	"item": [
+		{
+			"name": "Get Template ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"name\", \"Windows DC\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n           \"jsonrpc\": \"2.0\",\r\n           \"method\": \"template.get\",\r\n           \"params\": {\r\n               \"output\": \"extend\",\r\n               \"filter\": {\r\n                   \"host\": [\r\n                       \"{{name}}\"\r\n                   ]\r\n               }\r\n           },\r\n           \"id\": 1,\r\n           \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\"\r\n       }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create DC",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"Test.var\");\r",
+							"pm.collectionVariables.set(\"ip\", \"8.8.8.8\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n           {\r\n               \"templateid\": \"10626\"\r\n           },\r\n            {\r\n               \"templateid\": \"10081\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create RDS/Terminal Server",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"Test.var\");\r",
+							"pm.collectionVariables.set(\"ip\", \"8.8.8.8\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");\r",
+							"pm.collectionVariables.set(\"rdsport\", \"443\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n           {\r\n               \"templateid\": \"10628\"\r\n           },\r\n            {\r\n               \"templateid\": \"10081\"\r\n           },\r\n            {\r\n               \"templateid\": \"10413\"\r\n           }\r\n       ],\r\n       \"macros\": [\r\n           {\r\n               \"macro\": \"{$CERT.WEBSITE.HOSTNAME}\",\r\n               \"value\": \"{{ip}}\"\r\n           },\r\n           {\r\n               \"macro\": \"{$CERT.WEBSITE.PORT}\",\r\n               \"value\": \"{{rdsport}}\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				},
+				"description": "Create RDS/Terminal Server"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Normal Windows Server",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"Test.var\");\r",
+							"pm.collectionVariables.set(\"ip\", \"8.8.8.8\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n            {\r\n               \"templateid\": \"10081\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create SLES12",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"karasles1.kara.privatcloud.biz\");\r",
+							"pm.collectionVariables.set(\"ip\", \"10.2.27.2\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n            {\r\n               \"templateid\": \"10001\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create SLES Server",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"test3.var\");\r",
+							"pm.collectionVariables.set(\"ip\", \"172.22.34.10\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n            {\r\n               \"templateid\": \"10001\"\r\n           },\r\n            {\r\n               \"templateid\": \"10629\"\r\n           },\r\n            {\r\n               \"templateid\": \"10602\"\r\n           }\r\n       ],\r\n       \"macros\": [\r\n           {\r\n               \"macro\": \"{$CERT.WEBSITE.HOSTNAME}\",\r\n               \"value\": \"{{ip}}\"\r\n           },\r\n           {\r\n               \"macro\": \"{$CERT.WEBSITE.PORT}\",\r\n               \"value\": \"40000\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create HANA Server",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"Test.var\");\r",
+							"pm.collectionVariables.set(\"ip\", \"8.8.8.8\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n            {\r\n               \"templateid\": \"10001\"\r\n           },\r\n            {\r\n               \"templateid\": \"10629\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create SLD Server",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"Test.var\");\r",
+							"pm.collectionVariables.set(\"ip\", \"8.8.8.8\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n            {\r\n               \"templateid\": \"10001\"\r\n           },\r\n            {\r\n               \"templateid\": \"10602\"\r\n           }\r\n       ],\r\n       \"macros\": [\r\n           {\r\n               \"macro\": \"{$CERT.WEBSITE.HOSTNAME}\",\r\n               \"value\": \"{{ip}}\"\r\n           },\r\n           {\r\n               \"macro\": \"{$CERT.WEBSITE.PORT}\",\r\n               \"value\": \"40000\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Proxy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"zabbixproxy.otc.local\");\r",
+							"pm.collectionVariables.set(\"ip\", \"100.122.219.30\");\r",
+							"pm.collectionVariables.set(\"psk\", \"f0b29c2fa43844907768c99c2eb60f56d54be53c38d105a6050206f5aa89288c79678c552cc19e4046c4b9916e4057cf1895dbe6473aeafe65a8fa3f845e57693030bb18b307858e0422a0f02edf1b8b97a49b41c11862ccfc56218767f2e26ff76169f5e4b2ea4a0a4cbc0d97f30e5845c5e0fd98bd94b1b14eb44b1ce230e886e1d609d59a413f9a87e1acce7f8f8738ceef5631fbb98feabeb702978e5b150179e176d10b893cc31e88f71d132366847664532c78a6bf9278dae75244d3f37e356f022b5a2e09112cc75e6e51c857be75e724ba3ff99d34d6d001251b78627f13c8f5f013bd765a6311563d60ad94a24b626d30da5aa681fd8fc8d5c0cb5f\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"jsonrpc\": \"2.0\",\r\n    \"method\": \"proxy.create\",\r\n    \"params\": {\r\n        \"name\": \"{{hostname}}\",\r\n        \"allowed_addresses\": \"{{ip}}\", \r\n        \"operating_mode\": \"0\",\r\n        \"tls_accept\": \"2\",\r\n        \"tls_psk_identity\": \"{{hostname}}\",\r\n        \"tls_psk\": \"{{psk}}\"\r\n    },\r\n    \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n    \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Proxmox Server",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"hostname\", \"pve144.dctpa.local\");\r",
+							"pm.collectionVariables.set(\"ip\", \"172.29.100.144\");\r",
+							"pm.collectionVariables.set(\"lat\", \"51.186550\");\r",
+							"pm.collectionVariables.set(\"long\", \"6.869240\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"jsonrpc\": \"2.0\",\r\n   \"method\": \"host.create\",\r\n   \"params\": {\r\n       \"host\": \"{{hostname}}\",\r\n       \"interfaces\": [\r\n           {\r\n               \"type\": 1,\r\n               \"main\": 1,\r\n               \"useip\": 1,\r\n               \"ip\": \"{{ip}}\",\r\n               \"dns\": \"\",\r\n               \"port\": \"10050\"\r\n           }\r\n       ],\r\n       \"groups\": [\r\n           {\r\n               \"groupid\": \"84\"\r\n           }\r\n       ],\r\n       \"templates\": [\r\n            {\r\n               \"templateid\": \"12582\"\r\n           }\r\n       ],\r\n       \"inventory_mode\": 1,\r\n       \"inventory\": {\r\n           \"location_lat\": \"{{lat}}\",\r\n           \"location_lon\": \"{{long}}\"\r\n       }\r\n   },\r\n   \"auth\": \"41bdb7cdbab9c3b6061fb3da28e2ccb52be96d38dcff012cd8e3e580a35c0b49\",\r\n   \"id\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://zabbix.isystems-integration.com/api_jsonrpc.php",
+					"protocol": "https",
+					"host": [
+						"zabbix",
+						"isystems-integration",
+						"com"
+					],
+					"path": [
+						"api_jsonrpc.php"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "hostname",
+			"value": ""
+		},
+		{
+			"key": "ip",
+			"value": ""
+		},
+		{
+			"key": "lat",
+			"value": ""
+		},
+		{
+			"key": "long",
+			"value": ""
+		},
+		{
+			"key": "rdsurl",
+			"value": ""
+		},
+		{
+			"key": "rdsport",
+			"value": ""
+		},
+		{
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "psk",
+			"value": ""
+		}
+	]
+}

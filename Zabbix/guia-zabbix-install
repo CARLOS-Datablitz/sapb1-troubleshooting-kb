@@ -1,0 +1,95 @@
+#######sld/sl
+
+hostname=sl.cmgroup.privatcloud.biz;
+zabbixserver=192.168.191.250;
+cd /tmp;wget https://repo.zabbix.com/zabbix/6.0/sles/15/x86_64/zabbix-release-6.0-4.sles15.noarch.rpm;rpm -ivh zabbix-release-6.0-4.sles15.noarch.rpm;zypper --gpg-auto-import-keys refresh 'Zabbix Official Repository';zypper install -y zabbix-agent=6.0.20;sleep 10;rm /etc/zabbix/zabbix_agentd.conf;
+cat << EOF > /etc/zabbix/zabbix_agentd.conf
+PidFile=/run/zabbix/zabbix_agentd.pid
+LogFile=/var/log/zabbix/zabbix_agentd.log
+LogFileSize=0
+Server=$zabbixserver
+ServerActive=$zabbixserver
+Hostname=$hostname
+Include=/etc/zabbix/zabbix_agentd.d/*.conf
+User=root
+AllowRoot=1
+AllowKey=system.run[*]
+Timeout=30
+UserParameter=indexservercheck,/hana/scripts/checkindexserver.sh
+UserParameter=sapb1servertools,/usr/sap/SAPBusinessOne/checksapb1servertools.sh
+EOF
+cd /usr/sap/SAPBusinessOne
+wget https://files.jezz.systems/etc/zabbix/SLD/checksapb1servertools.sh
+chmod +x /usr/sap/SAPBusinessOne/checksapb1servertools.sh
+chmod 777 /usr/sap/SAPBusinessOne/checksapb1servertools.sh
+systemctl restart zabbix-agent
+
+
+cd
+cd /usr/lib/systemd/system
+cat zabbix-agent.service
+vim zabbix-agent.service
+
+[Service]
+User=root
+Group=root
+
+systemctl daemon-reload
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
+===================================================================================================================================================================================
+
+
+WINDOWS MACHINE(ADM - DC)(hacerlo en el CMD)(WINDOWS VM'S)
+#Caso Planika - APP - B1IF servers(DCDUS)
+
+SET ZABBIXHOSTNAME="dc.intersteel.privatcloud.biz"
+SET ZabbixServer="192.168.191.250"
+SET INSTALLFOLDER=C:\Program Files\Zabbix Agent 2
+curl "https://cdn.zabbix.com/zabbix/binaries/stable/7.4/7.4.8/zabbix_agent2-7.4.8-windows-amd64-openssl.msi" -o "C:\tools\zabbix_agent2-7.4.8-windows-amd64-openssl.msi"
+cd C:\tools
+
+msiexec /l*v log.txt /i zabbix_agent-7.4.3-windows-amd64-openssl.msi /qn^ SERVER=%ZabbixServer% LISTENPORT=10050 SERVERACTIVE=%ZabbixServer% HOSTNAME=%ZABBIXHOSTNAME% ENABLEPATH=1
+
+del log.txt
+del zabbix_agent2-7.4.8-windows-amd64-openssl.msi
+SC failure "Zabbix Agent" reset= 0 actions= restart/0/restart/0/restart/0
+echo AllowKey=system.run[*] >> "C:\Program Files\Zabbix Agent 2\zabbix_agentd.conf"
+echo Timeout=30 >> "C:\Program Files\Zabbix Agent 2\zabbix_agentd.conf"
+net stop "Zabbix Agent 2" && net start "Zabbix Agent 2"
+
+
+*********************************************SIGUE EN POSTMAN************************************************************************
+
+
+=====================================================================================================================================================================================
+
+WINDOWS MACHINE(RDS - TS)(hacerlo en el CMD)
+#Caso Infosupport - RDS server(DCDUS)
+
+SET ZABBIXHOSTNAME="rds.cayman.nubeprivada.biz"
+SET ZabbixServer="192.168.191.250"
+SET INSTALLFOLDER=C:\Program Files\Zabbix Agent 2
+curl "https://cdn.zabbix.com/zabbix/binaries/stable/7.4/7.4.3/zabbix_agent-7.4.3-windows-amd64-openssl.msi" -o "C:\Users\administrator\Downloads\zabbix_agent-7.4.3-windows-amd64-openssl.msi"
+cd C:\Users\administrator\Downloads\
+
+msiexec /l*v log.txt /i zabbix_agent-7.4.3-windows-amd64-openssl.msi /qn^ SERVER=%ZabbixServer% LISTENPORT=10050 SERVERACTIVE=%ZabbixServer% HOSTNAME=%ZABBIXHOSTNAME% ENABLEPATH=1
+
+del log.txt
+del zabbix_agent-7.4.3-windows-amd64-openssl.msi
+
+mkdir C:\app\zabbix\scripts
+mkdir C:\app\zabbix\conf\rdp
+curl "https://files.jezz.systems/etc/zabbix/terminal/rdp.terminal.server.ps1" -o "C:\app\zabbix\scripts\rdp.terminal.server.ps1"
+curl "https://files.jezz.systems/etc/zabbix/terminal/rdp.terminal.server.conf" -o "C:\app\zabbix\conf\rdp\rdp.terminal.server.conf"
+curl "https://files.jezz.systems/etc/zabbix/terminal/PSTerminalServices.zip" -o "C:\app\zabbix\conf\rdp\PSTerminalServices.zip"
+powershell -command "Expand-Archive C:\app\zabbix\conf\rdp\PSTerminalServices.zip -DestinationPath 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\'"
+del "C:\app\zabbix\conf\rdp\PSTerminalServices.zip"
+echo UserParameter=rdp.terminal.server[*],powershell.exe -NoProfile -File "C:\app\zabbix\scripts\rdp.terminal.server.ps1" "$1" "$2" >> "C:\Program Files\Zabbix Agent\zabbix_agentd.conf"
+echo AllowKey=system.run[*] >> "C:\Program Files\Zabbix Agent\zabbix_agentd.conf"
+echo Timeout=30 >> "C:\Program Files\Zabbix Agent\zabbix_agentd.conf"
+SC failure "Zabbix Agent" reset= 0 actions= restart/0/restart/0/restart/0
+net stop "Zabbix Agent" && net start "Zabbix Agent"
+
+
+*********************************************SIGUE EN POSTMAN************************************************************************

@@ -1,5 +1,24 @@
-===========================================  LINUX   ==================================================================================
-# Attachment Example Rheinperchemie
+
+
+El Attachments se configura generalmente en el SLD,  el attachments se monta donde esta la instalacion del SAP SAPBusinessOne Server, si en un sles esta pues va en /usr/sap/....
+en el sld siempre encontrarars esa ruta /usr/sap/B1_SHF.
+
+!!!!! IMPORTANT NOTES !!!!!
+
+Caution:
+The name of the mount point must not contain underscores (_).
+Correct example: /mnt/sbomailer
+
+!!!!! IMPORTANT NOTES !!!!!
+
+Incorrect example: /mnt/sbo_mailer
+
+!!!!! IMPORTANT NOTES !!!!!
+
+
+/B1_SHF===========================================  LINUX   ==================================================================================
+
+Attachment Example Rheinperchemie
 ordner:
 \\sld\b1_shf\Common\Attachments\
 
@@ -16,7 +35,7 @@ mkdir -p Common/Attachments
 chmod -R 777 Common/
 chown -R b1service0:b1service0 Common/ && ls -lha
 
-echo '//sld/B1_SHF/Common/Attachments/                  /mnt/Common/Attachments        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
+echo '//sld/B1_SHF/Common/Attachments/      /mnt/Common/Attachments        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
 
 cat /etc/fstab
 # vim /etc/fstab
@@ -28,7 +47,7 @@ df -h | grep Common
 # Attachment SLD <====> Windows
 ordner:
 \\sld\b1_shf\Attachments\  ----> \\RDS\RepositorioSAP(Windows)[darle todos los permisos a esta carpeta para los usuarios que van a acceder, local o dominio]
-[Esta ruta es sld linux]		 [Esta ruta es la del rds]	
+[Esta ruta es sld linux]		 [Esta ruta es la del rds]
 
 
 # ssh root@sld

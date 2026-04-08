@@ -1,0 +1,19 @@
+No tenemos las credenciales de SAP B1 Client para conectarnos a un esquema y ver la version del SAP B1.
+
+--- ver en el sld ----
+sld:# cat/root/Desktop/SAP_Configuration.txt
+Service Pack: SP2402
+
+--- ver en un Windows (RDS, ADM) ----
+\\sld\B1_SHF\Clientx64
+setup.exe ---> run as administrator ---> tomar ss a al primera pantalla SAP Business One. ---> CANCELL
+
+--- Carpeta de instalación SAP Business One Server ---
+En el navegador de la vm(rds o adm): https://files.jezz.systems/sap/ (esta url esta en el Fenruz).
+# en el sld:
+sld:# cd /usr/sap/SAPBusinessOne/B1_SHF
+sld:/usr/sap/SAPBusinessOne/B1_SHF# mkdir 10.0_SP2402HF1
+sld:/usr/sap/SAPBusinessOne/B1_SHF# chown -R b1service0:b1service0 10.0_SP2402HF1/
+sld:/usr/sap/SAPBusinessOne/B1_SHF# chomod -R 777 10.0_SP2402HF1/
+
+

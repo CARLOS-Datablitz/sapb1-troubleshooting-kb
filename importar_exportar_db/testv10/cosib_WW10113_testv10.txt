@@ -3,10 +3,9 @@
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lha
-mkdir REVORG_ZIP/ revorg_db_2/ revorg_db_3/ revorg_db_4/ 
-
-chmod -R 777 REVORG_ZIP/ revorg_db_2/ revorg_db_3/ revorg_db_4/
-chown -R ndbadm:sapsys REVORG_ZIP/ revorg_db_2/ revorg_db_3/ revorg_db_4/
+mkdir WW10113_ZIP/ ww10113_db__1/ ww10113_db__2/ ww10113_db__3/ ww10113_db__4/ ww10113_db__5/ ww10113_db__6/ ww10113_db__7/ ww10113_db__8/ ww10113_db__9/
+chmod -R 777 WW10113_ZIP/ ww10113_db__1/ ww10113_db__2/ ww10113_db__3/ ww10113_db__4/ ww10113_db__5/ ww10113_db__6/ ww10113_db__7/ ww10113_db__8/ ww10113_db__9/
+chown -R ndbadm:sapsys WW10113_ZIP/ ww10113_db__1/ ww10113_db__2/ ww10113_db__3/ ww10113_db__4/ ww10113_db__5/ ww10113_db__6/ ww10113_db__7/ ww10113_db__8/ ww10113_db__9/
 
 =================================================
 2. Variables de entorno:
@@ -37,22 +36,33 @@ sles:/tmp #
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BUYANDGO'."*" as binary from '\'/tmp/revorg_db_1\'' with ignore existing threads 10 rename schema "SBO_BUYANDGO" to "SBO_COMERCIALIZADORA_DEMO";'
 
 # import
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'M4_MONICO01'."*" as binary from '\'/tmp/revorg_db_6/M4_MONICO01/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBODEMODE'."*" as binary from '\'/tmp/ww10113_db_1/\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_SPA90'."*" as binary from '\'/tmp/revorg_db_13/S5_SPA90/\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'PHYTOITALIA_TEST'."*" as binary from '\'/tmp/revorg_db_17/PHYTOITALIA_TEST/\'' with ignore existing threads 10;'
 
 
 
 # clean the hana:
-cd /tmp && rm -R REVORG_ZIP/ revorg_db_1/ revorg_db_2/ revorg_db_3/ revorg_db_4/
+cd /tmp && rm -R WW10113_ZIP/ revorg_db_1/ ww10113_db__1/ ww10113_db__2/ ww10113_db__3/ ww10113_db__4/ ww10113_db__5/ ww10113_db__6/ ww10113_db__7/ ww10113_db__8/ ww10113_db__9/
 
 =========================  FIN =================
 # Permissions:
-chmod -R 777 revorg_db_2/ revorg_db_3/ revorg_db_4/ 
-chown -R ndbadm:sapsys revorg_db_2/ revorg_db_3/ revorg_db_4/
+chmod -R 777 ww10113_db__1/ ww10113_db__2/ ww10113_db__3/ 
+chown -R ndbadm:sapsys ww10113_db__1/ ww10113_db__2/ ww10113_db__3/
+
+# Descomprimir:
+tar -xzvf SBODEMODE.tar.gz -C /tmp/ww10113_db_1
+tar -xzvf SBOPKF_PROD.tar.gz -C /tmp/ww10113_db_2
+tar -xzvf SBOPKF_TEST.tar.gz -C /tmp/ww10113_db_3
+tar -xzvf SBOWWPL_PROD.tar.gz -C /tmp/ww10113_db_4
+tar -xzvf SBOWWPL_TEST.tar.gz -C /tmp/ww10113_db_5
+tar -xzvf SBOWW_PROD.tar.gz -C /tmp/ww10113_db_6
+tar -xzvf SBOWW_PROD2.tar.gz -C /tmp/ww10113_db_7
+tar -xzvf SBOWW_TEST.tar.gz -C /tmp/ww10113_db_8
+tar -xzvf SBOWW_TEST2.tar.gz -C /tmp/ww10113_db_9
 
 # SFTP:
-
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m
 cd /clientsfirst/CFBS_Demo/backup_07-03-2025cd 
@@ -62,7 +72,5 @@ bye
 tar -C /tmp/dbml -xzf /tmp/XPA/SBO_PROD_XH_07022024.tar.gz
 
 # Extract:
-tar -xzvf /tmp/REVORG_ZIP/M4_MONICO01.tar.gz -C /tmp/revorg_db_6/
-tar -xzvf /tmp/REVORG_ZIP/S5_SPA90.tar.gz -C /tmp/revorg_db_13/
-tar -xzvf /tmp/REVORG_ZIP/PHYTOITALIA_TEST.tar.gz -C /tmp/revorg_db_17/
+tar -xzvf /tmp/WW10113_ZIP/M4_MONICO01.tar.gz -C /tmp/revorg_db_6/
 

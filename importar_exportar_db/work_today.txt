@@ -8,46 +8,49 @@ te va a resolver la ip del mt
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lhad
-mkdir COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 esquema_05 esquema_06 esquema_07
-cd /tmp && ls -lhad COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 esquema_05 esquema_06 esquema_07 
-chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/
-chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ && ls -lha 
+mkdir COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 esquema_05 esquema_06 esquema_07 esquema_08 esquema_09
+cd /tmp && ls -lhad COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 esquema_05 esquema_06 esquema_07 esquema_08 esquema_09
+chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ esquema_08/ esquema_09/
+chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ esquema_08/ esquema_09 && ls -lha 
 
 cd /tmp && ls -lha
-chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/
-chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ && ls -lha 
+chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ esquema_08/ esquema_09/
+chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ esquema_08/ esquema_09/ && ls -lha 
 
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
 sld:~ # cat Desktop/SAP_Configuration2.txt
+dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E11"
+dbTenant="NDB"
 dbUser="B1SYSTEM"
-dbPass="pdOXJy3sm3J2hXS3"
+dbPass="B7g6ZC5pb8fV"
 
 # Testear la base de datos:BO1 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Realizar un import 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_COMPRIMIDOS_ZIP01'."*" as binary from '\'/tmp/esquema_01/esquema_01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BKGS_DEV'."*" as binary from '\'/tmp/esquema_01/\'' with ignore existing threads 10;'
 
 # Realizar un export
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_MOSERVIN'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'EC_SBO_COMERCIALLAFERIA_PROD'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'EC_SBO_LAKARAT_PRODVETEC'."*" as binary into '\'/tmp/esquema_03\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'R3_OBSCOMMON'."*" as binary into '\'/tmp/esquema_04\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOPKF_PROD'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_PROD'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_PROD2'."*" as binary into '\'/tmp/esquema_03\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_PROD'."*" as binary into '\'/tmp/esquema_04\'' with ignore existing threads 10;'
 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'EC_SBO_AIRIS_TEST'."*" as binary into '\'/tmp/esquema_05\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'C1608046_AIRECU_PRD'."*" as binary into '\'/tmp/esquema_06\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'EC_SBO_AIRIS_PROD_LOC'."*" as binary into '\'/tmp/esquema_07\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOPKF_TEST'."*" as binary into '\'/tmp/esquema_05\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_TEST'."*" as binary into '\'/tmp/esquema_06\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_TEST2'."*" as binary into '\'/tmp/esquema_07\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_TEST'."*" as binary into '\'/tmp/esquema_08\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBODEMODE'."*" as binary into '\'/tmp/esquema_09\'' with ignore existing threads 10;'
 
 du -sh esquema_* | sort -rh
 du -h --max-depth=1 esquema_*
 
 # Eliminar los archivos que ya no son necesarios
-cd /tmp && ls -lha && rm -rf COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ && ls -lha
+cd /tmp && ls -lha && rm -rf COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/ esquema_05/ esquema_06/ esquema_07/ esquema_08/ esquema_09/ && ls -lha
 
 ================================================================
 RENAME, EXPORT
@@ -55,17 +58,35 @@ RENAME, EXPORT
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BASE_PE_LC'."*" as binary from '\'/tmp/esquema_01/BASE_PE_LC203/\'' with ignore existing threads 10 rename schema "BASE_PE_LC" to "SBO_MOSERVIN";'
 
 ---COMPRIMIR ----
-tar -czvf COMPRIMIDOS_ZIP/SBO_MOSERVIN.tar.gz --transform 's/^esquema_01/SBO_MOSERVIN/' esquema_01/
-tar -czvf COMPRIMIDOS_ZIP/EC_SBO_COMERCIALLAFERIA_PROD.tar.gz --transform 's/^esquema_02/EC_SBO_COMERCIALLAFERIA_PROD/' esquema_02/
-tar -czvf COMPRIMIDOS_ZIP/EC_SBO_LAVETEC.tar.gz --transform 's/^esquema_03/EC_SBO_LAVETEC/' esquema_03/
-tar -czvf COMPRIMIDOS_ZIP/R3_OBSCOMMON.tar.gz --transform 's/^esquema_04/R3_OBSCOMMON/' esquema_04/
-tar -czvf COMPRIMIDOS_ZIP/EC_SBO_AIRIS_TEST.tar.gz --transform 's/^esquema_05/EC_SBO_AIRIS_TEST/' esquema_05/
-tar -czvf COMPRIMIDOS_ZIP/C1608046_AIRECU_PRD.tar.gz --transform 's/^esquema_06/C1608046_AIRECU_PRD/' esquema_06/
-tar -czvf COMPRIMIDOS_ZIP/EC_SBO_AIRIS_PROD_LOC.tar.gz --transform 's/^esquema_07/EC_SBO_AIRIS_PROD_LOC/' esquema_07/
+tar -czvf COMPRIMIDOS_ZIP/SBOPKF_PROD.tar.gz --transform 's/^esquema_01/SBOPKF_PROD/' esquema_01/
+tar -czvf COMPRIMIDOS_ZIP/SBOWW_PROD.tar.gz --transform 's/^esquema_02/SBOWW_PROD/' esquema_02/
+tar -czvf COMPRIMIDOS_ZIP/SBOWW_PROD2.tar.gz --transform 's/^esquema_03/SBOWW_PROD2/' esquema_03/
+tar -czvf COMPRIMIDOS_ZIP/SBOWWPL_PROD.tar.gz --transform 's/^esquema_04/SBOWWPL_PROD/' esquema_04/
+tar -czvf COMPRIMIDOS_ZIP/SBOPKF_TEST.tar.gz --transform 's/^esquema_05/SBOPKF_TEST/' esquema_05/
+tar -czvf COMPRIMIDOS_ZIP/SBOWW_TEST.tar.gz --transform 's/^esquema_06/SBOWW_TEST/' esquema_06/
+tar -czvf COMPRIMIDOS_ZIP/SBOWW_TEST2.tar.gz --transform 's/^esquema_07/SBOWW_TEST2/' esquema_07/
+tar -czvf COMPRIMIDOS_ZIP/SBOWWPL_TEST.tar.gz --transform 's/^esquema_08/SBOWWPL_TEST/' esquema_08/
+tar -czvf COMPRIMIDOS_ZIP/SBODEMODE.tar.gz --transform 's/^esquema_09/SBODEMODE/' esquema_09/
+
+---COMPRIMIR ----
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_01
+tar -xzvf EWR_UAT.tar.gz -C /tmp/esquema_02
+tar -xzvf EWR_TEST11072025.tar.gz -C /tmp/esquema_03
+tar -xzvf EWR_TEST12312025.tar.gz -C /tmp/esquema_04
 
 ---DESCOMPRIMIR ---
 unzip COMPRIMIDOS_ZIP/BASE_PE_LC203.zip -d /tmp/esquema_01
 sftp -P 443 c.pecho@files.dctpa.privatcloud.biz
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_01
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_02
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_03
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_04
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_05
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_06
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_07
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_08
+tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_09
+
 
 Recomendación:
 Si quieres mantener el archivo original y obtener buena compresión, usa:
@@ -75,12 +96,10 @@ En .tar.xz:
 tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
 
 # Comprimir CARPETETA/NOMBRE_COMPRIMIDO.tar.gz nombre_archivo_a_comprimir
+tar -czvf WWW10113_DB.tar.gz -C /tmp/COMPRIMIDOS_ZIP .
 
-tar -czvf AIRIS_DB.tar.gz -C /tmp/COMPRIMIDOS_ZIP .
-
-tar -czf COMPRIMIDOS_ZIP/SBO_COMPRIMIDOS_ZIP_TEST.tar.gz esquema_02/
-chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/
-chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/
+chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/
+chmod -R 777 COMPRIMIDOS_ZIP/
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m 

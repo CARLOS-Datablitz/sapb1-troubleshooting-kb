@@ -40,6 +40,8 @@ ls -lha
 tar -C /tmp/dbwmp044 -xJf /tmp/WMPE01/091SBOVEKAMX.tar.xz
 # Ver los nombres de los schemas a ver si coinciden 
 hanamt:/tmp # find /tmp/dbwmp0{44,17,16,12,08,05} -maxdepth 1 -mindepth 1
+# Comprension tar.xz simpl# Comprension tar.xz simplee
+tar -cJvf 108SBOSTOROPACK20260331.tar.xz 108SBOSTOROPACK20260331
 
 ---------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD

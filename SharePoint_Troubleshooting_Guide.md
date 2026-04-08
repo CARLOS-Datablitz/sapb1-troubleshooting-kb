@@ -2,8 +2,8 @@
 
 ## Contexto del Problema
 Usuario no puede adjuntar documentos desde SharePoint a correos de Outlook, aunque tiene acceso a los archivos.
-
----
+Login Microsoft: isystems@allprocorp.com / sync@allprocorp.com
+iSystems#99208977 ---> Allpro
 
 ## 🔧 ACCESOS DISPONIBLES
 - ✅ Windows Server AD/DC (Active Directory Domain Controller)

@@ -22,19 +22,12 @@ systemctl stop sapb1servertools-authentication.service
 systemctl stop sapb1servertools.service
 
 # 3. en esta linea debe decir 8 Gigas en Mega, lo cambiaras
+cp control.sh control.sh.bck  ---> antes de proceder a modificar hacer un bk.
+vim /usr/sap/SAPBusinessOne/Common/tomcat/service/control.sh
 'Xmx8192M' ---> 'Xmx12288M'
 
-# pero antes deten el SAP y el Token y luego crear una copia del archivo control.sh
-systemctl stop sapb1servertools.service sapb1servertools-authentication.service
-cd /usr/sap/SAPBusinessOne/Common/tomcat/service/
-cp control.sh control.sh.bck
-vim control.sh
-
-# cambia el valor de esa linea
-'Xmx16384M'
-
 # inicia los servicios nuevamente
-systemctl start sapb1servertools.service 
+systemctl start sapb1servertools.service
 systemctl start sapb1servertools-authentication.service
 
 # Toma captura del cambio y mandaselo a lara nuevamente en ingles, (no como replay sino como comentario interno)

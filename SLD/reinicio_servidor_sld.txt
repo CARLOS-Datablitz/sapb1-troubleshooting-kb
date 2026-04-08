@@ -22,6 +22,9 @@ uptime
 sudo reboot
 last reboot
 
+# Vista más limpia tipo “htop manual” ordenanaodlo por consumo de memoria en un SLD
+watch -n 2 "ps -eo pid,comm,%mem,rss --sort=-%mem | head"
+
 
 ===========================================
 

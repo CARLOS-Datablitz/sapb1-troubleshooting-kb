@@ -1,5 +1,5 @@
 
-El Attachments se configura generalmente en el SLD,  el attachments se monta donde esta la instalacion del SAP, si en un sles esta pues va en /usr/sap/....
+El Attachments se configura generalmente en el SLD,  el attachments se monta donde esta la instalacion del SAP SAPBusinessOne Server, si en un sles esta pues va en /usr/sap/....
 en el sld siempre encontrarars esa ruta /usr/sap.
 
 TICKET DE REFERENCIA: iSystems#99185181, mejor ticket de referencia: iSystems#99196407
@@ -73,7 +73,7 @@ mkdir -p CASTELLAnexos
 chmod -R 777 CASTELLAnexos
 chown -R b1service0b1service0 CASTELLAnexos && ls -lha
 
-echo 'sldB1_SHFCASTELLAnexos                   mntCASTELLAnexos        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'  etcfstab
+echo '/sld/B1_SHF/CASTELLAnexos    /mnt/CASTELLAnexos        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'  etcfstab
 
 cat etcfstab-
 # vim etcfstab
@@ -85,5 +85,3 @@ df -h  grep CASTELLAnexos
 
 
 =====================================
-
-

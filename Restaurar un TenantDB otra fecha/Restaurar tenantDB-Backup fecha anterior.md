@@ -1,7 +1,7 @@
 # Tomaremos como ejemplo este ticket: iSystems#9999083
 
 # SOLICITUD DE RESTAURACION DE BACKUP DEL DIA 02/07/2024-XPLORA-MOUNTAIN LODGE
-
+# NOTAS A CONSIDERAR: Cuando creas la conexión al E07(tenant), usa las credenciales(B1SYSTEM) de este tenant(ambiente de cliente), no del testv10.
 # Primera Parte
 
 Primero hay que ver si es un Multitenant o single tenant. En este caso el customer en Multitenant.

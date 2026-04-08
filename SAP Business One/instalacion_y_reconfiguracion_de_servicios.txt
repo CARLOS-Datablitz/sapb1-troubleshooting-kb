@@ -1,0 +1,37 @@
+
+
+!!!!!! SIEMPRE SACAR SNAPSHOP AL INSTALAR O RECONFIGURAR SERVICIOS !!!!!!!!!
+
+# SLD GUI:
+
+--- Carpeta de instalación SAP Business One Server ---
+En el navegador de la vm(rds o adm): https://files.jezz.systems/sap/ (esta url esta en el Fenruz).
+# en el sld:
+sld:# cd /usr/sap/SAPBusinessOne/B1_SHF
+sld:/usr/sap/SAPBusinessOne/B1_SHF# mkdir 10.0_SP2402HF1   
+sld:/usr/sap/SAPBusinessOne/B1_SHF# chown -R b1service0:b1service0 10.0_SP2402HF1/
+sld:/usr/sap/SAPBusinessOne/B1_SHF# chomod -R 777 10.0_SP2402HF1/
+# en el adm o rds:
+unzip la carpeta descargada del files.jezz
+
+--- Intallation and upgrade ----
+sld:/usr/sap/SAPBusinessOne/B1_SHF/10.0_SP2402HF1/Package.Linux/ServerComponents > install  ----> Ruta de instalación
+sld:/usr/sap/SAPBusinessOne/B1_SHF/10.0_SP2402HF1/Package.Linux/ServerComponents# ./install
+
+--- Ruta de reconfiguration, Validation, Unistallation ----
+sld:/usr/sap/SAPBusinessOne > setup
+
+
+--- Verificar los servicios en el ControlCenter ---
+https://10.2.101.50:40000/ControlCenter
+https://sld.livrecold.privatcloud.biz:40000/ControlCenter/  ---> Service
+
+
+# Log Out
+
+Pregunta: Es necesario reiniciar el servidor(sld) al instalar o reinstalar un servicio??????
+
+
+
+
+

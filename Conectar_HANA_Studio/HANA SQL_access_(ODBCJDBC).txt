@@ -1,0 +1,26 @@
+iSystems#99210699
+# Probar la conexion ODBC:
+Win + R:
+odbcad32.exe
+
+Esto abre el administrador ODBC de 64 bits.
+Para probar la conexion se usa el SQL_PORT
+Si es tenant DB (como parece NDB), el puerto 30015 normalmente es correcto.
+
+# Para un Tenant(eg. E05):
+ODBC Configuration for SAP HANA:
+Data Source Name: < algo_descriptivo>
+Description: < algo_descriptivo>
+Server:
+    Host: hanamt/ip
+    Port number: <customer_sql_port>
+Database:
+    Tenant database: E14
+
+>> Test connection.
+
+User ID: B1SYSTEM
+Password: *******
+
+User ID: B1SYSTEM
+Password: *******
