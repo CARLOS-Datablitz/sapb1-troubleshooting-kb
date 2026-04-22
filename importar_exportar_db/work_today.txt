@@ -33,10 +33,11 @@ dbPass="B7g6ZC5pb8fV"
 
 # Realizar un import 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BKGS_DEV'."*" as binary from '\'/tmp/esquema_01/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BKGS_DEV'."*" as binary from '\'/tmp/esquema_01/\'' with ignore existing threads 10;'
 
 # Realizar un export
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOPKF_PROD'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_PROD'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export '_SBODEMOFR_NORIA_1c62c0b2'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export '_SBODEMODE_CARMEN_3e697b39'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_PROD2'."*" as binary into '\'/tmp/esquema_03\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_PROD'."*" as binary into '\'/tmp/esquema_04\'' with ignore existing threads 10;'
 
@@ -58,9 +59,9 @@ RENAME, EXPORT
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'BASE_PE_LC'."*" as binary from '\'/tmp/esquema_01/BASE_PE_LC203/\'' with ignore existing threads 10 rename schema "BASE_PE_LC" to "SBO_MOSERVIN";'
 
 ---COMPRIMIR ----
-tar -czvf COMPRIMIDOS_ZIP/SBOPKF_PROD.tar.gz --transform 's/^esquema_01/SBOPKF_PROD/' esquema_01/
-tar -czvf COMPRIMIDOS_ZIP/SBOWW_PROD.tar.gz --transform 's/^esquema_02/SBOWW_PROD/' esquema_02/
-tar -czvf COMPRIMIDOS_ZIP/SBOWW_PROD2.tar.gz --transform 's/^esquema_03/SBOWW_PROD2/' esquema_03/
+tar -czvf COMPRIMIDOS_ZIP/_MBD_LIVE_2a7c55cc.tar.gz --transform 's/^esquema_01/_MBD_LIVE_2a7c55cc/' esquema_01/
+tar -czvf COMPRIMIDOS_ZIP/_RMG_TEST_4818e581.tar.gz --transform 's/^esquema_02/_RMG_TEST_4818e581/' esquema_02/
+tar -czvf COMPRIMIDOS_ZIP/_RMG_e5649b1d.tar.gz --transform 's/^esquema_03/_RMG_e5649b1d/' esquema_03/
 tar -czvf COMPRIMIDOS_ZIP/SBOWWPL_PROD.tar.gz --transform 's/^esquema_04/SBOWWPL_PROD/' esquema_04/
 tar -czvf COMPRIMIDOS_ZIP/SBOPKF_TEST.tar.gz --transform 's/^esquema_05/SBOPKF_TEST/' esquema_05/
 tar -czvf COMPRIMIDOS_ZIP/SBOWW_TEST.tar.gz --transform 's/^esquema_06/SBOWW_TEST/' esquema_06/
@@ -69,17 +70,16 @@ tar -czvf COMPRIMIDOS_ZIP/SBOWWPL_TEST.tar.gz --transform 's/^esquema_08/SBOWWPL
 tar -czvf COMPRIMIDOS_ZIP/SBODEMODE.tar.gz --transform 's/^esquema_09/SBODEMODE/' esquema_09/
 
 ---COMPRIMIR ----
-tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_01
-tar -xzvf EWR_UAT.tar.gz -C /tmp/esquema_02
-tar -xzvf EWR_TEST11072025.tar.gz -C /tmp/esquema_03
-tar -xzvf EWR_TEST12312025.tar.gz -C /tmp/esquema_04
+tar -xzvf _MBD_LIVE_2a7c55cc.tar.gz -C /tmp/esquema_01
+tar -xzvf _RMG_TEST_4818e581.tar.gz -C /tmp/esquema_02
+tar -xzvf _RMG_e5649b1d.tar.gz -C /tmp/esquema_03
 
 ---DESCOMPRIMIR ---
 unzip COMPRIMIDOS_ZIP/BASE_PE_LC203.zip -d /tmp/esquema_01
 sftp -P 443 c.pecho@files.dctpa.privatcloud.biz
-tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_01
-tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_02
-tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_03
+tar -xzvf _MBD_LIVE_2a7c55cc.tar.gz -C /tmp/esquema_01
+tar -xzvf _RMG_TEST_4818e581.tar.gz -C /tmp/esquema_02
+tar -xzvf _RMG_e5649b1d.tar.gz -C /tmp/esquema_03
 tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_04
 tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_05
 tar -xzvf EWR_LIVE001.tar.gz -C /tmp/esquema_06
@@ -109,3 +109,4 @@ get 080SBOMAQEMAG25072025.tar.xz
 bye
 
 sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+

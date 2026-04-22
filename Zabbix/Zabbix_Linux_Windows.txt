@@ -15,6 +15,7 @@ systemctl stop zabbix-agent
 systemctl restart zabbix-agent
 systemctl enable zabbix-agent
 
+-------- Windows ------
 Windows (PowerShell):
 Get-Service *zabbix*
 

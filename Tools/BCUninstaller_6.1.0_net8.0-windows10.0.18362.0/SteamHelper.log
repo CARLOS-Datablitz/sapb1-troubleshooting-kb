@@ -1,0 +1,9 @@
+19:56:54 - System.IO.IOException: Failed to detect your Steam installation. Launch Steam, exit it gracefully, and try again.
+ ---> System.ArgumentNullException: Value cannot be null. (Parameter 'fullCommand')
+   at SteamHelper.Misc.SeparateArgsFromCommand(String fullCommand) in D:\SVN_SFW\BulkCrapUninstaller\source\SteamHelper\Misc.cs:line 20
+   at SteamHelper.SteamInstallation.FindSteamInstallationLocation() in D:\SVN_SFW\BulkCrapUninstaller\source\SteamHelper\SteamInstallation.cs:line 79
+   --- End of inner exception stack trace ---
+   at SteamHelper.SteamInstallation.FindSteamInstallationLocation() in D:\SVN_SFW\BulkCrapUninstaller\source\SteamHelper\SteamInstallation.cs:line 88
+   at SteamHelper.SteamInstallation..ctor() in D:\SVN_SFW\BulkCrapUninstaller\source\SteamHelper\SteamInstallation.cs:line 22
+   at SteamHelper.SteamInstallation.get_Instance() in D:\SVN_SFW\BulkCrapUninstaller\source\SteamHelper\SteamInstallation.cs:line 26
+   at SteamHelper.Program.Main(String[] args) in D:\SVN_SFW\BulkCrapUninstaller\source\SteamHelper\Program.cs:line 85

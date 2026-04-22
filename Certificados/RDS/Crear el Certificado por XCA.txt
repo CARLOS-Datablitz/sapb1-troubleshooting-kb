@@ -1,0 +1,114 @@
+#Crear el Certificado por XCA en /support
+Bookstack: https://bookstack.isystems-integration.com/books/mywave/page/renew-ssl-certificates
+
+How to create the Certificate
+1) Open the program C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Xca
+  ../customers/support/xca
+  1.1 Run xca.exe
+  
+2) File/Open Database/Import database "xca.xdb" ---> Open common pass "Tar....(sin !)"
+3) Tab Certificates  ---> to list all the certificates, and the date it expire, you can renew one from here.
+3.1 Tab Templates/ Right Click *ttg.(template)---> create certificate, here you can find *.ttg.privatcloud.biz/Right click/Create Certificate
+
+=== Now this Open a windows : Create a x509 Certificate ===
+	
+4) Source
+  Signing Request "default"
+  Signing| Switch to:
+    . Use this Certificate for signing "iSystems[IN]" ---> [iSystems[IN]] !!! IMPORTANTE !!!
+  Signature algorithm "SHA 256"
+  Template for the new certificate
+    (optional we can use the template "*.ttg.privatcloud.biz" - Apply All)
+5) Subject
+  InternalName='customer_name.privatcloud.biz'
+  Country Name='DE or US'
+  OrganizationalName='SAP'
+  StateOrProvince='NRW'
+  CommonName='*.customer_name.privatcloud.biz' ---> privatcloud(EUR y US), nubeprivada(Latam) ----> !!!! IMPORTANTE NO OVIDAR EL "*" AL INICIO DEL COMONNAME !!!!
+  LocalityName='MG'
+  emailAddress='support_eu@isystems-integration.com - support_us@isystems-integration.com' / 'support_pe@isystems-integration.com'
+  OrganizationName='iSystems GmbH'
+    Private Key > "Generate a New PrivateKey"
+      Name='Customer_name.privatcloud.biz'
+      keytype='RSA'
+      keysize='2048 bit'
+      Remember as default = [no check] >>> CREATE
+6) Extentions
+  X509v3 Basic Constraints='Default'
+  Key Identifier='Default |X|-|X|'
+  Validity
+    Not before  2026-01-22 00:00 GMT
+    not after  2028-01-21 23:59 GMT
+  Time Range = '2 Years' >> lo demas 'Default'
+#   X509v3 Subject Alternative Name 'FOR Multitenant'
+    DNS    localhost
+    DNS    db
+    DNS    sld
+    DNS    adm
+    DNS    rds
+    DNS    app
+    DNS    sap
+    DNS    hana
+    IP    127.0.0.1      #localhost
+    IP    212.162.6.43   #External IP (66. for US, and 94. for EUR)
+    IP    10.2.40.2      #DB Server Multitenant
+    IP    10.2.40.3      #ADM Server 
+    IP    10.2.40.4      #RDS Server
+    IP    10.2.40.10     #SLD Server
+	---> Apply  ---->
+#  X509v3 Subject Alternative Name 'FOR Hana Server'
+
+    DNS    localhost
+    DNS    adm
+    DNS    rds
+    DNS    app
+    DNS    sap
+    DNS    hana
+    IP    127.0.0.1      #localhost
+    IP    212.162.6.43   #External IP
+    IP    10.2.40.3      #DC Server 
+    IP    10.2.40.4      #ADM Server
+    IP    10.2.40.5      #RDS Server
+
+  X509v3 Subject Alternative Name 'SQL'
+  DNS:copycn, DNS:adveyecare.privatcloud.biz, DNS:localhost, DNS:dc, DNS:sql, DNS:adm, DNS:b1i, DNS:rds, IP:127.0.0.1, IP:10.2.200.83, IP:10.2.200.84, IP:10.2.200.85, IP:10.2.200.86, IP:94.134.190.206
+  
+  X509v3 Issuer Alternative Name='DNS:ssl.privatcloud.biz'
+  X509v3 CRL Distribution Points='URI:https://ssl.privatcloud.biz/iSystems%5BIN%5D.crl'
+  Authority Information Access='Null'
+7) Key Usage='Default'
+8) Nettscape='Default'
+9) Advanced='Default'
+10)Comment='Null'
+11)Comment= iSystems GmbH © 2026, All rights reserved. / Copyright 2026 WiSys All Rights Reserved.
+
+OK ---> " Succesfully create certificate"
+
+
+=========== EXPORT =======
+
+Find the certificate on Cerificate Tab:
+
+
+Export the Cerificate ".cer" >> iSystems[CA]>> axis.privatecloud.bix >> ExportFormat='DER (*.cer)'(option 4)
+Name='customer_name.privatcloud.biz'
+CARLOS:
+C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Pki\iSystems[adveyecare.privatcloud.biz]_NewXca.crt  
+  
+  Export the Cerificate ".pfx" >> ExportFormat='PKCS #12 (*.pfx)'(option 7)  ##at the moment to create this certificate this ask for a password what is this pass (sapB1iP)?
+    Name='customer_name.privatcloud.biz'
+    Filename='X:.....\iSystems GmbH\iSystems Support - SAP\EMEA\Customers\Support\Microsoft\Pki\iSystems[rds.customer_name.privatcloud.biz].pfx'
+
+Formart to export Certificate
+
+iSystems[democarlos.privatcloud.biz].cer  (option 4)
+iSystems[democarlos.privatcloud.biz].pfx  (option 7)
+
+Default password for Certificate is (sapB1iP)
+
+# Ruta donde se guarda los certificados trabajados
+C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Pki
+
+Luego en One Command(Carpeta del cliente):
+rds.democarlos.nubeprivada.biz.cer
+rds.democarlos.nubeprivada.biz.pfx

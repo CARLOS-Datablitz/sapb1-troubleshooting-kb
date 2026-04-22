@@ -1,0 +1,111 @@
+Windows_Server_2022_Implementation:
+
+Lo primero aqui es:
+
+- entrar al entorno, realizar un scan de red con el ipscanner, ver que ip's tienen disponibles, usar la libre despues de la ultima es decir, si la ultima es el RDS la ip que le sigue al RDS
+- colocar una linea mas en el server questions con esa nueva maquina que se llamara b1i.customer.privatcloud.biz lo que sea...
+- como ya entraste al servidor a escanear la red ya sabes que windows usan, buscar la plantilla y moverla (migrate) donde estan las demas vm's (de tener espacio en su pve)
+- crear la vm, osea clonarla con la ip como vmid con la que colocaste enn la ultima linea del excel que añadiste
+- cuando termine en la parte de la RED colocarle la vlan que coresponde a ese entorno (no seas como ALGUIEN que se olvido de hacerlo), dejalo en 40GB o 60GB la plantilla del disco HDD de windows luego lo modificamos.
+
+===============================================
+
+PASOS 1: buscar ip´s disponibles
+
+Desde SL or SLD:
+Alternativa básica sin instalar nada(eg. ipscanner): ping sweep
+for ip in 10.2.90.{1..254}; do ping -c1 -W1 $ip >/dev/null && echo "$ip ACTIVO" || echo "$ip libre"; done
+
+Resultado: 10.2.90.125 libre
+
+PASOS 2: buscar la plantilla y moverla (migrate) donde estan las demas vm's (de tener espacio en su pve).
+PROXMOX:
+busca por la plantilla 2k19 ---> full clone ---> 
+
+===============================================
+# Pre-requisites: Find a pve0XX with enough resources(RAM, CPU, HD). Check pveXX/Notes/"iSystems"
+**** Se demoró mas de 40 minutos ya que el PROXMOX estaba haciendo el backup, empezo 15:00 horas Perú y termino 15:45 pm ****
+
+1#. Requirements:
+iSystems#99220449
+Plantilll: 2k22 o 2k19---> Migrate/ Full clone ---> pve<#>
+VMID: <IP sin puntos>
+IP:
+VLAN:
+Server Name:
+Windows Version: ----> Check the other server on the env.
+
+-------------------------- Create VM on PROXMOX ------------------------------
+1# Buscar la plantilla 2k22/Right click ---> Migrate/ Full clone hacia la pveXX(el cual hayamos elegido por su disponibilidad de recursos(RAM, CPU, ZFS)).
+2# Clonar la maquina llamada 2k22 que es el windows server 2022 en su sistema base.
+	- Clone VM Template 2022:
+		- Target node: pve<#>
+		- VM ID: <IP sin puntos>
+		- Server Name: <rds, adm, ts1, etc.>
+		- Resource Pool: iSystems
+		- Mode: Full clone
+		- Target Storage: zfs
+3# Ajustar los recursos de hardware de acuerdo al SOW.
+	- Hardware:
+		- CPU: Type: x86-64v4
+		- Display: Standard VGA
+		- Machine: Version: < version del Proxomox>
+		- SCSI Controller: Virtri0 SCSI Single
+		- Network Device: <VLAN>
+	- Options:
+		- QUEMU Guest Agent: uncheck: Run guest trim after a disk move.
+		- Boot Order: Move Virtio0 to top(1).
+		- 
+4# SOPHOS ---> Salida a Internet, solo para el RDS?
+
+--------------------------------------------------------
+# Windows:
+*Change password:
+cmd: C:\Users\c.pecho>lusrmgr  ---> User/Administrator/ Set Password: Rxq9XvfmuaY4AZ6d ---> Properties: Password Never expire
+Nota: Actualizar tu conexion(con el nuevo password).
+
+Run: ncpa.cpl Cambiar el nombre del adaptador de red de Ethernt0 a "Ethernt"
+
+* IE-security settings: Server Manager/Local Server: IE Enhanced security Configuration: On ---> change them to "off"
+* RDP: This PC/Right Click/Properties/Remote Desktop/ Ver que este en "On"
+* File Sharing: Network/ Turn on network discovering and file sharing
+* file extension and hidden elements: View/ Check Hidden Items, File name extentions
+* energy options maximum power: cmd(como administrador): powercfg /l
+* Reboot: cmd(As administrador): shutdown /r /t 5
+
+
+
+2k19_default_domain_policy.zip:
+C:\Users\c.pecho\iSystems GmbH\iSystems Support - SAP\Customers\+++Internal\Support\Microsoft\Scripts
+
+Rxq9XvfmuaY4AZ6d
+
+PowerShell:
+Set-NetFirewallRule FPS-SMB-In-TCP -Enabled True;Set-NetFirewallRule FPS-ICMP4-ERQ-In -Enabled True;
+
+CMD:
+netsh advfirewall firewall add rule name="ICMP Allow incoming V4 echo request" protocol=icmpv4:8,any dir=in action=allow
+netsh advfirewall firewall add rule name=SAP protocol=TCP dir=in localport=80,443,1433,7299,8080,8100,8443,40000,40020 action=allow
+
+CMD:
+New-NetFirewallRule `
+-DisplayName "SAP Ports" `
+-Direction Inbound `
+-Protocol TCP `
+-LocalPort 80,443,1433,7299,8080,8100,8443,40000,40001,40002,40003,40004,40005,40020,40021,50000 `
+-Action Allow `
+-Profile Domain,Private,Public
+
+
+# Paso para Activar el RDS Licensing en el RDS:
+Company: iSystems GmbH
+
+Go to RDS > Remote Desktop Licensing Manager and enter the following details: Service Provider License Agreement 67475361 (User + 2)
+- Email: support@isystems.email
+- Organizational Unit: IT
+- Company Address: Engelblecker Straße 140 a+b
+- City: Mönchengladbach
+- State/province: NRW
+- Postal code: 19905
+
+https://rds.democarlos.nubeprivada.biz/RDWeb

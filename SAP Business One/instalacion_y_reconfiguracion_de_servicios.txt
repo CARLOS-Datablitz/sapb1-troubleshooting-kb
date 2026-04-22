@@ -14,7 +14,7 @@ sld:/usr/sap/SAPBusinessOne/B1_SHF# chomod -R 777 10.0_SP2402HF1/
 # en el adm o rds:
 unzip la carpeta descargada del files.jezz
 
---- Intallation and upgrade ----
+1. --- Intallation and upgrade ----
 sld:/usr/sap/SAPBusinessOne/B1_SHF/10.0_SP2402HF1/Package.Linux/ServerComponents > install  ----> Ruta de instalación
 sld:/usr/sap/SAPBusinessOne/B1_SHF/10.0_SP2402HF1/Package.Linux/ServerComponents# ./install
 
@@ -22,14 +22,14 @@ sld:/usr/sap/SAPBusinessOne/B1_SHF/10.0_SP2402HF1/Package.Linux/ServerComponents
 sld:/usr/sap/SAPBusinessOne > setup
 
 
---- Verificar los servicios en el ControlCenter ---
+2. --- Verificar los servicios en el ControlCenter ---
 https://10.2.101.50:40000/ControlCenter
 https://sld.livrecold.privatcloud.biz:40000/ControlCenter/  ---> Service
 
 
 # Log Out
 
-Pregunta: Es necesario reiniciar el servidor(sld) al instalar o reinstalar un servicio??????
+Pregunta: Es necesario reiniciar el servidor(vm sld) al instalar o reinstalar un servicio??????
 
 
 

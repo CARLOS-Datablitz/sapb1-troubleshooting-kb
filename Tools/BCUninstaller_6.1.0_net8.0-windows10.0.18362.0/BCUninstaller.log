@@ -1,0 +1,39 @@
+﻿--------------------------------------------------
+19:56:43 - Application startup
+19:56:43 - Settings file not found, creating new one.
+19:56:46 - Bulk Crap Uninstaller v6.1 Portable x64
+19:56:48 - [Performance] Built MSI component lookup in 1.06 seconds
+19:56:48 - [Performance] Factory RegistryFactory took 1616ms to finish
+19:56:49 - Attempt failed, skipping. Error: System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+ ---> System.TypeInitializationException: The type initializer for 'UninstallTools.Factory.InfoAdders.FastSizeGenerator' threw an exception.
+ ---> System.AggregateException: One or more errors occurred. (es.exe failed to connect to Everything)
+ ---> System.IO.IOException: es.exe failed to connect to Everything
+   at UninstallTools.Factory.InfoAdders.FastSizeGenerator.StartHelperAndReadOutput(String args) in D:\SVN_SFW\BulkCrapUninstaller\source\UninstallTools\Factory\InfoAdders\FastSizeGenerator.cs:line 132
+   --- End of inner exception stack trace ---
+   at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
+   at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
+   at UninstallTools.Factory.InfoAdders.FastSizeGenerator.EvGetSize(String path) in D:\SVN_SFW\BulkCrapUninstaller\source\UninstallTools\Factory\InfoAdders\FastSizeGenerator.cs:line 85
+   at UninstallTools.Factory.InfoAdders.FastSizeGenerator..cctor() in D:\SVN_SFW\BulkCrapUninstaller\source\UninstallTools\Factory\InfoAdders\FastSizeGenerator.cs:line 36
+   --- End of inner exception stack trace ---
+   at UninstallTools.Factory.InfoAdders.FastSizeGenerator..ctor() in D:\SVN_SFW\BulkCrapUninstaller\source\UninstallTools\Factory\InfoAdders\FastSizeGenerator.cs:line 136
+   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)
+   --- End of inner exception stack trace ---
+   at System.RuntimeType.CreateInstanceDefaultCtor(Boolean publicOnly, Boolean wrapExceptions)
+   at Klocman.Extensions.EnumerableExtensions.Attempt[TIn,TOut](IEnumerable`1 baseEnumerable, Func`2 action)+MoveNext() in D:\SVN_SFW\BulkCrapUninstaller\source\KlocTools\Extensions\EnumerableExtensions.cs:line 71
+19:56:49 - Cache hits: 0/105
+19:56:49 - [Performance] Running command C:\ProgramData\chocolatey\bin\choco.exe  took 2093ms
+19:56:50 - [Performance] Running command C:\ProgramData\chocolatey\bin\choco.exe --version took 1037ms
+19:56:53 - [Performance] Running command C:\ProgramData\chocolatey\bin\choco.exe list -nocolor --detail took 2454ms
+19:56:53 - [Performance] Factory ChocolateyFactory took 5657ms to finish
+19:56:53 - [Performance] Running command C:\Users\c.pecho\OneDrive - iSystems GmbH\Dokumente\Casuistica\Tools\BCUninstaller_6.1.0_net8.0-windows10.0.18362.0\OculusHelper.exe /query took 124ms
+19:56:53 - [Performance] Factory OculusFactory took 267ms to finish
+19:56:53 - [Performance] Factory PredefinedFactory took 0ms to finish
+19:56:53 - [Performance] Factory ScoopFactory took 2ms to finish
+19:56:53 - [Performance] Running command C:\Users\c.pecho\OneDrive - iSystems GmbH\Dokumente\Casuistica\Tools\BCUninstaller_6.1.0_net8.0-windows10.0.18362.0\ScriptHelper.exe list took 158ms
+19:56:53 - [Performance] Factory ScriptFactory took 305ms to finish
+19:56:54 - [Performance] Running command C:\Users\c.pecho\OneDrive - iSystems GmbH\Dokumente\Casuistica\Tools\BCUninstaller_6.1.0_net8.0-windows10.0.18362.0\SteamHelper.exe steam took 161ms
+19:56:54 - [Performance] Factory SteamFactory took 300ms to finish
+19:56:54 - [Performance] Factory DirectoryFactory took 100ms to finish
+19:56:57 - [Performance] Running command C:\Users\c.pecho\OneDrive - iSystems GmbH\Dokumente\Casuistica\Tools\BCUninstaller_6.1.0_net8.0-windows10.0.18362.0\StoreAppHelper.exe /query took 2890ms
+19:56:57 - [Performance] Factory StoreAppFactory took 3438ms to finish
+19:56:57 - Cache hits: 0/268

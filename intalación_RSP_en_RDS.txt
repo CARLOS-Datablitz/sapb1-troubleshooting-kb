@@ -1,0 +1,14 @@
+Intalación de RSP en el RDS:
+
+BCUninstaller_6.1.0_net8.0-windows10.0.18362.0.zip  ---> para desinstalar en caso haya que desinstalar.
+
+Con cuenta de SAP hay que bajar el instalador, y ponerlo en la carpeta del SLD/b1_shf
+
+Luego desde el RDS abrir explorador de archivos: //sld/b1_shf/<carpeta_con_el_instalador>
+ejecutar .exe como admin
+
+Bitwarden:
+
+RSPADMIN - Acton - Monte da Mina
+rspadmin
+K45ANjdardr85der

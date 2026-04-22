@@ -1,5 +1,8 @@
 Licencias RDS for activate and new users:
 
+
+RDS Server:
+Tools/Remote Desktop Service/Remote Desktop License Manager/ 
 For new users:
 RDS/Right click/Install Licenses/
 

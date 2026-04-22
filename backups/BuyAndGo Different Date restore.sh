@@ -25,70 +25,92 @@ bye
 
 #Into testv10 environment to test that the upgraded schemas work fine
 
-mkdir -p /backup/data/DB_E01/
+mkdir -p /backup/data/DB_E14/
 cd /backup
 chown -R ndbadm:sapsys data/
-cd data/DB_E01/
+cd data/DB_E14/
 
 
 # Get the schemas and put them in the test environment
-sftp -P 2022 m.riera@files.privatcloud.biz
-pass: A982Aj2iAh41
-cd /Peru/marcos_files/BuyandGo
-get 20250910_192502-DB_E01-hanamt.dctpamt090.privatcloud.biz.tgz
+testv10:/backup/data # cd DB_E14/
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /Peru/carlos_files/
+get 20250910_192502-DB_E14-hanamt.dctpamt090.privatcloud.biz.tgz
 bye
 
 #Untar all files
-tar -xzf 20250910_192502-DB_E01-hanamt.dctpamt090.privatcloud.biz.tgz
+#DB_E14/
+tar -xzf 20260329_192502-DB_E14-hanamt.dcdusmt092.privatcloud.biz.tgz
+cd ..
+chmod -R 777 DB_E14/
 
 
-#In the HANA Studio
-RECOVER DATA FOR E01 USING FILE ('/backup/data/DB_E01/data/DB_E01/20250910_192502_E01_COMPLETE_DATA_BACKUP') CLEAR LOG;
+=================================================HAN STUDIO ===================================================================================
+# Session : SYSTEMDB@NDB(SYSTEM)
+# vemos los db:
+select * from "SYS"."M_DATABASES";
+#1. Creamos la db
+CREATE DATABASE E14 ADD 'xsengine' ADD 'scriptserver' SYSTEM USER PASSWORD Test1234;
+#2. Ahora paramos la base de datos para poder restaurarla:
+ALTER SYSTEM STOP DATABASE E14;
+#3. Verificamos que la db E14 este detenida:
+select * from "SYS"."M_DATABASES";
+#4.Recuperar la base de datos:
+testv10:/backup/data/DB_E14/data/DB_E14 # pwd
+RECOVER DATA FOR E14 USING FILE ('/backup/data/DB_E14/data/DB_E14/20260329_192502_E14_COMPLETE_DATA_BACKUP') CLEAR LOG;
+#5. Verificar el estado de las base de datos nuevamente, y si el E14 no estuviese iniciado, debemos iniciarlo:
+select * from "SYS"."M_DATABASES"
+ALTER SYSTEM START DATABASE E14;  ---> !!!! A veces no es necesario, la db ya esta activa !!!!
 
-#Login to the tenant using its regular SYSTEM password and run 
+# Session : E14@NDB(SYSTEM)
+#1. Workaround for Exporting/Importing:
 ALTER SYSTEM ALTER CONFIGURATION ('indexserver.ini', 'system') set ('import_export', 'enable_history_table_import_export') = 'true' with reconfigure;
 
-===================================================================================================================================================================
+
+================================================ En el MT testv10 exportar, comprimir, up to sftp ============================================
 
 #Into testv10 to upload the schema to the SFTP
 
 cd /tmp && ls -lha
-mkdir byg BYG
-chmod -R 777 byg/ BYG/
-chown -R ndbadm:sapsys byg/ BYG/ && ls -lha
-  
+mkdir esquema_01/ TAR_ZIP_GZ/
+chmod -R 777 esquema_01/ TAR_ZIP_GZ/
+chown -R ndbadm:sapsys esquema_01/ TAR_ZIP_GZ/ && ls -lha
+
 #SQL Varibles (SYSTEM)
 dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E01"
+dbTenant="E14"
 dbUser="B1SYSTEM"
-dbPass="q6xS3JFP51Mb"
+dbPass="GPu7GU5qe6nfTg4J"
 
 #Test DB
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
   
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BUYANDGO'."*" as binary into '\'/tmp/byg\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_BKGS_DEV '."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
 
 
 # Compress schemas and save on folder
-tar -C /tmp/byg -czf /tmp/BYG/SBO_BUYANDGO.tar.gz ./
-
-cd /tmp/BYG && ls -lha
-
+testv10:/tmp #
+tar -czvf TAR_ZIP_GZ/SBO_BKGS_DEV.tar.gz --transform 's/^esquema_01/SBO_BKGS_DEV/' esquema_01/
+# verificación que la compresion se haya completado sin problemas:
+tar -tzf TAR_ZIP_GZ/SBO_BKGS_DEV.tar.gz | head -5
+# damos permisos al comprimido:
+chmod -R 777 esquema_01/ TAR_ZIP_GZ/
+chown -R ndbadm:sapsys esquema_01/ TAR_ZIP_GZ/
 
 # Upload to the SFTP
-sftp -P 2022 m.riera@files.privatcloud.biz
-pass: A982Aj2iAh41
-cd /Peru/marcos_files/BuyandGo
-put SBO_BUYANDGO.tar.gz
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+C4!qE0e]cVFy&$m
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
 bye
 
 # Delete the non necessary files
-cd /tmp && ls -lha && rm -rf byg/ BYG/ && ls -lha
-
-
+cd /tmp && ls -lha && rm -rf esquema_01/ TAR_ZIP_GZ/ && ls -lha
 
 ===================================================================================================================================================================
 

@@ -1,4 +1,9 @@
 ------------------------------------
+
+#alias:
+
+nano ~/.zshrc
+
 #buscar en el directorio actual(.) el archivo
 ~$ find . -name "*<filename>*"
 
@@ -10,6 +15,11 @@ echo $PATH
 $ updatedb
 $ locate new.txt
 
+------------------------------------
+# disk usage
+du -sh *
+du -sh /usr/sap/*/
+du -h --max-depth=2 /usr/sap/
 ------------------------------------
 #leer las primera 50 lineas de un archivo:
 head -n /ruta/del/archivo.txt

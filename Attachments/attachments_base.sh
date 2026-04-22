@@ -37,6 +37,9 @@ chown -R b1service0:b1service0 Common/ && ls -lha
 
 echo '//sld/B1_SHF/Common/Attachments/      /mnt/Common/Attachments        cifs rw,guest,uid=b1service0,gid=b1service0,vers=3.0,iocharset=utf8,file_mode=0777,dir_mode=0777,noperm,nounix,x-systemd.automount 0 0'>>/etc/fstab
 
+!!!!! IMPORTANT NOTES !!!!!
+
+
 cat /etc/fstab
 # vim /etc/fstab
 mount -a -v

@@ -70,7 +70,16 @@ Saludos cordiales,
 Se han agregado un nuevo usuario, user13; encontrará la contraseña en el link de abajo, cambiar la contraseña antes del primer acceso.
 Por favor, verifiquen que el acceso del nuevo usuario esté funcionando correctamente y hágannoslo saber si se necesita algún ajuste.
 
+Four new users have been created: user05, user06, user07, and user08. You will find their passwords in the link below (please note that this is a one-time use link). Kindly ensure that the passwords are changed upon first login.
 
+Please verify that access for all new users is working correctly and let us know if any adjustments are required.
+
+Best regards,
+
+A new user, user13, has been created. You will find the password in the link below(please note that this is a one-time use link). Please ensure the password is changed before the first login.
+
+
+Kindly verify that the new user’s access is working correctly and let us know if any adjustments are required.
 A new user, user13, has been added. You will find the password in the link below; please change the password after the first login.
 Please verify that the new user’s access is working correctly and let us know if any adjustments are needed.
 Additionally, we would like to inform you that it is necessary to increase the resources of the RDS server. Please let us know the date and time when we can perform this task.

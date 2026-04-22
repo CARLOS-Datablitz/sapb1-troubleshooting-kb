@@ -1,0 +1,49 @@
+1. Revisar los servicios que esten funcionando
+
+# Verificar en el SLES que el backup no corra esa hora porque podria interrupirlo
+2. Para reiniciar:
+screen -dRR
+systemctl status sap*
+su - ndbadm
+	./HDB info   ---> Opcional
+    ./HDB stop
+exit
+top
+sles# systemctl stop sapinit sapb1servertools
+sles# systemctl reboot
+
+3. verificar que los serivicios esten apagados
+==== EN EL PROXMOX =====
+Verificar que este servidor este en PROXMOX
+4. sles# reboot o sudo reboot
+5. revisar sap y hana (conectarse a ambos y verificar su funcionamiento) tomar screenshot probando que se ha hecho el reinicio 
+
+
+==== REBOOT WINDOWS ===
+Powershell:
+GUI
+Restart-Computer
+Restart-Computer -Force
+
+
+==== EN EL PROXMOX =====
+Ir viendo si se apaga el hana
+
+==== EN EL ADM O RDS =====
+Ver que SAP vuelva a funcionamiento
+
+Nota: Tomar ss de SAP Business One Client en el RDS antes de realizar operación.
+
+====== VERIFICACION DE UPTIME =====
+SLES# uptime
+systemctl status sap*
+last reboot | head
+timedatectl status
+s
+WINDOWS:
+(gcim Win32_OperatingSystem).LastBootUpTime
+
+
+==========================
+apagar linux:
+systemctl poweroff

@@ -1,0 +1,30 @@
+
+
+# PASO 1 — Simulación (sin borrar nada, solo muestra qué se eliminaría)
+find "/usr/sap/SAPBusinessOne/home/b1service0/SAP/SAP Business One/Log/BusinessOne" \
+  -type f -name "*.log.csv" -mtime +30
+
+# PASO 2 — Ver cuántos archivos y cuánto espacio
+find "/usr/sap/SAPBusinessOne/home/b1service0/SAP/SAP Business One/Log/BusinessOne" \
+  -type f -name "*.log.csv" -mtime +30 | wc -l
+
+find "/usr/sap/SAPBusinessOne/home/b1service0/SAP/SAP Business One/Log/BusinessOne" \
+  -type f -name "*.log.csv" -mtime +30 \
+  -exec du -ch {} + 2>/dev/null | tail -1
+
+# PASO 3 — Guardar auditoría
+find "/usr/sap/SAPBusinessOne/home/b1service0/SAP/SAP Business One/Log/BusinessOne" \
+  -type f -name "*.log.csv" -mtime +30 \
+  > /tmp/sap_logs_borrados_$(date +%Y%m%d_%H%M).txt
+
+# PASO 4 — Borrar solo .log.csv mayores a 30 días
+find "/usr/sap/SAPBusinessOne/home/b1service0/SAP/SAP Business One/Log/BusinessOne" \
+  -type f -name "*.log.csv" -mtime +30 -delete
+
+# PASO 5 — Verificar resultado
+df -h /usr/sap
+systemctl status b1s50001 b1s50002 b1s50003 b1s50004 | grep -E "Active|running"
+
+================== COMANDO DE MARCOS ABAJO =========================
+
+find "/usr/sap/SAPBusinessOne/home/b1service0/SAP/SAP Business One/Log/BusinessOne" -type f -mtime +30 -delete

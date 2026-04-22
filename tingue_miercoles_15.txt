@@ -1,0 +1,12 @@
+
+🔒 Recomendación antes de ejecutar (producción)
+
+Haz un backup lógico del valor actual:
+
+ndbadm@hanamt:/usr/sap/NDB/HDB00> hdbsql -d E05 -u B1SYSTEM -p E6jk9AhOEyJKwh37
+hdbsql E05=> SELECT "AttachPath" FROM "TINGUEBROWNUS_PROD"."OADP";
+
+SELECT "AttachPath" FROM "TINGUEBROWNUS_PROD"."OADP";
+AttachPath
+"\\\\sld\\B1_SHF\\Attachments\\TINGUEBROWN_PROD\\"
+lines 1-2/2 (END)

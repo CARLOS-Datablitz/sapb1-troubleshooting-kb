@@ -1,0 +1,19 @@
+testv10:~ # su - ndbadm
+ndbadm@testv10:/usr/sap/NDB/HDB00> hdbsql -i 00 -d SYSTEMDB -u SYSTEM  # SYS_DATABASES.M_SERVICES solo existe en la SYSTEMDB(System Database), no en tenant databases. 
+Password:
+
+Welcome to the SAP HANA Database interactive terminal.
+
+Type:  \h for help with commands
+       \q to quit
+
+hdbsql SYSTEMDB=> SELECT DATABASE_NAME, SERVICE_NAME, PORT, SQL_PORT, (PORT + 2) HTTP_PORT FROM SYS_DATABASES.M_SERVICES WHERE ((SERVICE_NAME='indexserver' AND COORDINATOR_TYPE = 'MASTER') OR (SERVICE_NAME='xsengine'))
+2 rows selected (overall time 5259.667 msec; server time 526 usec)
+
+DATABASE_NAME,SERVICE_NAME,PORT,SQL_PORT,HTTP_PORT
+"NDB","indexserver",30003,30015,30005
+"NDB","xsengine",30007,0,30009
+lines 1-3/3 (END)
+
+hdbsql SYSTEMDB=> \q
+

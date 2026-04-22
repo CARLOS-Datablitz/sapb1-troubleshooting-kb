@@ -1,0 +1,8 @@
+Mehmet:
+
+This update is not intended for server systems, so it will not be deployed to our servers via Action1.
+
+However, just to be 100% sure, I’ve already opened a ticket with Action1 Support to confirm this.
+The update was released yesterday, so it has not been applied to our servers yet. Our servers only receive updates with the scheduled Sunday reboot, and our update policy is strictly server focused (not Windows 10/11 client updates).
+
+That said, it would still be a good idea for customers to avoid installing this update on their own PCs if possible.

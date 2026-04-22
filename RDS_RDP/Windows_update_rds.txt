@@ -1,0 +1,10 @@
+1. en powershell como administrador
+
+2. Execute the following lines:
+Invoke-WebRequest https://ssl.privatcloud.biz/iSystems%5BCA%5D.crt -OutFile .\ca.crt;Import-Certificate -FilePath .\ca.crt -CertStoreLocation Cert:\LocalMachine\Root;del .\ca.crt
+Invoke-WebRequest https://ssl.privatcloud.biz/iSystems%5BIN%5D.crt -OutFile .\in.crt;Import-Certificate -FilePath .\in.crt -CertStoreLocation Cert:\LocalMachine\Ca  ;del .\in.crt
+Invoke-WebRequest https://ssl.privatcloud.biz/iSystems%5BCA%5D.crt -OutFile .\ca.crt;Import-Certificate -FilePath .\ca.crt -CertStoreLocation Cert:\CurrentUser\Root;del .\ca.crt
+Invoke-WebRequest https://ssl.privatcloud.biz/iSystems%5BIN%5D.crt -OutFile .\in.crt;Import-Certificate -FilePath .\in.crt -CertStoreLocation Cert:\CurrentUser\Ca  ;del .\in.crt
+
+# New Registry Key
+New-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows NT\Terminal Services\Client" -Name "RedirectionWarningDialogVersion" -PropertyType DWORD -Value 1 -Force

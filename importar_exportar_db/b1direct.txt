@@ -1,4 +1,13 @@
 
+=================== TPA =================
+
+screen -dRR
+cd /tmp && ls -lhad
+mkdir COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 
+cd /tmp && ls -lhad COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04
+chmod -R 777 COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/
+chown -R ndbadm:sapsys COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/
+
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
@@ -6,35 +15,24 @@ dbTenant="B1D_PROD"
 dbUser="SYSTEM"
 dbPass="Test1234"
 
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
+# Export los esquemas:
 
-hdbsql -i 00 -d SYSTEMDB -u SYSTEM -p s4F31gx6geeJNAJK
-
-
-
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export "_SBODEMODE_CARMEN_3e697b39"."*" as binary into '\'/tmp/esquema_04\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export "_SRT_545b4e79"."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export "_AUTECH_dcbc5f77"."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
 
 hdbsql -i 00 -d B1D_PROD -n 127.0.0.1 -u SYSTEM \
-  'EXPORT "_SBODEMODE_CARMEN_3e697b39"."*" AS BINARY INTO '\''/tmp/esquema_02'\'' WITH IGNORE EXISTING THREADS 10;'
-  
+  'EXPORT "_MBD_LIVE_2a7c55cc"."*" AS BINARY INTO '\''/tmp/esquema_01'\'' WITH IGNORE EXISTING THREADS 10;'
+
+# comprimir:
+tar -czvf COMPRIMIDOS_ZIP/_AUTECH_dcbc5f77.tar.gz --transform 's/^esquema_01/_AUTECH_dcbc5f77/' esquema_01/
+
+ # Eliminar los archivos que ya no son necesarios
+cd /tmp && ls -lha && rm -rf COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/
+ 
 ==================== DE =================
-
-sld:~ # cat /root/Desktop/SAP_Configuration.txt
-Hostname:                    sld.b1dportaldcdus.privatcloud.biz
-HANA Version:                SPS05rev5913
-HANA Tenant:                 NDB
-HANA SYSTEM User:            SYSTEM
-HANA SYSTEM User Password:   s4F31gx6geeJNAJK
-HANA B1SYSTEM User:          B1SYSTEM
-HANA B1SYSTEM User Password: p3YVh3GyI5oFCb8b
-B1SiteUser Password:         0u1RH@oTVp^dQjvR
-Business One Version:        10.0
-Service Pack:                SP2508
-Hotfix:                      HF0
-sld:~ #
-
-
-
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
@@ -42,11 +40,25 @@ dbTenant="B1DPROD"
 dbUser="SYSTEM"
 dbPass="Test1234"
 
-hdbsql -i "$dbInstance" -d B1DPROD -n "$dbHost" -u SYSTEM \
-  "SELECT SCHEMA_NAME FROM SYS.SCHEMAS"
-  
+# Testear la base de datos:BO1 
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
+
+# from COMPRIMIDOS_ZIP/:
+
 tar -xzvf _SBODEMODE_CARMEN_3e697b39.tar.gz -C /tmp/esquema_01
 tar -xzvf _SBODEMOFR_NORIA_1c62c0b2.tar.gz -C /tmp/esquema_02
 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_SBODEMODE_CARMEN_3e697b39"."*" as binary from '\'/tmp/esquema_01/_SBODEMODE_CARMEN_3e697b39/\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_SBODEMOFR_NORIA_1c62c0b2"."*" as binary from '\'/tmp/esquema_02/_SBODEMOFR_NORIA_1c62c0b2/\'' with ignore existing threads 10;'
+# ------- Import ----------------
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_MBD_LIVE_2a7c55cc"."*" as binary from '\'/tmp/esquema_01/_MBD_LIVE_2a7c55cc/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_RMG_TEST_4818e581"."*" as binary from '\'/tmp/esquema_02/_RMG_TEST_4818e581/\'' with ignore existing threads 10;'
+
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
+sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
+C4!qE0e]cVFy&$m 
+cd /ramo/APC
+ls -lha
+get 080SBOMAQEMAG25072025.tar.xz
+bye
+
+

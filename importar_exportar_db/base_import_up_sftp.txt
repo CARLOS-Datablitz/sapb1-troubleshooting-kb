@@ -7,10 +7,10 @@ isystems-mt02:/ # df -h
 # Empecemos.....
 screen -dRR
 cd /tmp && ls -lhad
-mkdir IMPORT_TODAY importdb_today 
-cd /tmp && ls -lhad IMPORT_TODAY importdb_today
-chmod -R 777 IMPORT_TODAY/ importdb_today/
-chown -R ndbadm:sapsys IMPORT_TODAY/ importdb_today/ && ls -lha && cd /tmp/IMPORT_TODAY
+mkdir ZIP_TAR_GZ esquema01 
+cd /tmp && ls -lhad ZIP_TAR_GZ esquema01
+chmod -R 777 ZIP_TAR_GZ/ esquema01/
+chown -R ndbadm:sapsys ZIP_TAR_GZ/ esquema01/ && ls -lha && cd /tmp/ZIP_TAR_GZ
 
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m 
@@ -19,8 +19,8 @@ ls -lha
 get SBO_TECOISA.tar.gz 
 bye
 
-chmod -R 777 importdb_today/ IMPORT_TODAY/
-chown -R ndbadm:sapsys importdb_today/ IMPORT_TODAY/ && ls -lha
+chmod -R 777 esquema01/ ZIP_TAR_GZ/
+chown -R ndbadm:sapsys esquema01/ ZIP_TAR_GZ/ && ls -lha
 
 2.  ----------------------------------------------------------------------------------------
 # Varibles SQL (B1SYSTEM) en el SLD
@@ -28,35 +28,43 @@ chown -R ndbadm:sapsys importdb_today/ IMPORT_TODAY/ && ls -lha
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="E02"
+dbTenant="E09"
 dbUser="B1SYSTEM"
-dbPass="j4FKUPeMTTmX"
+dbPass="iEkx9IkGJ40NppJ6"
 
 # Testear la base de datos:BO1 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Export the schema
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_SPA90'."*" as binary into '\'/tmp/importdb_today\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'A19911_SYSTO_P01'."*" as binary into '\'/tmp/esquema01\'' with ignore existing threads 10;'
 # Comprimir el schema exportado
-tar -czf IMPORT_TODAY/S5_SPA90.tar.gz importdb_today/
+tar -czf ZIP_TAR_GZ/S5_SPA90.tar.gz esquema01/
 # Descomprimir
-tar -xzf IMPORT_TODAY/S5_SPA90.tar.gz -C /tmp/importdb_today
+tar -xzf ZIP_TAR_GZ/S5_SPA90.tar.gz -C /tmp/esquema01
 
 # Import the shchema and rename
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_SPA90'."*" as binary from '\'/tmp/importdb_today/importdb_today/\'' with ignore existing threads 10 rename schema "SBO_EENSA" to "SBO_EENSA_2";'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_MOSERVIN'."*" as binary from '\'/tmp/esquema01/bdtest/\'' with ignore existing threads 10 rename schema "SBO_MOSERVIN" to "SBO_CINCIA";'
+
+
 # Realizar un import 
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_SPA90'."*" as binary from '\'/tmp/s5_spa90/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_MOSERVIN'."*" as binary from '\'/tmp/esquema01/bdtest/\'' with ignore existing threads 10;'
 
 
 # Eliminar los archivos que ya no son necesarios
-cd /tmp && ls -lha && rm -rf IMPORT_TODAY/ importdb_today/ && ls -lha
+cd /tmp && ls -lha && rm -rf ZIP_TAR_GZ/ esquema01/ && ls -lha
 
 ============================== FIN ==================================
+# Comprimir:
+tar -czvf ZIP_TAR_GZ/A19911_SYSTO_P01.tar.gz --transform 's/^esquema01/A19911_SYSTO_P01/' esquema01/
+# Descomprimir:
+tar -xzvf SBO_MOSERVIN.tar.gz -C /tmp/esquema01
 
-dbSql="/hana/shared/NDB/hdbclient/hdbsql"
-dbInstance="00"
-dbHost="127.0.0.1"
-dbTenant="NDB"
-dbUser="B1SYSTEM"
-dbPass="gIKV7Muj65w1zdGV"
+
+# Dar permisos nuevamente:
+chmod -R 777 esquema01/
+chown -R ndbadm:sapsys esquema01/ && ls -lha
+
+# SFTP DE DE
+
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
 

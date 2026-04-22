@@ -1,0 +1,56 @@
+Dividir pantallas:
+| Comando                | Acción                                                                 |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `Ctrl + b` + `"`       | Dividir horizontalmente (una ventana arriba y otra abajo)              |
+| `Ctrl + b` + `%`       | Dividir verticalmente (una ventana a la izquierda y otra a la derecha) |
+| `Ctrl + b` + `z`       | Maximizar/minimizar el panel actual (zoom)                             |
+| `Ctrl + b` + `x`       | Cerrar el panel actual (pide confirmación)                             |
+| `Ctrl + b` + `q`       | Mostrar números de los paneles brevemente                              |
+| `Ctrl + b` + `espacio` | Cambiar el layout de los paneles                                       |
+
+Navegar entre paneles:
+| Comando                | Acción                                |
+| ---------------------- | ------------------------------------- |
+| `Ctrl + b` + `↑ ↓ ← →` | Moverse entre paneles con las flechas |
+| `Ctrl + b` + `o`       | Ir al siguiente panel                 |
+| `Ctrl + b` + `;`       | Ir al panel anteriormente activo      |
+
+Ventanas (tabs):
+| Comando            | Acción                                |
+| ------------------ | ------------------------------------- |
+| `Ctrl + b` + `c`   | Crear nueva ventana                   |
+| `Ctrl + b` + `n`   | Siguiente ventana                     |
+| `Ctrl + b` + `p`   | Ventana anterior                      |
+| `Ctrl + b` + `0-9` | Ir directamente a la ventana número X |
+| `Ctrl + b` + `w`   | Lista de ventanas (interactiva)       |
+| `Ctrl + b` + `,`   | Renombrar la ventana actual           |
+| `Ctrl + b` + `&`   | Cerrar la ventana actual              |
+
+
+Sesiones:
+| Comando                       | Acción                                           |
+| ----------------------------- | ------------------------------------------------ |
+| `tmux new -s nombre`          | Crear sesión con nombre                          |
+| `tmux ls`                     | Listar sesiones activas                          |
+| `tmux attach -t nombre`       | Reconectar a una sesión                          |
+| `Ctrl + b` + `d`              | Desconectarse (dejar corriendo en segundo plano) |
+| `tmux kill-session -t nombre` | Matar una sesión                                 |
+
+Copiar y pegar (modo scroll):
+
+| Comando          | Acción                                  |
+| ---------------- | --------------------------------------- |
+| `Ctrl + b` + `[` | Entrar al modo copia (puedes scrollear) |
+| `espacio`        | Iniciar selección                       |
+| `Enter`          | Copiar selección                        |
+| `Ctrl + b` + `]` | Pegar                                   |
+| `q`              | Salir del modo copia                    |
+
+
+Comandos útiles:
+
+| Comando          | Acción                          |
+| ---------------- | ------------------------------- |
+| `Ctrl + b` + `t` | Mostrar reloj                   |
+| `Ctrl + b` + `?` | Ver todos los atajos de teclado |
+| `Ctrl + b` + `:` | Entrar comando tmux manualmente |
