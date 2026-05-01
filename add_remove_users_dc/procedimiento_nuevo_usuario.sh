@@ -76,7 +76,7 @@ Please verify that access for all new users is working correctly and let us know
 
 Best regards,
 
-A new user, user13, has been created. You will find the password in the link below(please note that this is a one-time use link). Please ensure the password is changed before the first login.
+A new user, user13, has been created. You will find the password in the link below(please note that this is a one-time use link). Please ensure the password is changed before the first login. Please verify that the new user’s access is working correctly and let us know if any adjustments are needed.
 
 
 Kindly verify that the new user’s access is working correctly and let us know if any adjustments are required.

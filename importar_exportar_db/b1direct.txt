@@ -27,7 +27,7 @@ hdbsql -i 00 -d B1D_PROD -n 127.0.0.1 -u SYSTEM \
   'EXPORT "_MBD_LIVE_2a7c55cc"."*" AS BINARY INTO '\''/tmp/esquema_01'\'' WITH IGNORE EXISTING THREADS 10;'
 
 # comprimir:
-tar -czvf COMPRIMIDOS_ZIP/_AUTECH_dcbc5f77.tar.gz --transform 's/^esquema_01/_AUTECH_dcbc5f77/' esquema_01/
+tar -czvf COMPRIMIDOS_ZIP/_RCS_27c525ba.tar.gz --transform 's/^esquema_01/_RCS_27c525ba/' esquema_01/
 
  # Eliminar los archivos que ya no son necesarios
 cd /tmp && ls -lha && rm -rf COMPRIMIDOS_ZIP/ esquema_01/ esquema_02/ esquema_03/ esquema_04/
@@ -45,12 +45,15 @@ dbPass="Test1234"
 
 # from COMPRIMIDOS_ZIP/:
 
-tar -xzvf _SBODEMODE_CARMEN_3e697b39.tar.gz -C /tmp/esquema_01
+tar -xzvf _ZEHNDER_1890d980.tar.gz -C /tmp/esquema_01
 tar -xzvf _SBODEMOFR_NORIA_1c62c0b2.tar.gz -C /tmp/esquema_02
 
 # ------- Import ----------------
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_MBD_LIVE_2a7c55cc"."*" as binary from '\'/tmp/esquema_01/_MBD_LIVE_2a7c55cc/\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_AUTECH_dcbc5f77"."*" as binary from '\'/tmp/esquema_01/_AUTECH_dcbc5f77/\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import "_RMG_TEST_4818e581"."*" as binary from '\'/tmp/esquema_02/_RMG_TEST_4818e581/\'' with ignore existing threads 10;'
+
+# Descomprimir:
+tar -xzvf _AUTECH_dcbc5f77.tar.gz -C /tmp/esquema_01
 
 
 sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz

@@ -14,4 +14,34 @@ sld:~ #
 
 ============================================================
 mkdir -p /mnt/Attachments
-cat /hana/scripts/sbomailer.txt  ----> credenciales
+cat /hana/scripts/sbomailer.txt  ----> credenciales alsjkcbh67879
+
+
+
+============================================================
+SAP Validation (Database): Confirm attachments use UNC path
+
+hanamt:~ # su - ndbadm
+ndbadm@hanamt:/usr/sap/NDB/HDB00> hdbsql -d E10 -u B1SYSTEM -p 6VAdTF7lwiW48zrH
+
+Welcome to the SAP HANA Database interactive terminal.
+
+Type:  \h for help with commands
+       \q to quit
+
+hdbsql E10=> SELECT "FileName", "FileExt", "srcPath", "trgtPath" FROM "SBO_BASE_MONTEMINA"."ATC1" LIMIT 20;
+FileName,FileExt,srcPath,trgtPath
+0 rows selected (overall time 749 usec; server time 373 usec)
+
+hdbsql E10=> SELECT "FileName", "FileExt", "srcPath", "trgtPath" FROM "SBO_FRUTACAROCO"."ATC1" LIMIT 20;
+20 rows selected (overall time 96.871058 sec; server time 543 usec)
+
+hdbsql E10=> SELECT "FileName", "FileExt", "srcPath", "trgtPath" FROM "SBO_MONTEDOCANAL"."ATC1" LIMIT 20;
+hdbsql E10=> SELECT "FileName", "FileExt", "srcPath", "trgtPath" FROM "SBO_ALMADAAMENDOEIRA"."ATC1" LIMIT 20;
+hdbsql E10=> SELECT "FileName", "FileExt", "srcPath", "trgtPath" FROM "SBO_SOCAGRMONTEAMENDOA"."ATC1" LIMIT 20;
+
+
+
+SELECT TOP 10 LEFT(TO_NVARCHAR("trgtPath"), 300) AS "trgtPath", COUNT(*) AS TOTAL FROM "SBO_SOCAGRMONTEAMENDOA"."ATC1" GROUP BY LEFT(TO_NVARCHAR("trgtPath"), 300) ORDER BY TOTAL DESC;
+
+============================================================

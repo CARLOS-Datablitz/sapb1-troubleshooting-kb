@@ -16,6 +16,9 @@ $ updatedb
 $ locate new.txt
 
 ------------------------------------
+# Tree
+tree -d -L 2
+------------------------------------
 # disk usage
 du -sh *
 du -sh /usr/sap/*/

@@ -44,8 +44,8 @@ sles:/tmp #
 
 # Export the schema
 sles:/tmp #
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'XPS_QA_PE2'."*" as binary into '\'/tmp/minera_reliquias_db_1\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBO_XPS'."*" as binary into '\'/tmp/minera_reliquias_db_2\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBODEMOCL'."*" as binary into '\'/tmp/minera_reliquias_db_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'XPS_QA_PE'."*" as binary into '\'/tmp/minera_reliquias_db_2\'' with ignore existing threads 10;'
 
 # Realizar un import 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_XPS'."*" as binary from '\'/tmp/minera_reliquias_db_1/XPS_BASE\'' with ignore existing threads 10;'
@@ -56,11 +56,10 @@ sles:/tmp #
 
 # Remover las carpetas creadas y ya no necesarias:
 rm -R XPLORA_M_RELIQUIAS_ZIP/ minera_reliquias_db_1/ minera_reliquias_db_2/
+rm -R  minera_reliquias_db_1/ minera_reliquias_db_2/
   =========================  FIN =================
-tar -cpzvf SBO_JERUSALEM_PROD.tar.gz -C /tmp/minera_reliquias_db_1 .
-unzip /tmp/XPLORA_M_RELIQUIAS_ZIP/XPS_BASE.zip -d /tmp/minera_reliquias_db_1
-unzip "/tmp/XPLORA_M_RELIQUIAS_ZIP/XPS_QA (2).zip" -d /tmp/minera_reliquias_db_2
 
-
-tar -czvf XPLORA_M_RELIQUIAS_ZIP/XPS_QA_PE2.tar.gz --transform 's/^esquema_01/XPS_QA_PE2/' minera_reliquias_db_1/
-tar -czvf XPLORA_M_RELIQUIAS_ZIP/SBO_XPS.tar.gz --transform 's/^esquema_01/SBO_XPS/' minera_reliquias_db_2/
+# 
+# Comprimir:
+tar -czvf XPLORA_M_RELIQUIAS_ZIP/SBODEMOCL.tar.gz --transform 's/^minera_reliquias_db_1/SBODEMOCL/' minera_reliquias_db_1/
+tar -czvf XPLORA_M_RELIQUIAS_ZIP/XPS_QA_PE.tar.gz --transform 's/^minera_reliquias_db_2/XPS_QA_PE/' minera_reliquias_db_2/

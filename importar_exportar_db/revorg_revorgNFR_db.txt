@@ -27,9 +27,9 @@ dbPass="p47JO4DgC1FR"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
 
 # Realizar un export
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'L4_LOFARMA97'."*" as binary into '\'/tmp/revorgnfr_db_1\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'PHYTOITALIA_TEST'."*" as binary into '\'/tmp/revorgnfr_db_2\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export ''."*" as binary into '\'/tmp/revorgnfr_db_3\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'L2_LIGO01'."*" as binary into '\'/tmp/revorgnfr_db_1\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'L2_LIGO04'."*" as binary into '\'/tmp/revorgnfr_db_2\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'S5_SPA01'."*" as binary into '\'/tmp/revorgnfr_db_3\'' with ignore existing threads 10;'
 
 # Realizar un import 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'S5_REVORG_ZIP01'."*" as binary from '\'/tmp/revorgnfr_db_1/revorgnfr_db_1\'' with ignore existing threads 10;'
@@ -38,10 +38,11 @@ dbPass="p47JO4DgC1FR"
 cd /tmp && ls -lha && rm -rf REVORG_ZIP/ revorgnfr_db_1/ revorgnfr_db_2/ revorgnfr_db_3/ && ls -lha
 
 ================================================================
+# Comprimir
 
-tar -czvf /tmp/REVORG_ZIP/L4_LOFARMA97.tar.gz --transform 's/^revorgnfr_db_1/L4_LOFARMA97/' revorgnfr_db_1/
-tar -czvf /tmp/REVORG_ZIP/PHYTOITALIA_TEST.tar.gz --transform 's/^revorgnfr_db_2/PHYTOITALIA_TEST/' revorgnfr_db_2/
-tar -czvf /tmp/REVORG_ZIP/L2_LIGO04.tar.gz --transform 's/^revorgnfr_db_3/L2_LIGO04/' revorgnfr_db_3/
+tar -czvf /tmp/REVORG_ZIP/L2_LIGO01.tar.gz --transform 's/^revorgnfr_db_1/L2_LIGO01/' revorgnfr_db_1/
+tar -czvf /tmp/REVORG_ZIP/L2_LIGO04.tar.gz --transform 's/^revorgnfr_db_2/L2_LIGO04/' revorgnfr_db_2/
+tar -czvf /tmp/REVORG_ZIP/S5_SPA01.tar.gz --transform 's/^revorgnfr_db_3/S5_SPA01/' revorgnfr_db_3/
 
 
 tar -czvf DREAMPACKZIP/PRODUCTIVO.tar.gz --transform 's/^dbdreampack1/PRODUCTIVO /' dbdreampack1/
@@ -53,6 +54,7 @@ tar -czf 102SBOPRETTL_20250923.tar.gz 102SBOPRETTL_20250923
 En .tar.xz:
 tar -cJvf 102SBOPRETTL_20250929.tar.xz 102SBOPRETTL_20250929
 
+sftp -P 2022 c.pecho@files.dcdus.privatcloud.biz
 sftp -P 2022 c.pecho@files.dctpa.privatcloud.biz
 C4!qE0e]cVFy&$m 
 cd /ramo/APC

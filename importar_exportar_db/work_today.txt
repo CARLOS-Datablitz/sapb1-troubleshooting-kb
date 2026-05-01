@@ -6,6 +6,7 @@ isystems-mt02:/ # df -h
 te va a resolver la ip del mt
 1.--------------------------------------------------------------------------
 # Empecemos.....
+# screen -dRR  ---> puedes retomar la sesión si te desconectas coloca nuevamente esto al reingresar a la terminal
 screen -dRR
 cd /tmp && ls -lhad
 mkdir COMPRIMIDOS_ZIP esquema_01 esquema_02 esquema_03 esquema_04 esquema_05 esquema_06 esquema_07 esquema_08 esquema_09
@@ -24,9 +25,9 @@ dbSql="/hana/shared/NDB/HDB00/exe/hdbsql"
 dbSql="/hana/shared/NDB/hdbclient/hdbsql"
 dbInstance="00"
 dbHost="127.0.0.1"
-dbTenant="NDB"
+dbTenant="E06"
 dbUser="B1SYSTEM"
-dbPass="B7g6ZC5pb8fV"
+dbPass="3gOOnYw928OZ"
 
 # Testear la base de datos:BO1 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'select * from "SYS"."SCHEMAS";'
@@ -36,9 +37,9 @@ dbPass="B7g6ZC5pb8fV"
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'import 'SBO_BKGS_DEV'."*" as binary from '\'/tmp/esquema_01/\'' with ignore existing threads 10;'
 
 # Realizar un export
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export '_SBODEMOFR_NORIA_1c62c0b2'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export '_SBODEMODE_CARMEN_3e697b39'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
-"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWW_PROD2'."*" as binary into '\'/tmp/esquema_03\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'WLCPROD'."*" as binary into '\'/tmp/esquema_01\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'WLCPROD_TEST'."*" as binary into '\'/tmp/esquema_02\'' with ignore existing threads 10;'
+"$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBODEMODE'."*" as binary into '\'/tmp/esquema_03\'' with ignore existing threads 10;'
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOWWPL_PROD'."*" as binary into '\'/tmp/esquema_04\'' with ignore existing threads 10;'
 
 "$dbSql" -i "$dbInstance" -d "$dbTenant" -n "$dbHost" -u "$dbUser" -p "$dbPass" 'export 'SBOPKF_TEST'."*" as binary into '\'/tmp/esquema_05\'' with ignore existing threads 10;'

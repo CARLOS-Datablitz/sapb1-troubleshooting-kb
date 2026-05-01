@@ -20,7 +20,7 @@ systemctl status sap*
 sldwcms:~ # systemctl status sap*
 sldwcms:~ # systemctl stop sapb1servertools.service
 
-apagar linux:
+Restart linux:
 systemctl reboot
 
 systemctl poweroff -----> !!!! CUIDADO SE PIERDE GESTION !!!!
