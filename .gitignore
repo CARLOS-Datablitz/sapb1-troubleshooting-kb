@@ -1,2 +1,21 @@
+# Binarios y backups
+*.zip
 *.mkv
-*.mkv
+*.jpg
+*.png
+*.exe
+MobaXterm_backup*
+
+# Credenciales y datos sensibles
+importar_exportar_db/*.txt
+reset_servers/*.txt
+restart_apagar_hana/*.txt
+Windows Server 2019/*.txt
+RDS_RDP/*.txt
+SLD/*.txt
+prueba_la_conexion_ssh_ del_hana.conf/
+NOTAS/
+
+# Archivos temporales
+*.log
+Tools/

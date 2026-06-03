@@ -1,0 +1,17 @@
+#Listar todos los puntos de montaje para ver cual es el disco al que necesitas subirle espacio
+lsblk -o NAME,SIZE,TYPE,MOUNTPOINT
+
+#Abrir el parted para poder aumentar el espacio, en este ejemplo se usó el vdb
+sudo parted /dev/vdb 
+
+#Dentro de parted se ejecuta esto, y luego te pedira que escribas "fix"
+print
+
+#Aumentar el espacio, te preguntará para que pongas "yes"
+resizepart 1 100%
+
+#Sales del parted
+quit
+
+#Comando para que el cambio se vea reflejado en el sistema operativo, acá el ejemplo es con /usr/sap, pero puede ser /hana, /hana/data, /hana/log, etc.
+sudo xfs_growfs /usr/sap

@@ -12,11 +12,11 @@ ndbadm@sles:/usr/sap/NDB/HDB00> ./HDB stop
 # Luego reiniciar el servidor y ver que los servicios levantan
 -- Desde el PROXMOX una vez que la VM(sles) este apagado se debe tomar un snapshot ---
 # ver los servicis levantar:
-sles: ~# htop 
+sles: ~# htop
 
 --- SLD ---
 
-systemctl status sap*
+systemctl status sap*:
 sldwcms:~ # systemctl status sap*
 sldwcms:~ # systemctl stop sapb1servertools.service
 
@@ -26,3 +26,5 @@ systemctl reboot
 systemctl poweroff -----> !!!! CUIDADO SE PIERDE GESTION !!!!
 
 The servers have been restarted.
+
+Nota: A veces toma mas de 7 minutos que el servicio sapb1servertools levante, mientras que el servicio sapinit.service levanta casi inmediatamente.

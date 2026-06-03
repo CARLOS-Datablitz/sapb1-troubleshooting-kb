@@ -1,0 +1,119 @@
+RDS Printer Offline - Troubleshooting Guide
+========================================
+
+Scenario
+--------
+A network printer (Kyocera ECOSYS M2540dn KX) appeared as "Offline"
+inside a Windows Server 2019 RDS server, even though:
+
+- The printer was reachable by ping.
+- The web interface opened correctly.
+- The printer worked locally.
+- Only the RDS environment showed the printer as Offline.
+
+Root Cause
+----------
+Windows Print Management can use SNMP (Simple Network Management Protocol)
+to query the printer status.
+
+If the printer:
+- does not respond correctly to SNMP,
+- has SNMP disabled,
+- uses a different SNMP community,
+- or returns invalid/intermittent responses,
+
+Windows may incorrectly mark the printer as "Offline"
+even though printing itself still works correctly.
+
+Solution
+--------
+Disable SNMP status monitoring for the affected printer.
+
+Troubleshooting Steps
+=====================
+
+1. Verify Network Connectivity
+------------------------------
+
+Open PowerShell on the RDS server and test the printer RAW port (9100):
+
+Command:
+---------
+Test-NetConnection 172.16.113.15 -Port 9100
+
+Expected Result:
+----------------
+TcpTestSucceeded : True
+
+Interpretation:
+---------------
+- TRUE  = RDS server can communicate with the printer.
+- FALSE = Network/firewall/IP issue.
+
+2. Open Print Management
+------------------------
+
+Run:
+----
+printmanagement.msc
+
+Navigate to:
+-------------
+Print Servers
+ -> RDS
+   -> Printers
+
+3. Open Printer Properties
+--------------------------
+
+Right click the affected printer:
+---------------------------------
+Properties
+
+Go to:
+------
+Ports
+
+Select the TCP/IP port and click:
+---------------------------------
+Configure Port
+
+4. Disable SNMP Status Monitoring
+---------------------------------
+
+Uncheck:
+---------
+SNMP Status Enabled
+
+Apply the changes.
+
+Expected Result:
+----------------
+Printer status changes from:
+- Offline
+to:
+- Ready
+
+5. Validate Printing
+--------------------
+
+Perform a test print from the RDS session.
+
+If printing works correctly, the issue is resolved.
+
+Additional Notes
+================
+
+- Other printers may still work correctly with SNMP enabled.
+- This issue can affect only a single printer.
+- Common causes:
+  * SNMP disabled on printer
+  * Firmware issues
+  * Driver compatibility problems
+  * Incorrect SNMP community
+  * UDP 161 filtering/firewall rules
+
+Recommendation
+--------------
+Only disable SNMP for the affected printer.
+No need to modify the other printers if they work correctly.
